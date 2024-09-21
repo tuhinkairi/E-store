@@ -3,7 +3,7 @@ import WhyWe from './WhyWe'
 
 export default function About() {
   return (
-    <main className="dark:bg-black dark:text-white bg-white space-y-10">
+    <main className="dark:bg-black dark:text-white  space-y-10">
       <section className='banner h-80 content-center '>
           <h1 className='text-5xl font-serif  text-center'>ABOUT US</h1>
           <h3 className='w-1/2 text-center m-auto text-sm mt-5'>Lorem ipsum dolor sit amet consectetur adipisicing elit. Eligendi facere necessitatibus voluptate earum cupiditate id aperiam aspernatur, atque, impedit architecto dolor, harum fuga dicta natus aliquam corporis eveniet corrupti sit.</h3>
