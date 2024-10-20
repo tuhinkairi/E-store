@@ -8,10 +8,10 @@ export default function Login() {
     }
   },[location.pathname])
   return (
-    <main className='w-screen max-h-screen overflow-hidden'>
+    <div className='w-screen max-h-screen overflow-hidden'>
       
-       
+       <h1>Login</h1>
       
-    </main>
+    </div>
   )
 }

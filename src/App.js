@@ -11,30 +11,33 @@ import Profile from "./components/Dashboard/ExpandedDetails/Profile";
 import Order from "./components/Dashboard/ExpandedDetails/Order";
 import Payment from "./components/Dashboard/ExpandedDetails/Payment";
 import Wishlist from "./components/Dashboard/ExpandedDetails/Wishlist";
+import Register from "./components/Dashboard/Register";
+import DashboardHome from "./components/Dashboard/dashboard/DashboardHome";
 
 function App() {
-
-  return(
+  return (
     <BrowserRouter>
-    <NavBar/>
+      <NavBar />
       <Routes>
-        <Route  path="/" element={<HomePage />}/>
-        <Route key={"Shop"} path="/Shop" element={<Shop/>}/>
-        <Route key={"About"} path="/About" element={<About />}/>
-        <Route key={"Contact"} path="/Contact" element={<Contact />}/>
+        <Route path="/" element={<HomePage />} />
+        <Route key={"Shop"} path="/Shop" element={<Shop />} />
+        <Route key={"About"} path="/About" element={<About />} />
+        <Route key={"Contact"} path="/Contact" element={<Contact />} />
         <Route key={"Dashboard"} path="/Dashboard" element={<DashBoard />}>
-          <Route path="profile" element={<Profile/>}/>
-          <Route path="order" element={<Order/>}/>
-          <Route path="payment" element={<Payment/>}/>
-          <Route path="wishlist" element={<Wishlist/>}/>
+          <Route path="" element={<DashboardHome />} />
+          <Route path="profile" element={<Profile />} />
+          <Route path="order" element={<Order />} />
+          <Route path="payment" element={<Payment />} />
+          <Route path="wishlist" element={<Wishlist />} />
         </Route>
-        <Route key={"Login"} path="/Login" element={<Login/>}/>
-        
+        <Route key={"Login"} path="/auth">
+          <Route key={"Login"} path="login" element={<Login />} />
+          <Route key={"Register"} path="Register" element={<Register />} />
+        </Route>
       </Routes>
-      <Footer/>
-      
+      <Footer />
     </BrowserRouter>
-    ); 
+  );
 }
 
 export default App;

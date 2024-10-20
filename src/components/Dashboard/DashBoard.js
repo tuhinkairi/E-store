@@ -10,12 +10,8 @@ export default function Dashboard() {
         <ProfileInfo />
         <Options />
       </aside>
-      <div className="deatiled_options col-span-3">
-        {<Outlet /> ? (
-          <Outlet />
-        ) : (
-          <h1 className="text-4xl text-dark">no route</h1>
-        )}
+      <div className="deatiled_options col-span-3 px-10 ">
+        <Outlet />
       </div>
     </div>
   );
