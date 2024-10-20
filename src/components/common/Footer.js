@@ -4,7 +4,7 @@ import logo from './logo.png'
 import FooterIcons from './FooterIcons'
 export default function Footer() {
   return (
-    <footer className='dark:bg-black dark:text-white flex flex-wrap justify-center sm:grid  sm:grid-cols-3 items-center p-10 '>
+    <footer className=' flex flex-wrap justify-center sm:grid  sm:grid-cols-3 items-center p-10 '>
         <div className="flex flex-col justify-center items-center sm:items-start sm:h-60">
           <Icon/>
         <div className='my-5'>

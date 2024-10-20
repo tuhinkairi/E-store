@@ -4,7 +4,7 @@ import ProductDisplay from "./ProductDisplay";
 
 export default function Shop() {
   return (
-    <main className="dark:bg-black dark:text-white ">
+    <main className="">
       <ShopBanner/>
       <ProductDisplay/>
     </main>

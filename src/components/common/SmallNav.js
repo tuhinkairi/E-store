@@ -19,7 +19,7 @@ export default function SmallNav() {
       .classList.toggle("overflow-hidden");
   }
   return (
-    <nav className="_small_nav  dark:bg-black dark:text-white w-full  py-6 grid sm:hidden grid-cols-5 items-center justify-center  capitalize font-serif">
+    <nav className="_small_nav   w-full  py-6 grid sm:hidden grid-cols-5 items-center justify-center  capitalize font-serif">
       <button
         id="toggleBtn" title="theme change"
         className="h-full w-fit m-auto flex flex-col z-20 items-start justify-center"

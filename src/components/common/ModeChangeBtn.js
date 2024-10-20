@@ -1,6 +1,6 @@
 import React, { useEffect, useRef, useState } from 'react'
 import { useDispatch, useSelector } from 'react-redux';
-import { ChangeTheme } from '../../Features/controlers/UiSlice';
+import { toggleTheme } from '../../Features/controlers/UiSlice';
 
 
 export default function ModeChangeBtn() {
@@ -18,9 +18,10 @@ export default function ModeChangeBtn() {
       htmlElement.classList.remove("dark");
     }
   }, [isChecked,selectorTheme]);
+  
   const handleToggle = () => {
     setIsChecked(!isChecked);
-    dispatch(ChangeTheme())
+    dispatch(toggleTheme())
   };
   return (
     // <span className=" inline-block group">

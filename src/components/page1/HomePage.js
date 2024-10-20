@@ -6,7 +6,7 @@ import HelpBanner from "./HelpBanner";
 import CarouselBox from "../supporting/CarouselBox";
 export default function HomePage() {
   return (
-    <main className="dark:bg-black dark:text-white ">
+    <main className="">
       <Banner />
       <CardShow />
       <CarouselBox />

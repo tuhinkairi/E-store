@@ -3,14 +3,21 @@ import { createSlice } from "@reduxjs/toolkit";
 export const ThemeSlice = createSlice({
   name: "Ui controller",
   initialState: {
-    theme: localStorage.getItem("theme") && true,
+    isDarkMode: localStorage.getItem("theme") === "dark",
   },
   reducers: {
-    ChangeTheme: (state) => {
-      localStorage.setItem("theme", !state.theme);
-      state.theme = localStorage.getItem('theme')
+    toggleTheme: (state) => {
+      state.isDarkMode = !state.isDarkMode;
+      localStorage.setItem("theme", state.isDarkMode ? "dark" : "light");
+      const html = document.getElementsByTagName("html")[0];
+      state.isDarkMode ? html.classList.add("dark") : html.classList.remove("dark");
+        
+      
     },
   },
 });
 
-export const { ChangeTheme } = ThemeSlice.actions;
+export const { toggleTheme } = ThemeSlice.actions;
+
+// ... existing code ...
+

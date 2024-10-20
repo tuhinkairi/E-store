@@ -3,8 +3,8 @@ import HomePage from "./components/page1/HomePage";
 import Shop from "./components/page2/Shop";
 import About from "./components/page3/About";
 import Contact from "./components/page4/Contact";
-import DashBoard from "./components/page5/DashBoard";
-import Login from "./components/page5/Login";
+import DashBoard from "./components/Dashboard/DashBoard";
+import Login from "./components/Dashboard/Login";
 import NavBar from "./components/common/NavBar";
 import Footer from "./components/common/Footer";
 
