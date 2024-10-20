@@ -7,17 +7,16 @@ export const ThemeSlice = createSlice({
   },
   reducers: {
     toggleTheme: (state) => {
+      console.log(state.isDarkMode)
       state.isDarkMode = !state.isDarkMode;
       localStorage.setItem("theme", state.isDarkMode ? "dark" : "light");
-      const html = document.getElementsByTagName("html")[0];
+      const html = document.documentElement;
       state.isDarkMode ? html.classList.add("dark") : html.classList.remove("dark");
-        
-      
+    },        
     },
-  },
-});
+  });
 
 export const { toggleTheme } = ThemeSlice.actions;
 
-// ... existing code ...
+
 

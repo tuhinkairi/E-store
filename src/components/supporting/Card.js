@@ -1,5 +1,5 @@
 import React from 'react'
-import RedirectProductBtn from '../common/RedirectProductBtn'
+import RedirectProductBtn from '../layout/RedirectProductBtn'
 
 export default function Card(props) {
   return (

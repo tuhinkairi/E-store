@@ -5,8 +5,8 @@ import About from "./components/page3/About";
 import Contact from "./components/page4/Contact";
 import DashBoard from "./components/Dashboard/DashBoard";
 import Login from "./components/Dashboard/Login";
-import NavBar from "./components/common/NavBar";
-import Footer from "./components/common/Footer";
+import NavBar from "./components/layout/NavBar";
+import Footer from "./components/layout/Footer";
 
 function App() {
 
@@ -23,6 +23,7 @@ function App() {
         
       </Routes>
       <Footer/>
+      
     </BrowserRouter>
     ); 
 }

@@ -4,6 +4,6 @@
 
 @layer base{
     html{
-        @apply  transition-colors duration-1000 scroll-smooth dark:bg-zinc-800 dark:text-white ;
+        @apply transition-colors duration-1000 scroll-smooth dark:bg-dark    dark:text-white ;
     }
 }

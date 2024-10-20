@@ -1,5 +1,5 @@
 import React from "react";
-import FooterIcons from "../common/FooterIcons";
+import FooterIcons from "../layout/FooterIcons";
 
 export default function DescriptionContact() {
   return (
