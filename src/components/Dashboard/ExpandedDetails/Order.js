@@ -50,9 +50,13 @@ export default function Order() {
               <input ref={searchRef} type="text" id="Search" placeholder='Search' className='border shadow p-2 w-1/2' />
               <button onClick={handelSearch}><FaSearch/></button>
             </div>
-            <div className='pt-5'>
-
-            {data.map((item)=><OrderCard key={item.id} {...item}/>)}
+            <div className='pt-5 grid gap-5'>
+            <h1 className='text-2xl font-semibold'>Your Current Orders</h1>
+            {data.slice(0,2).map((item)=><OrderCard key={item.id} {...item}/>)}
+            </div>
+            <div className='pt-5 grid gap-5'>
+            <h1 className='text-2xl font-semibold'>Your Order History</h1>
+            {data.slice(2).map((item)=><OrderCard key={item.id} {...item}/>)}
             </div>
     </div>
   )

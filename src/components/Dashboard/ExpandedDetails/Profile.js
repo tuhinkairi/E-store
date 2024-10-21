@@ -4,6 +4,9 @@ import { useNavigate } from "react-router-dom";
 
 export default function Profile() {
   const navigate = useNavigate();
+  const handelSave = ()=>{
+    window.confirm("Are you sure you want to save changes?")
+  }
 
   return (
     <div className="grid gap-5">
@@ -11,9 +14,9 @@ export default function Profile() {
       <div className="grid grid-cols-2 gap-5 ">
         <div className="col-span-2">
 
-        <span className="w-40 h-40  flex flex-col gap-1 relative">
+        <span className="w-40 h-40  flex flex-col gap-1 relative rounded-full">
           <img
-            className="w-full h-full rounded-full border-2 border-gray-300"
+            className="w-full h-full rounded-full border border-zinc-300"
             src={""}
             alt=""
             />
@@ -26,7 +29,7 @@ export default function Profile() {
             type="text"
             id="FirstName"
             placeholder="First Name"
-            className="border-2 border-gray-300 p-1 rounded"
+            className="border  p-2 rounded"
           />
         </span>
         <span className="flex flex-col gap-1">
@@ -35,7 +38,7 @@ export default function Profile() {
             type="text"
             id="LastName"
             placeholder="Last Name"
-            className="border-2 border-gray-300 p-1 rounded"
+            className="border  p-2 rounded"
           />
         </span>
         <span className="flex flex-col gap-1">
@@ -44,7 +47,7 @@ export default function Profile() {
             type="email"
             id="Email"
             placeholder="Email"
-            className="border-2 border-gray-300 p-1 rounded"
+            className="border  p-2 rounded"
           />
         </span>
         <span className="flex flex-col gap-1">
@@ -53,10 +56,11 @@ export default function Profile() {
             type="number"
             id="Phone"
             placeholder="Phone Number"
-            className="border-2 border-gray-300 p-1 rounded"
+            className="border  p-2 rounded"
           />
         </span>
-        <div className=" flex items-end justify-center col-span-2">
+        <div className=" flex items-center justify-between col-span-2">
+          <span>Change Your Password</span>
           <button
             onClick={() => navigate("/changepassword")}
             key="Password Change"
@@ -65,13 +69,24 @@ export default function Profile() {
             Password Change
           </button>
         </div>
-        <div className=" flex items-end justify-center col-span-2">
+        <div className=" flex items-center justify-between col-span-2">
+          <span>Delete Your Account</span>
           <button
             onClick={() => navigate("/deleteaccount")}
             key="Delete Account"
             className="shadow p-2 border hover:text-white hover:bg-dark dark:hover:text-dark dark:hover:bg-white rounded"
           >
             Delete Account
+          </button>
+        </div>
+        <div className=" flex items-center justify-between col-span-2">
+          <span>Save Changes</span>
+          <button
+            onClick={handelSave}
+            key="Save Changes"
+            className="shadow p-2 border hover:text-white hover:bg-dark dark:hover:text-dark dark:hover:bg-white rounded"
+          >
+            Save Changes
           </button>
         </div>
       </div>
