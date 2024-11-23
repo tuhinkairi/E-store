@@ -1,3 +1,4 @@
+import tokenGenerate  from "../../middleware/JWTauth.js";
 import {hashPassword} from "../../middleware/UserAuth.js";
 import User from "../../model/User.js";
 
@@ -14,8 +15,10 @@ export default function CreateUser(app) {
         phoneNumber,
       });
       user.createdAt = Date.now()
+      const token = tokenGenerate(user)
+
       await user.save();
-      res.status(201).json({ message: "User created successfully" });
+      res.status(201).json({ message: "User created successfully", token:token });
     } catch (error) {
       console.error(error);
       res.status(500).json({ message: "Error creating user" });

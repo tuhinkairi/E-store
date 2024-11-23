@@ -18,7 +18,7 @@ const comparePassword = async function(providedPassword, hashedPassword) {
     const isValid = await bcrypt.compare(providedPassword, hashedPassword);
     return isValid;
   } catch (err) {
-    next(err); // or throw err; depending on your error handling strategy
+    return err; // or throw err; depending on your error handling strategy
   }
 };
 
