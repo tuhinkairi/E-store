@@ -1,0 +1,9 @@
+User → UI → API Gateway → Product/Cart/Order Services → Database/Cache → Payment Gateway → Notification Service → User
+
+
+
+
+Admin → Admin Panel → Admin Services → Database → Notification Service → Admin
+
+
+
