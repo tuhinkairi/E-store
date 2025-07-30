@@ -1,1 +1,13 @@
 @import "tailwindcss";
+:root {
+  --cream: #F8F6F0;
+  --sage-50: #F6F7F4;
+  --sage-200: #E5E7E1;
+  --sage-600: #8B9A7A;
+  --sage-700: #6B7A5A;
+  --sage-800: #4A5A3A;
+  --sage-900: #2A3A1A;
+  --gold-400: #D4B676;
+  --gold-500: #C4A556;
+  --gold-600: #B49546;
+}
