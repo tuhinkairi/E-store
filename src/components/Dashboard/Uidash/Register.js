@@ -1,35 +1,50 @@
-import React, { useState } from 'react';
-import { Link, useNavigate } from 'react-router-dom';
-import { FaUser, FaEnvelope, FaLock, FaEye, FaEyeSlash, FaGoogle } from 'react-icons/fa';
+import React, { useState } from "react";
+import { Link, useNavigate } from "react-router-dom";
+import {
+  FaUser,
+  FaEnvelope,
+  FaLock,
+  FaEye,
+  FaEyeSlash,
+  FaGoogle,
+} from "react-icons/fa";
+import { setAuth } from "../../../Features/user/UserSlice";
+import { useAppDispatch } from "../../../hook/useStore";
 
 export default function Register() {
   const navigate = useNavigate();
-  const [name, setName] = useState('');
-  const [email, setEmail] = useState('');
-  const [password, setPassword] = useState('');
-  const [confirmPassword, setConfirmPassword] = useState('');
+  const [name, setName] = useState("");
+  const [email, setEmail] = useState("");
+  const [password, setPassword] = useState("");
+  const [confirmPassword, setConfirmPassword] = useState("");
   const [showPassword, setShowPassword] = useState(false);
   const [showConfirmPassword, setShowConfirmPassword] = useState(false);
-
+  const dispatch = useAppDispatch();
   const handleRegister = (e) => {
     e.preventDefault();
     // Logic for user registration goes here
     console.log("Registering user...");
     // After successful registration, navigate to the login page or dashboard
-    navigate('/login');
+    dispatch(setAuth());
+
+    navigate("/dashboard");
   };
 
   const handleGoogleRegister = () => {
     // Logic for Google registration goes here
     console.log("Registering with Google...");
+    dispatch(setAuth());
+
     // After successful registration, navigate to the dashboard
-    navigate('/Dashboard');
+    navigate("/Dashboard");
   };
 
   return (
     <div className="flex items-center justify-center min-h-screen bg-gradient-to-br from-blue-600 via-purple-600 to-pink-500">
       <div className="bg-white p-8 rounded-xl shadow-2xl w-full max-w-4xl  ">
-        <h1 className="text-3xl font-extrabold mb-6 text-center text-transparent bg-clip-text bg-gradient-to-r from-blue-500 to-purple-600">Create Account</h1>
+        <h1 className="text-3xl font-extrabold mb-6 text-center text-transparent bg-clip-text bg-gradient-to-r from-blue-500 to-purple-600">
+          Create Account
+        </h1>
         <div className="flex flex-col md:flex-row md:space-x-6">
           <form onSubmit={handleRegister} className="space-y-4 md:w-1/2">
             <div className="relative">
@@ -90,7 +105,7 @@ export default function Register() {
                 {showConfirmPassword ? <FaEyeSlash /> : <FaEye />}
               </button>
             </div>
-            <button 
+            <button
               type="submit"
               className="w-full py-2 px-4 bg-gradient-to-r from-blue-500 to-purple-600 text-white font-bold rounded-lg shadow-md hover:from-blue-600 hover:to-purple-700 focus:outline-none focus:ring-2 focus:ring-purple-500 focus:ring-opacity-50 transition duration-300"
             >
@@ -101,15 +116,21 @@ export default function Register() {
             <div className="mb-4 text-center">
               <span className="text-gray-500 font-medium">or</span>
             </div>
-            <button 
-              onClick={handleGoogleRegister} 
+            <button
+              onClick={handleGoogleRegister}
               className="w-full flex items-center justify-center py-2 px-4 border border-gray-300 rounded-lg shadow-sm text-sm font-medium text-gray-700 bg-white hover:bg-gray-50 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-purple-500 transition duration-300"
             >
               <FaGoogle className="mr-2 text-red-600" />
               Register with Google
             </button>
             <p className="mt-6 text-center text-sm text-gray-600">
-              Already have an account? <Link to="/authentication/" className="font-medium text-purple-600 hover:underline">Log in</Link>
+              Already have an account?{" "}
+              <Link
+                to="/authentication/"
+                className="font-medium text-purple-600 hover:underline"
+              >
+                Log in
+              </Link>
             </p>
           </div>
         </div>

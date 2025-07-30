@@ -1,25 +1,21 @@
-import React, { useEffect } from "react";
 import Icon from "./Icon";
 import SmallNav from "./SmallNav";
 import ModeChangeBtn from "./ModeChangeBtn";
-import { Link, useLocation } from "react-router-dom";
-
+import { Link } from "react-router-dom";
+import {useAppSelector } from "../../hook/useStore";
 
 export default function NavBar() {
-  const location = useLocation()
-  useEffect(()=>{
-    if (location.pathname === '/Login'){
-      document.getElementsByTagName("navo")[0].removeChild()
-    }
-  },[location.pathname])
+  const Authenticate = useAppSelector(
+    (state) => state.user.auth
+  );
   return (
     <>
       <nav className="hidden  w-full px-10 py-10 sm:grid grid-cols-5  items-center justify-center  capitalize font-serif ">
-        <div className="flex items-center col-span-2 lg:col-span-3 ">
+        <div className="flex items-center col-span-2  ">
           <Icon />
         </div>
-        <div className="grid grid-cols-6 text-center col-span-3 lg:col-span-2 items-center">
-          <span className=" block  group  pr-5">
+        <div className="flex text-center  col-span-3  items-center justify-end gap-3">
+          <span className="inline-block group px-5">
             <Link
               to="/"
               className="w-fit hover:border-b-current border-transparent border-b-2 py-1 inline-block"
@@ -27,7 +23,7 @@ export default function NavBar() {
               Lookbook
             </Link>
           </span>
-          <span className=" inline-block group ">
+          <span className=" inline-block group px-5 ">
             <Link
               to="/Shop"
               className="w-fit hover:border-b-current border-transparent border-b-2  py-1 inline-block"
@@ -35,7 +31,7 @@ export default function NavBar() {
               shop
             </Link>
           </span>
-          <span className=" inline-block group">
+          <span className=" inline-block group px-5">
             <Link
               to="/About"
               className="w-fit hover:border-b-current border-transparent border-b-2  py-1 inline-block"
@@ -43,7 +39,7 @@ export default function NavBar() {
               about
             </Link>
           </span>
-          <span className=" inline-block group">
+          <span className=" inline-block group px-5">
             <Link
               to="/Contact"
               className="w-fit hover:border-b-current border-transparent border-b-2  py-1 inline-block"
@@ -51,18 +47,28 @@ export default function NavBar() {
               contact
             </Link>
           </span>
-
-          <span className=" inline-block group ml-5">
-            <Link
-              to="/Account"
-              className="w-fit py-1 flex items-center justify-center"
-            >
-              <span className="material-symbols-outlined dark:text-gray-200 scale-110">
-                account_circle
-              </span>
-            </Link>
-          </span>
+          {Authenticate ? (
+            <span className=" inline-block group px-5">
+              <Link
+                to="/dashboard"
+                className="w-fit hover:border-b-current border-transparent border-b-2  py-1 inline-block"
+                >
+                Dashboard
+              </Link>
+            </span>
+          ) : (
+            <span className=" inline-block group px-5">
+              <Link
+                to="/authentication"
+                className="bg-orange-200 border border-orange-600 transition-all text-orange-600 hover:bg-inherit  py-2 px-6   flex items-center justify-center"
+              >
+                Login
+              </Link>
+            </span>
+          )}
+          <span className="mr-6 p-2 px-3 border rounded-full border-dark">
           <ModeChangeBtn />
+          </span>
         </div>
       </nav>
       <SmallNav />

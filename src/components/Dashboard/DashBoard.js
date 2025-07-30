@@ -1,9 +1,17 @@
-import React from "react";
+import React, { useEffect } from "react";
 import ProfileInfo from "./dashboard/ProfileInfo";
 import Options from "./dashboard/Options";
-import { Outlet } from "react-router-dom";
+import { Outlet, useNavigate } from "react-router-dom";
+import { useAppSelector } from "../../hook/useStore";
 
 export default function Dashboard() {
+  const auth = useAppSelector(state=>state.user.auth)
+  const navigate = useNavigate()
+  useEffect(()=>{
+    if(!auth){
+      navigate("/")
+    }
+  },[auth,navigate])
   return (
     <div className="px-10  grid grid-cols-4 items-start justify-center gap-5">
       <aside className="options grid gap-5">

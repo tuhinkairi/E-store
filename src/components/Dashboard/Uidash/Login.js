@@ -1,17 +1,20 @@
-import React, { useEffect, useState } from 'react';
+import React, { useState } from 'react';
 import { Link, useNavigate } from 'react-router-dom';
 import { FaGoogle, FaEnvelope, FaLock, FaEye, FaEyeSlash } from 'react-icons/fa';
-import axios from 'axios';
+import { useAppDispatch } from '../../../hook/useStore';
+import { setAuth } from '../../../Features/user/UserSlice';
+// import axios from 'axios';
 export default function Login() {
   const navigate = useNavigate();
   const [email, setEmail] = useState('');
   const [password, setPassword] = useState('');
   const [showPassword, setShowPassword] = useState(false);
-  
+  const dispatch = useAppDispatch()
   
 
   const handleGoogleLogin = () => {
     // Logic for Google login goes here
+    dispatch(setAuth())
     console.log("Logging in with Google...");
     // After successful login, navigate to the dashboard or desired page
     navigate('/Dashboard');
@@ -19,6 +22,8 @@ export default function Login() {
 
   const handleEmailLogin = (e) => {
     e.preventDefault();
+    dispatch(setAuth())
+    
     // Logic for email/password login goes here
     console.log("Logging in with email and password...");
     // After successful login, navigate to the dashboard or desired page
