@@ -5,6 +5,7 @@ import jwt from "jsonwebtoken";
 export default function VerifyUser(app) {
   app.post("/api/v1/user/login", async (req, res) => {
     try {
+      // todo take the token from the req not as a parameter
       const { email, password, token } = req.body;
 
       if (!email && !token) {
@@ -56,6 +57,7 @@ export default function VerifyUser(app) {
       }
 
       // Successfully authenticated
+      res.cookie("elegance_session",token)
       res.json({ message: "Authenticated successfully via email and password" });
     } catch (err) {
       console.error("Error in /api/v1/user/login:", err.message);

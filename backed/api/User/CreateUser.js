@@ -18,7 +18,10 @@ export default function CreateUser(app) {
       const token = tokenGenerate(user)
 
       await user.save();
+      
+      res.cookie("elegance_session", token,{maxAge: 360000})
       res.status(201).json({ message: "User created successfully", token:token });
+      // setup cookies
     } catch (error) {
       console.error(error);
       res.status(500).json({ message: "Error creating user" });

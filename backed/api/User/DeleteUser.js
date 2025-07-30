@@ -9,6 +9,7 @@ export default function DeleteUser(app) {
       if (!user) {
         return res.status(404).json({ message: "User not found" });
       }
+      res.clearCookie("elegance_session");
       res.status(200).json({ message: `User ${userId} deleted successfully` });
     } catch (err) {
       console.error(err);

@@ -4,6 +4,7 @@ import db from "./db/db.js"
 import routerControl from "./router/router.js"
 import { json } from "express";
 import cors from "cors";
+import cookieParser from "cookie-parser";
 
 dotenv.config()
 
@@ -17,6 +18,7 @@ db(process.env.URI_DB)
 // middleware
 app.use(json());
 app.use(cors());
+app.use(cookieParser());
 
 // routers
 routerControl(app)
