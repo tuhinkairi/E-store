@@ -6,6 +6,7 @@ import AtelierPage from './endpoints/about/Atelier'
 import ContactUs from './endpoints/contact/ContactUs'
 import UserDashboard from './endpoints/dashboard/user/UserDashboard'
 import UserOnboarding from './endpoints/dashboard/login/UserOnboarding'
+import LoginPage from './endpoints/dashboard/login/Login'
 
 function RoutingPage() {
   return (
@@ -16,6 +17,7 @@ function RoutingPage() {
       <Route path='/atelier' element={<AtelierPage/>}/>
       <Route path='/contact-us' element={<ContactUs/>}/>
       <Route path='/onboarding' element={<UserOnboarding/>}/>
+      <Route path='/login' element={<LoginPage/>}/>
       <Route path='/dashboard' >
       <Route path="user" element={<UserDashboard/>}/>
       </Route>
