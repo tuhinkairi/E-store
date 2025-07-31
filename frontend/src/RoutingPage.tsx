@@ -4,6 +4,8 @@ import ProductListing from './endpoints/shop/product/ProductsListing'
 import AboutUs from './endpoints/about/AboutUs'
 import AtelierPage from './endpoints/about/Atelier'
 import ContactUs from './endpoints/contact/ContactUs'
+import UserDashboard from './endpoints/dashboard/user/UserDashboard'
+import UserOnboarding from './endpoints/dashboard/login/UserOnboarding'
 
 function RoutingPage() {
   return (
@@ -13,6 +15,10 @@ function RoutingPage() {
       <Route path='/about-us' element={<AboutUs/>}/>
       <Route path='/atelier' element={<AtelierPage/>}/>
       <Route path='/contact-us' element={<ContactUs/>}/>
+      <Route path='/onboarding' element={<UserOnboarding/>}/>
+      <Route path='/dashboard' >
+      <Route path="user" element={<UserDashboard/>}/>
+      </Route>
     </Routes>
   )
 }

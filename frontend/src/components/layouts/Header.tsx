@@ -12,6 +12,10 @@ const endpoints:{title:string, link:string}[] = [
         link:"/collections"
     },
     {
+        title:"ATELIER",
+        link:"/atelier"
+    },
+    {
         title:"ABOUT US",
         link:"/about-us"
     },
