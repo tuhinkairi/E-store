@@ -1,13 +1,31 @@
 import { useState } from "react";
 import { ShoppingBag, Menu, X} from 'lucide-react';
+import { Link, useLocation } from "react-router-dom";
 
-
+const endpoints:{title:string, link:string}[] = [
+    {
+        title:"HOME",
+        link:"/"
+    },
+    {
+        title:"COLLECTIONS",
+        link:"/collections"
+    },
+    {
+        title:"ABOUT US",
+        link:"/about-us"
+    },
+    {
+        title:"CONTACT",
+        link:"/contact-us"
+    }
+]
 const Header = () => {
-
+    const path = useLocation().pathname
     const [isMenuOpen, setIsMenuOpen] = useState(false);
 
     return (
-        <header className="fixed top-0 w-full bg-cream/95 backdrop-blur-md z-50 border-b border-sage-200/30">
+        <header className={`${path=="/collections" ? "bg-cream/95":"fixed"} top-0 w-full  backdrop-blur-md z-50 border-b border-sage-200/30`}>
             <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
                 <div className="flex items-center justify-between h-20">
                     <div className="flex items-center space-x-3">
@@ -18,9 +36,9 @@ const Header = () => {
                     </div>
 
                     <nav className="hidden md:flex space-x-12">
-                        {['COLLECTIONS', 'HERITAGE', 'ATELIER', 'CONTACT'].map((item) => (
-                            <a key={item} href="#" className="text-sage-800 hover:text-gold-600 transition-colors font-medium text-sm tracking-widest">
-                                {item}
+                        {endpoints.map((item) => (
+                            <a key={item.title} href={item.link} className="text-sage-800 hover:text-gold-600 transition-colors font-medium text-sm tracking-widest">
+                                {item.title}
                             </a>
                         ))}
                     </nav>
@@ -40,10 +58,10 @@ const Header = () => {
             {isMenuOpen && (
                 <div className="md:hidden bg-cream border-t border-sage-200/30">
                     <div className="px-4 py-4 space-y-3">
-                        {['COLLECTIONS', 'HERITAGE', 'ATELIER', 'CONTACT'].map((item) => (
-                            <a key={item} href="#" className="block text-sage-800 hover:text-gold-600 py-3 text-sm tracking-widest">
-                                {item}
-                            </a>
+                        {endpoints.map((item) => (
+                            <Link key={item.title} to={item.link} className="block text-sage-800 hover:text-gold-600 py-3 text-sm tracking-widest">
+                                {item.title}
+                            </Link>
                         ))}
                     </div>
                 </div>

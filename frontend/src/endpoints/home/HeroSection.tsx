@@ -1,12 +1,11 @@
 import { useEffect, useState } from "react";
-
 const HeroSection = () => {
     const [currentSlide, setCurrentSlide] = useState(0);
 
     const heroImages = [
-        "https://images.unsplash.com/photo-1594633312681-425c7b97ccd1?w=1200&h=800&fit=crop",
-        "https://images.unsplash.com/photo-1507003211169-0a1dd7228f2d?w=1200&h=800&fit=crop",
-        "https://images.unsplash.com/photo-1581833971358-2c8b550f87b3?w=1200&h=800&fit=crop"
+        "./banner/image2.jpg",
+        "./banner/image3.jpg",
+        "./banner/image4.jpg"
     ];
     useEffect(() => {
         const timer = setInterval(() => {

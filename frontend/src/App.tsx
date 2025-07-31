@@ -1,10 +1,13 @@
-import PremiumClothingLanding from "./endpoints/home/Home";
+import Footer from "./components/layouts/Footer";
+import Header from "./components/layouts/Header";
+import RoutingPage from "./RoutingPage";
 
 export default function App() {
   return (
-    <div>
-      <PremiumClothingLanding/>
-      
-    </div>
+    <section>
+      <Header/>
+      <RoutingPage />
+      <Footer/>
+    </section>
   )
 }

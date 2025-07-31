@@ -1,13 +1,58 @@
 @import "tailwindcss";
-:root {
-  --cream: #F8F6F0;
-  --sage-50: #F6F7F4;
-  --sage-200: #E5E7E1;
-  --sage-600: #8B9A7A;
-  --sage-700: #6B7A5A;
-  --sage-800: #4A5A3A;
-  --sage-900: #2A3A1A;
-  --gold-400: #D4B676;
-  --gold-500: #C4A556;
-  --gold-600: #B49546;
+
+@theme static {
+  /* Custom Color Tokens */
+  --color-cream: #F8F6F0;
+  --color-sage-50: #F6F7F4;
+  --color-sage-200: #E5E7E1;
+  --color-sage-600: #8B9A7A;
+  --color-sage-700: #6B7A5A;
+  --color-sage-800: #4A5A3A;
+  --color-sage-900: #2A3A1A;
+  --color-gold-400: #D4B676;
+  --color-gold-500: #C4A556;
+  --color-gold-600: #B49546;
+
+  /* Gradient helpers */
+  --gradient-from-sage-900: var(--color-sage-900);
+  --gradient-via-sage-800: var(--color-sage-800);
+  --gradient-to-sage-700: var(--color-sage-700);
+
+  --gradient-from-sage-900-80: rgba(42, 58, 26, 0.8);
+  --gradient-via-sage-800-40: rgba(74, 90, 58, 0.4);
+
+  /* Opacity variants */
+  --bg-sage-900-20: rgba(42, 58, 26, 0.2);
+  --bg-sage-900-95: rgba(42, 58, 26, 0.95);
+
+  --text-cream-90: rgba(248, 246, 240, 0.9);
+  --text-cream-80: rgba(248, 246, 240, 0.8);
+  --text-cream-70: rgba(248, 246, 240, 0.7);
+  --text-cream-60: rgba(248, 246, 240, 0.6);
+
+  --border-cream-50: rgba(248, 246, 240, 0.5);
+  --border-cream-30: rgba(248, 246, 240, 0.3);
+  --border-cream-20: rgba(248, 246, 240, 0.2);
+  --border-sage-200-30: rgba(229, 231, 225, 0.3);
+
+  /* Accent & fill */
+  --accent-gold-500: var(--color-gold-500);
+  --fill-gold-500: var(--color-gold-500);
+
+  /* Animations */
+  --animate-float: float 6s ease-in-out infinite;
+  --animate-pulse-slow: pulse 3s cubic-bezier(0.4, 0, 0.6, 1) infinite;
+
+  @keyframes float {
+    0%, 100% { transform: translateY(0px); }
+    50% { transform: translateY(-10px); }
+  }
+
+  @keyframes pulse {
+    0%, 100% { opacity: 1; }
+    50% { opacity: .5; }
+  }
+}
+button{
+  cursor: pointer;
 }
