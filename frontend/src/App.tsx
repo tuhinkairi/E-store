@@ -27,7 +27,7 @@ export default function App() {
   if (loading) {
     return (
       <LoadingScreen
-        size="medium"
+        size="large"
       />
     );
   }

@@ -3,7 +3,7 @@ import type { LoadingScreenProps } from '../../types/fallback';
 
 
 const LoadingScreen: React.FC<LoadingScreenProps> = ({ 
-  fullScreen = false, 
+  fullScreen = true, 
   size = 'medium',
   customMessages
 }) => {
