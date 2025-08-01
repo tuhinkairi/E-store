@@ -42,7 +42,7 @@ const ContactUs = () => {
         <div className="min-h-screen" style={{ backgroundColor: 'var(--color-cream)' }}>
             {/* Hero Section */}
             <section
-                className="relative py-32 px-4 text-center"
+                className="relative py-32 px-4 text-center h-screen content-center"
                 style={{
                     background: `linear-gradient(135deg, var(--gradient-from-sage-900-80) 0%, var(--gradient-via-sage-800-40) 100%)`
                 }}
@@ -65,7 +65,7 @@ const ContactUs = () => {
                         Connect with Heritage
                     </p>
                     <p
-                        className="text-lg max-w-3xl mx-auto leading-relaxed"
+                        className="text-xl max-w-3xl mx-auto leading-relaxed"
                         style={{ color: 'var(--text-cream-80)' }}
                     >
                         We're here to help you discover timeless elegance. Whether you have questions about our collections,

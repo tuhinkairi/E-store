@@ -173,7 +173,7 @@ const AtelierPage = () => {
         </div>
         
         <div className="relative z-10 max-w-5xl mx-auto px-4 text-center">
-          <h1 className="text-5xl md:text-7xl font-light text-cream mb-8 leading-tight">
+          <h1 className="text-5xl md:text-7xl font-light text-cream mb-8 leading-tight animate-float">
             The Elysian
             <br />
             <span className="text-gold-400 italic">Atelier</span>

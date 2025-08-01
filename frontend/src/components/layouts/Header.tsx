@@ -1,16 +1,18 @@
 import { useState } from "react";
 import { ShoppingBag, Menu, X} from 'lucide-react';
-import { Link, useLocation } from "react-router-dom";
+import { Link, useLocation, useNavigate } from "react-router-dom";
 import { endpoints } from "../../data/endpoints";
 import { NavLink } from "react-router-dom";
 
 
-const Header = () => {
+const Header = ({solid}:{solid?:boolean}) => {
     const path = useLocation().pathname
+    const navigate = useNavigate()
     const [isMenuOpen, setIsMenuOpen] = useState(false);
+    const [isLogin, setLogin] = useState(true)
 
     return (
-        <header className={`${path=="/collections" ? "bg-cream/95":"fixed"} top-0 w-full  backdrop-blur-md z-50 border-b border-sage-200/30`}>
+        <header className={`${path=="/collections" || solid ? "bg-cream/95":"fixed"} top-0 w-full  backdrop-blur-md z-50 border-b border-sage-200/30`}>
             <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
                 <div className="flex items-center justify-between h-20">
                     <div className="flex items-center space-x-3">
@@ -29,7 +31,13 @@ const Header = () => {
                     </nav>
 
                     <div className="flex items-center space-x-6">
-                        <ShoppingBag className="w-6 h-6 text-sage-800 hover:text-gold-600 cursor-pointer transition-colors" />
+                        {isLogin ? <button onClick={()=>navigate("/dashboard/user")} className="p-2 bg-gold-600 rounded-full hover:scale-105 cursor-pointer transform"><ShoppingBag className="w-6 h-6 text-sage-800  " /></button>:
+                        <button onClick={()=>{navigate("/login")
+                            setLogin(true)
+                        }} className="bg-gold-600 text-sage-800 px-5 py-2 font-medium text-base hover:bg-gold-500 transition-all transform hover:scale-105 tracking-wide border-2 border-gold-600">
+                            Login
+                        </button>
+                        }
                         <button
                             onClick={() => setIsMenuOpen(!isMenuOpen)}
                             className="md:hidden text-sage-800"
