@@ -10,7 +10,6 @@ import {
   Gift,
 } from 'lucide-react';
 import type { Address, Order, PaymentMethod, SidebarItem, TabType, User as UserProps, WishlistItem } from '../../../types/dashboard';
-import Overview from './OverView';
 import Orders from './Orders';
 import Wishlist from './Wishlist';
 import Addresses from './Addresses';
@@ -19,6 +18,7 @@ import AccountSettings from './AccountSetting';
 import PlaceholderContent from './PlaceHolder';
 import DashboardHeader from './DashboardHeader';
 import Sidebar from './SideBar';
+import Overview from './Overview';
 
 // Component imports
 
