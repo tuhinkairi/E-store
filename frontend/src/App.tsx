@@ -7,9 +7,9 @@ export default function App() {
   const path = useLocation().pathname
   return (
     <section>
-      {!["/dashboard","/onboarding","/login"].includes(path) && <Header/>}
+      {!["/dashboard/user","/onboarding","/login"].includes(path) && <Header/>}
       <RoutingPage />
-      {!["/dashboard","/onboarding","/login"].includes(path)&&<Footer/>}
+      {!["/dashboard/user","/onboarding","/login"].includes(path)&&<Footer/>}
     </section>
   )
 }
