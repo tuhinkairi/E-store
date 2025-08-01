@@ -5,7 +5,7 @@ import AboutUs from './endpoints/about/AboutUs'
 import AtelierPage from './endpoints/about/Atelier'
 import ContactUs from './endpoints/contact/ContactUs'
 import UserDashboard from './endpoints/dashboard/user/UserDashboard'
-import UserOnboarding from './endpoints/dashboard/login/UserOnboarding'
+import UserOnboarding from './endpoints/dashboard/useronboarding/UserOnboarding'
 import LoginPage from './endpoints/dashboard/login/Login'
 
 function RoutingPage() {
