@@ -1,29 +1,10 @@
 import { useState } from "react";
 import { ShoppingBag, Menu, X} from 'lucide-react';
 import { Link, useLocation } from "react-router-dom";
+import { endpoints } from "../../data/endpoints";
+import { NavLink } from "react-router-dom";
 
-const endpoints:{title:string, link:string}[] = [
-    {
-        title:"HOME",
-        link:"/"
-    },
-    {
-        title:"COLLECTIONS",
-        link:"/collections"
-    },
-    {
-        title:"ATELIER",
-        link:"/atelier"
-    },
-    {
-        title:"ABOUT US",
-        link:"/about-us"
-    },
-    {
-        title:"CONTACT",
-        link:"/contact-us"
-    }
-]
+
 const Header = () => {
     const path = useLocation().pathname
     const [isMenuOpen, setIsMenuOpen] = useState(false);
@@ -41,9 +22,9 @@ const Header = () => {
 
                     <nav className="hidden md:flex space-x-12">
                         {endpoints.map((item) => (
-                            <a key={item.title} href={item.link} className="text-sage-800 hover:text-gold-600 transition-colors font-medium text-sm tracking-widest">
+                            <NavLink key={item.title} to={item.link} className="text-sage-800 hover:text-gold-600 transition-colors font-medium text-sm tracking-widest">
                                 {item.title}
-                            </a>
+                            </NavLink>
                         ))}
                     </nav>
 
