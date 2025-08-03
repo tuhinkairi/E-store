@@ -1,6 +1,6 @@
 
 const products = [
-  { id: 1, name: "Heritage Cashmere Coat", price: "$485", image: "https://images.unsplash.com/photo-1544966503-7cc5ac882d5f?w=400&h=600&fit=crop", badge: "SIGNATURE" },
+  { id: 1, name: "Heritage Cashmere Coat", price: "$485", image: "https://th.bing.com/th/id/R.37b78526f0d42824ab245774cec985a9?rik=1cBjw%2bOC%2foKCjg&riu=http%3a%2f%2fwww.officesalt.com%2fwp-content%2fuploads%2f2018%2f02%2fBest-Formal-Shirt-Pant-Combinations-for-Men-34-600x1200.jpg&ehk=KnMZm6sblkPi%2fc50padh0nkawwHE36D1vuAaO5Qdpds%3d&risl=&pid=ImgRaw&r=0", badge: "SIGNATURE" },
   { id: 2, name: "Classic Oxford Shirt", price: "$145", image: "https://images.unsplash.com/photo-1603252109303-2751441dd157?w=400&h=600&fit=crop", badge: "ESSENTIAL" },
   { id: 3, name: "Wool Trench Coat", price: "$395", image: "https://images.unsplash.com/photo-1434389677669-e08b4cac3105?w=400&h=600&fit=crop", badge: "TIMELESS" },
   { id: 4, name: "Merino Wool Sweater", price: "$225", image: "https://images.unsplash.com/photo-1576566588028-4147f3842f27?w=400&h=600&fit=crop", badge: "LUXURY" }

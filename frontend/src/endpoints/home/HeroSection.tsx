@@ -3,9 +3,9 @@ const HeroSection = () => {
     const [currentSlide, setCurrentSlide] = useState(0);
 
     const heroImages = [
+        "./banner/image.png",
+        "./banner/image1.png",
         "./banner/image2.jpg",
-        "./banner/image3.jpg",
-        "./banner/image4.jpg"
     ];
     useEffect(() => {
         const timer = setInterval(() => {
@@ -23,8 +23,9 @@ const HeroSection = () => {
                         className={`absolute inset-0 transition-opacity duration-2000 ${index === currentSlide ? 'opacity-100' : 'opacity-0'
                             }`}
                     >
-                        <img src={image} alt={`Heritage ${index + 1}`} className="w-full h-full object-cover" />
-                        <div className="absolute inset-0 bg-gradient-to-r from-sage-900/80 via-sage-800/40 to-transparent" />
+                        <img src={image} alt={`Heritage ${index + 1}`} className="w-full h-full object-cover " />
+                        <div className="absolute inset-0 bg-gradient-to-r from-sage-900/80 via-sage-800/40 to-transparent " />
+                        {/* <div className="absolute inset-0 bg-gradient-to-b from-black/70 via-transparent/30 to-transparent " /> */}
                     </div>
                 ))}
             </div>

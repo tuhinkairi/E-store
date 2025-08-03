@@ -4,9 +4,13 @@ fix the codes and make all moduler
 create the store and use to centralize the state
 fix the types and link eachother
 
+
 2-aug:
 update the backend api to create onboarding section.
 and product, user, admin model update
 
 3-aug:
+add the store
+
+4-aug:
 test and start intregation

@@ -17,7 +17,7 @@ export default function App() {
       setLoading(true)
       setTimeout(() => {
         setLoading(false)
-      }, 5000);
+      }, 1000);
     } catch (error) {
       setError(error as Error)
     }
