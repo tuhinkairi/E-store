@@ -31,7 +31,6 @@ export default function CreateUser(app) {
         smsNotifications,
         styleRecommendations
       } = req.body;
-      console.log(req.body)
       // Create user object with only non-empty values
       const userData = {
         firstName,
@@ -75,7 +74,7 @@ export default function CreateUser(app) {
         userData.apartment = apartment;
       }
 
-      const user = new User(userData);
+      const user = new User({...userData.email});
       user.createdAt = Date.now();
       
       const token = tokenGenerate(user);

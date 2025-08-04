@@ -1,6 +1,7 @@
-import User from "../../model/User.js";
 import { comparePassword } from "../../middleware/UserAuth.js";
 import jwt from "jsonwebtoken";
+import { User } from "../../model/ExportModel.js";
+import tokenGenerate from "../../middleware/JWTauth.js";
 
 export default function VerifyUser(app) {
   app.post("/api/v1/user/login", async (req, res) => {
@@ -33,8 +34,16 @@ export default function VerifyUser(app) {
           if (!isValid) {
             return res.status(401).json({ message: "Invalid password" });
           }
-
-          return res.json({ message: "Authenticated successfully via token" });
+          // updating the token
+          // const Newtoken = tokenGenerate(user);
+          res.cookie("elegance_session", token, { maxAge: 360000 });
+          return res
+            .status(201)
+            .json({
+              message: "Authenticated successfully via token",
+              token:Newtoken,
+              user: user,
+            });
         } catch (tokenError) {
           console.error("Token verification error:", tokenError.message);
           return res.status(401).json({ message: "Invalid or expired token" });
@@ -43,7 +52,9 @@ export default function VerifyUser(app) {
 
       // Token not provided, validate using email and password
       if (!email || !password) {
-        return res.status(400).json({ message: "Email and password are required" });
+        return res
+          .status(400)
+          .json({ message: "Email and password are required" });
       }
 
       user = await User.findOne({ email: email });
@@ -57,11 +68,13 @@ export default function VerifyUser(app) {
       }
 
       // Successfully authenticated
-      res.cookie("elegance_session",token)
-      res.json({ message: "Authenticated successfully via email and password" });
+      res.cookie("elegance_session", token);
+      return res.json({
+        message: "Authenticated successfully via email and password",
+      });
     } catch (err) {
       console.error("Error in /api/v1/user/login:", err.message);
-      res.status(500).json({ message: "Internal Server Error" });
+      return res.status(500).json({ message: "Internal Server Error" });
     }
   });
 }
