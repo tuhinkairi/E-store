@@ -1,6 +1,7 @@
 import bcrypt from "bcrypt";
 
 const hashPassword = async function(req, res, next) {
+  console.log("asdfasdfasdf",req.body)
   if (!req.body.password) {
     return next(new Error("Password is required"));
   }

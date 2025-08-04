@@ -1,4 +1,4 @@
-import { useState } from "react";
+import { useEffect, useState } from "react";
 
 
 import WelcomeStep from "./component/WelcomeStepComponent";
@@ -170,7 +170,9 @@ const handleArrayToggle = (field: string, value: string | number): void => {
         return <WelcomeStep onNext={nextStep} />;
     }
   };
-
+  useEffect(()=>{
+    console.log(formData)
+  },[formData])
   return (
     <div className="min-h-screen bg-gradient-to-br from-cream via-sage-50 to-cream">
       <div className="container mx-auto px-4 py-8">

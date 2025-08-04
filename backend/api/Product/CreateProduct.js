@@ -4,13 +4,13 @@ export default function CreateProduct(app) {
   // Create a new product
   app.post("/api/v1/product/create", async (req, res) => {
     try {
-      const { name, description, price, category,group, size, color, stock } = req.body;
+      const { name, description, price, category,collection, size, color, stock } = req.body;
       const product = new Product({
         name,
         description,
         price,
         category,
-        group,
+        collection,
         size,
         color,
         stock,

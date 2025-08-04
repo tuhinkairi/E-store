@@ -5,7 +5,7 @@ export default function SearchProduct(app) {
   app.post("/api/v1/product/search", async (req, res) => {
     try {
       // Extract query parameters from the request
-      // const { name, description ,price, category, group, size, color } = req.body;
+      // const { name, description ,price, category, collection, size, color } = req.body;
       const data = req.body
       console.log(req.body)
       

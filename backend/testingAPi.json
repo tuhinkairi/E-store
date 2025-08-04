@@ -1,0 +1,370 @@
+{
+    "info": {
+        "_postman_id": "5152477d-7d6c-451e-b9a4-99c0bfcea82b",
+        "name": "Clothsell",
+        "schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json",
+        "description": ""
+    },
+    "item": [
+        {
+            "name": "products",
+            "item": [
+                {
+                    "name": "productCreate",
+                    "request": {
+                        "method": "POST",
+                        "url": {
+                            "raw": "http://127.0.0.1:3000/api/v1/product/create",
+                            "path": [
+                                "api",
+                                "v1",
+                                "product",
+                                "create"
+                            ],
+                            "protocol": "http",
+                            "host": [
+                                "127",
+                                "0",
+                                "0",
+                                "1"
+                            ],
+                            "port": "3000"
+                        },
+                        "header": [
+                            {
+                                "key": "Content-Type",
+                                "value": "application/json"
+                            }
+                        ],
+                        "body": {
+                            "mode": "raw",
+                            "options": {
+                                "raw": {
+                                    "language": "json"
+                                }
+                            },
+                            "raw": "{\n\"name\":\"hoddy\",\n\"description\":\"this tis \",\n\"price\":334,\n\"category\":\"shirt\",\n\"group\":\"Male\",\n\"size\":\"M\",\n\"color\":\"red\",\n\"stock\":44\n}"
+                        }
+                    }
+                },
+                {
+                    "name": "getProduct",
+                    "request": {
+                        "method": "GET",
+                        "url": {
+                            "raw": "http://localhost:3000/api/v1/product/all",
+                            "path": [
+                                "api",
+                                "v1",
+                                "product",
+                                "all"
+                            ],
+                            "protocol": "http",
+                            "host": [
+                                "localhost"
+                            ],
+                            "port": "3000"
+                        }
+                    }
+                },
+                {
+                    "name": "updateProduct",
+                    "request": {
+                        "method": "PATCH",
+                        "url": {
+                            "raw": "http://localhost:3000/api/v1/product/update/688a1e523aaa991a1d85e3e7",
+                            "path": [
+                                "api",
+                                "v1",
+                                "product",
+                                "update",
+                                "688a1e523aaa991a1d85e3e7"
+                            ],
+                            "protocol": "http",
+                            "host": [
+                                "localhost"
+                            ],
+                            "port": "3000"
+                        },
+                        "header": [
+                            {
+                                "key": "Content-Type",
+                                "value": "application/json"
+                            }
+                        ],
+                        "body": {
+                            "mode": "raw",
+                            "options": {
+                                "raw": {
+                                    "language": "json"
+                                }
+                            },
+                            "raw": "{\n \"name\": \"big hat\" \n}"
+                        }
+                    }
+                },
+                {
+                    "name": "deleteProduct",
+                    "request": {
+                        "method": "DELETE",
+                        "url": {
+                            "raw": "http://127.0.0.1:3000/api/v1/product/delete/6741d7286702c2b0d027e72c",
+                            "path": [
+                                "api",
+                                "v1",
+                                "product",
+                                "delete",
+                                "6741d7286702c2b0d027e72c"
+                            ],
+                            "protocol": "http",
+                            "host": [
+                                "127",
+                                "0",
+                                "0",
+                                "1"
+                            ],
+                            "port": "3000"
+                        }
+                    }
+                },
+                {
+                    "name": "searchProduct",
+                    "request": {
+                        "method": "POST",
+                        "url": {
+                            "raw": "http://127.0.0.1:3000/api/v1/product/search",
+                            "path": [
+                                "api",
+                                "v1",
+                                "product",
+                                "search"
+                            ],
+                            "protocol": "http",
+                            "host": [
+                                "127",
+                                "0",
+                                "0",
+                                "1"
+                            ],
+                            "port": "3000"
+                        },
+                        "header": [
+                            {
+                                "key": "Content-Type",
+                                "value": "application/json"
+                            }
+                        ],
+                        "body": {
+                            "mode": "raw",
+                            "options": {
+                                "raw": {
+                                    "language": "json"
+                                }
+                            },
+                            "raw": "{\n  \"name\": [\"pants\",\"hoddy\"]\n}"
+                        }
+                    }
+                }
+            ]
+        },
+        {
+            "name": "user",
+            "item": [
+                {
+                    "name": "addUser",
+                    "request": {
+                        "method": "POST",
+                        "url": {
+                            "raw": "http://127.0.0.1:3000/api/v1/user/register",
+                            "path": [
+                                "api",
+                                "v1",
+                                "user",
+                                "register"
+                            ],
+                            "protocol": "http",
+                            "host": [
+                                "127",
+                                "0",
+                                "0",
+                                "1"
+                            ],
+                            "port": "3000"
+                        },
+                        "header": [
+                            {
+                                "key": "Content-Type",
+                                "value": "application/json"
+                            }
+                        ],
+                        "body": {
+                            "mode": "raw",
+                            "options": {
+                                "raw": {
+                                    "language": "json"
+                                }
+                            },
+                            "raw": "{\n  \"firstName\": \"Bodslaassasdfdfaasdfd\",\n  \"lastName\": \"Dasdfeen\",\n  \"email\": \"bolasdfddeen@fafeadsxample.com\",\n  \"password\": \"123456783asdfasd\",\n  \"phoneNumber\": \"556-55534-5234355s5\",\n  \"isAdmin\": false,\n  \"cart\": [\n    {\n      \"productId\": \"6058a3d28d3d2e12b8f0a3d2\",\n      \"quantity\": 7\n    }\n  ],\n  \"wishlist\": [\n    \"6058a3d28d3d2e12b8f0a3d2\",\n    \"6058a3d28d3d2e12b8f0a3d3\"\n  ],\n  \"orders\": [\n    \"6058a3d28d3d2e12b8f0a3d4\",\n    \"6058a3d28d3d2e12b8f0a3d5\"\n  ]\n}"
+                        }
+                    }
+                },
+                {
+                    "name": "getUser",
+                    "request": {
+                        "method": "GET",
+                        "url": {
+                            "raw": "http://127.0.0.1:3000/api/v1/user/get",
+                            "path": [
+                                "api",
+                                "v1",
+                                "user",
+                                "get"
+                            ],
+                            "protocol": "http",
+                            "host": [
+                                "127",
+                                "0",
+                                "0",
+                                "1"
+                            ],
+                            "port": "3000"
+                        }
+                    }
+                },
+                {
+                    "name": "updateuser",
+                    "request": {
+                        "method": "PATCH",
+                        "url": {
+                            "raw": "http://127.0.0.1:3000/api/v1/user/update/66bae6b9dd34149c333709cf",
+                            "path": [
+                                "api",
+                                "v1",
+                                "user",
+                                "update",
+                                "66bae6b9dd34149c333709cf"
+                            ],
+                            "protocol": "http",
+                            "host": [
+                                "127",
+                                "0",
+                                "0",
+                                "1"
+                            ],
+                            "port": "3000"
+                        },
+                        "header": [
+                            {
+                                "key": "Content-Type",
+                                "value": "application/json"
+                            }
+                        ],
+                        "body": {
+                            "mode": "raw",
+                            "options": {
+                                "raw": {
+                                    "language": "json"
+                                }
+                            },
+                            "raw": " {\n      \"firstName\": \"Jay\",\n      \"lastName\": \"kal\",\n      \"email\": \"jaykal1234@example.com\"\n    }"
+                        }
+                    }
+                },
+                {
+                    "name": "deleteUser",
+                    "request": {
+                        "method": "DELETE",
+                        "url": {
+                            "raw": "http://127.0.0.1:3000/api/v1/user/delete/6741e70ab5ff2f9c3293dd91",
+                            "path": [
+                                "api",
+                                "v1",
+                                "user",
+                                "delete",
+                                "6741e70ab5ff2f9c3293dd91"
+                            ],
+                            "protocol": "http",
+                            "host": [
+                                "127",
+                                "0",
+                                "0",
+                                "1"
+                            ],
+                            "port": "3000"
+                        }
+                    }
+                },
+                {
+                    "name": "loginUser",
+                    "request": {
+                        "method": "POST",
+                        "url": {
+                            "raw": "http://127.0.0.1:3000/api/v1/user/login",
+                            "path": [
+                                "api",
+                                "v1",
+                                "user",
+                                "login"
+                            ],
+                            "protocol": "http",
+                            "host": [
+                                "127",
+                                "0",
+                                "0",
+                                "1"
+                            ],
+                            "port": "3000"
+                        },
+                        "header": [
+                            {
+                                "key": "Content-Type",
+                                "value": "application/json"
+                            }
+                        ],
+                        "body": {
+                            "mode": "raw",
+                            "options": {
+                                "raw": {
+                                    "language": "json"
+                                }
+                            },
+                            "raw": "{\n    \"email\": \"bolasdfddeen@fafeadsxample.com\",\n  \"password\": \"123456783asdfasd\"\n}"
+                        }
+                    }
+                },
+                {
+                    "name": "logout",
+                    "request": {
+                        "method": "POST",
+                        "url": {
+                            "raw": "http://127.0.0.1:3000/api/v1/user/logout",
+                            "path": [
+                                "api",
+                                "v1",
+                                "user",
+                                "logout"
+                            ],
+                            "protocol": "http",
+                            "host": [
+                                "127",
+                                "0",
+                                "0",
+                                "1"
+                            ],
+                            "port": "3000"
+                        },
+                        "body": {
+                            "mode": "raw",
+                            "options": {
+                                "raw": {
+                                    "language": "json"
+                                }
+                            },
+                            "raw": "{\n  \"token\":\"\"\n}"
+                        }
+                    }
+                }
+            ]
+        }
+    ]
+}
