@@ -1,11 +1,12 @@
+import { VerifyToken } from "../../middleware/VerifyToken.js";
 import { User } from "../../model/ExportModel.js";
 
  
 export default function DeleteUser(app) {
   // API endpoint to delete a user
-  app.delete("/api/v1/user/delete/:id", async (req, res) => {
+  app.delete("/api/v1/user/delete/",VerifyToken,async (req, res) => {
     try {
-      const userId = req.params.id;
+      const userId = req.user.id;
       console.log("thsi sis id",userId)
       const user = await User.findByIdAndDelete(userId);
       if (!user) {

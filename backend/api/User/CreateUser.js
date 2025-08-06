@@ -5,6 +5,8 @@ import {User}  from "../../model/ExportModel.js";
 export default function CreateUser(app) {
   // Create a new user
   app.post("/api/v1/user/register", hashPassword, async (req, res) => {
+    console.log("/api/v1/user/register",req.body, req.headers["authorization"])
+
     try {
       const {
         firstName,
@@ -74,10 +76,9 @@ export default function CreateUser(app) {
         userData.apartment = apartment;
       }
 
-      const user = new User({...userData.email});
+      const user = new User(userData);
       user.createdAt = Date.now();
-      
-      const token = tokenGenerate(user);
+      const token = tokenGenerate({id:user._id, email:user.email, isAdmin: user.isAdmin});
       
       await user.save();
       
@@ -86,7 +87,7 @@ export default function CreateUser(app) {
         message: "User created successfully", 
         token: token 
       });
-      
+      console.log("user created successfully",user)
     } catch (error) {
       console.error(error);
       

@@ -3,10 +3,10 @@ import jwt from "jsonwebtoken";
 
 dotenv.config();
 
-const tokenGenerate=( {email, password} )=> {
+const tokenGenerate=(data)=> {
   try {
     const token = jwt.sign(
-      { email: email, password: password },
+      {...data},
       process.env.JWT_KEY,
       {
         expiresIn: "7d",

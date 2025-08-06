@@ -1,49 +1,31 @@
 import { comparePassword } from "../../middleware/UserAuth.js";
-import jwt from "jsonwebtoken";
 import { User } from "../../model/ExportModel.js";
 import tokenGenerate from "../../middleware/JWTauth.js";
+import { VerifyToken } from "../../middleware/VerifyToken.js";
 
 export default function VerifyUser(app) {
-  app.post("/api/v1/user/login", async (req, res) => {
+  app.post("/api/v1/user/login", VerifyToken ,async (req, res) => {
+    console.log("/api/v1/user/login",req.body)
     try {
-      // todo take the token from the req not as a parameter
-      const { email, password, token } = req.body;
+      const { email, password } = req.body;
+      const authenticated = req.authenticated
 
-      if (!email && !token) {
-        return res.status(400).json({ message: "Email or token is required" });
-      }
-
-      let user;
-
-      // If token is provided, verify and extract user data
-      if (token) {
+      if (authenticated) {
         try {
-          if (!process.env.JWT_KEY) {
-            throw new Error("Missing JWT secret key");
-          }
+          const user = req.user;
+          const userDetails = req.userDetails;
+          const newToken = tokenGenerate(user);    
+          res.cookie("elegance_session", newToken, { 
+            maxAge: 360000,
+            httpOnly: true, // Security: Prevent XSS
+            // secure: process.env.NODE_ENV === 'production' // HTTPS only in production
+          });
 
-          const userdata = jwt.verify(token, process.env.JWT_KEY);
-          console.log("Decoded token data:", userdata);
-
-          user = await User.findOne({ email: userdata.email });
-          if (!user) {
-            return res.status(404).json({ message: "User not found" });
-          }
-
-          const isValid = await comparePassword(password, user.password);
-          if (!isValid) {
-            return res.status(401).json({ message: "Invalid password" });
-          }
-          // updating the token
-          // const Newtoken = tokenGenerate(user);
-          res.cookie("elegance_session", token, { maxAge: 360000 });
-          return res
-            .status(201)
-            .json({
-              message: "Authenticated successfully via token",
-              token:Newtoken,
-              user: user,
-            });
+          return res.status(200).json({
+            message: "Authenticated successfully via token",
+            token: newToken,
+            user: userDetails
+          });
         } catch (tokenError) {
           console.error("Token verification error:", tokenError.message);
           return res.status(401).json({ message: "Invalid or expired token" });
@@ -51,13 +33,13 @@ export default function VerifyUser(app) {
       }
 
       // Token not provided, validate using email and password
-      if (!email || !password) {
-        return res
-          .status(400)
-          .json({ message: "Email and password are required" });
+      else if (!email || !password) {
+        return res.status(400).json({ 
+          message: "Email and password are required" 
+        });
       }
 
-      user = await User.findOne({ email: email });
+      const user = await User.findOne({ email: email });
       if (!user) {
         return res.status(404).json({ message: "User not found" });
       }
@@ -67,11 +49,22 @@ export default function VerifyUser(app) {
         return res.status(401).json({ message: "Invalid email or password" });
       }
 
-      // Successfully authenticated
-      res.cookie("elegance_session", token);
-      return res.json({
-        message: "Authenticated successfully via email and password",
+      // Generate new token for successful login
+      const newToken = tokenGenerate({...user.id, ...user.email, ...user.isAdmin});
+      
+      // Fix: Set cookie with generated token
+      res.cookie("elegance_session", newToken, { 
+        maxAge: 360000,
+        httpOnly: true,
+        secure: process.env.NODE_ENV === 'production'
       });
+
+      return res.status(200).json({
+        message: "Authenticated successfully via email and password",
+        token: newToken,
+        user: user
+      });
+
     } catch (err) {
       console.error("Error in /api/v1/user/login:", err.message);
       return res.status(500).json({ message: "Internal Server Error" });
