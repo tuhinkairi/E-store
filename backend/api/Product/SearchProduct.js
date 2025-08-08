@@ -1,4 +1,4 @@
-import Product from "../../model/Product.js";
+import { Product } from "../../model/ExportModel.js";
 
 export default function SearchProduct(app) {
   // Search for products - public endpoint, no authentication required

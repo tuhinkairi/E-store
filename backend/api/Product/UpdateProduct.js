@@ -1,6 +1,6 @@
 import VerifyToken from "../../middleware/VerifyToken.js";
-import Product from "../../model/Product.js";
 import mongoose from "mongoose";
+import { Product } from "../../model/ExportModel.js";
 
 export default function UpdateProduct(app) {
   // Update an existing product - only admin can update
