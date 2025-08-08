@@ -1,7 +1,6 @@
 // UpdateUser.js
-import { VerifyToken } from "../../middleware/VerifyToken.js";
+import VerifyToken from "../../middleware/VerifyToken.js";
 import { User } from "../../model/ExportModel.js";
-import UserSchema from "../../model/User.js";
 
 export default function UpdateUser(app) {
   app.patch("/api/v1/user/update/", VerifyToken, async (req, res) => {

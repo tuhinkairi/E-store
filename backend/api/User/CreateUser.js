@@ -31,7 +31,8 @@ export default function CreateUser(app) {
         orderUpdates,
         promotionalEmails,
         smsNotifications,
-        styleRecommendations
+        styleRecommendations,
+        isAdmin
       } = req.body;
       // Create user object with only non-empty values
       const userData = {
@@ -52,7 +53,8 @@ export default function CreateUser(app) {
         orderUpdates: orderUpdates,
         promotionalEmails: promotionalEmails,
         smsNotifications: smsNotifications,
-        styleRecommendations: styleRecommendations
+        styleRecommendations: styleRecommendations,
+        isAdmin
       };
 
       // Add optional fields only if they have values
@@ -78,6 +80,8 @@ export default function CreateUser(app) {
 
       const user = new User(userData);
       user.createdAt = Date.now();
+      console.log("creation userdata ->",user)
+      console.log("creation ->",{id:user._id, email:user.email, isAdmin: user.isAdmin})
       const token = tokenGenerate({id:user._id, email:user.email, isAdmin: user.isAdmin});
       
       await user.save();
@@ -87,7 +91,7 @@ export default function CreateUser(app) {
         message: "User created successfully", 
         token: token 
       });
-      console.log("user created successfully",user)
+      console.log("user created successfully")
     } catch (error) {
       console.error(error);
       

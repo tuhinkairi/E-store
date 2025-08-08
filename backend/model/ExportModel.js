@@ -10,5 +10,3 @@ export const Product = mongoose.model("Product", ProductSchema);
 export const Image = mongoose.model("Image", ImageSchema); // Fixed typo
 export const Order = mongoose.model("Order", OrderSchema);
 export const Wishlist = mongoose.model("Wishlist", WishlistSchema);
-
-// export default { Product, Image, Order, Wishlist, User};

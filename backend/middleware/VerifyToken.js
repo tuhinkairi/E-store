@@ -1,6 +1,6 @@
 import jwt from "jsonwebtoken";
 import { User } from "../model/ExportModel.js";
-export const VerifyToken = async (req, res, next) => {
+const VerifyToken = async (req, res, next) => {
   try {
     let token = null;
     const authHeader = req.headers["authorization"];
@@ -14,7 +14,7 @@ export const VerifyToken = async (req, res, next) => {
     if (authHeader && authHeader.startsWith("Bearer ")) {
       token = authHeader.split(" ")[1];
     }
-    console.log(Date.now() ," -- Token Recived --", token);
+    console.log(Date.now() ," -- Token Recived --");
     if (!token && req.cookies && req.cookies.elegance_session) {
       token = req.cookies.elegance_session;
     }
@@ -31,26 +31,26 @@ export const VerifyToken = async (req, res, next) => {
         message: "Server configuration error",
       });
     }
-    console.log("token recived")
     const decoded = jwt.verify(token, process.env.JWT_KEY);
     console.log("decoded data", decoded);
     const user =
-      (await User.findById(decoded.id).select("-password")) ||
-      User.findOne({ email: decoded.email });
+    (await User.findById(decoded.id).select("-password")) ||
+    User.findOne({ email: decoded.email });
     if (!user) {
       return res.status(404).json({
         message: "User not found",
       });
     }
-
+    
     req.user = {
-      id: decoded.id,
-      email: decoded.email,
-      isAdmin: decoded.isAdmin,
+      id: user.id,
+      email: user.email,
+      isAdmin: user.isAdmin,
     };
-
+    
     req.userDetails = user;
     req.authenticated = true;
+    console.log("token verified!")
     next();
   } catch (error) {
     console.error("Authentication error:", error.message);
@@ -73,3 +73,4 @@ export const VerifyToken = async (req, res, next) => {
     });
   }
 };
+export default VerifyToken

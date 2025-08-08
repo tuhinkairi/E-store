@@ -2,7 +2,7 @@
 import { comparePassword } from "../../middleware/UserAuth.js";
 import { User } from "../../model/ExportModel.js";
 import tokenGenerate from "../../middleware/JWTauth.js";
-import { VerifyToken } from "../../middleware/VerifyToken.js";
+import VerifyToken from "../../middleware/VerifyToken.js";
 
 export default function VerifyUser(app) {
   app.post("/api/v1/user/login", VerifyToken, async (req, res) => {

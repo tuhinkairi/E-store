@@ -1,5 +1,5 @@
 // DeleteUser.js
-import { VerifyToken } from "../../middleware/VerifyToken.js";
+import VerifyToken from "../../middleware/VerifyToken.js";
 import { User } from "../../model/ExportModel.js";
 
 export default function DeleteUser(app) {
