@@ -1,7 +1,6 @@
 import mongoose from "mongoose";
 export default function db(uri) {
   // Set up the MongoDB connection using Mongoose
-  console.log(uri)
   mongoose
     .connect(uri) 
     .then(() => {

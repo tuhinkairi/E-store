@@ -1,11 +1,11 @@
 import jwt from "jsonwebtoken";
 import { User } from "../model/ExportModel.js";
-
 export const VerifyToken = async (req, res, next) => {
   try {
     let token = null;
     const authHeader = req.headers["authorization"];
-    if (req.body.email !== "" && req.body.password !== "") {
+    if (req.body.email && req.body.password ) {
+      console.log(`[${new Date().toISOString()}] [INFO]` ," -- email and password present while verification")
       req.authenticated = false;
       next();
       return
@@ -14,7 +14,7 @@ export const VerifyToken = async (req, res, next) => {
     if (authHeader && authHeader.startsWith("Bearer ")) {
       token = authHeader.split(" ")[1];
     }
-    console.log(token);
+    console.log(Date.now() ," -- Token Recived --", token);
     if (!token && req.cookies && req.cookies.elegance_session) {
       token = req.cookies.elegance_session;
     }
@@ -31,7 +31,7 @@ export const VerifyToken = async (req, res, next) => {
         message: "Server configuration error",
       });
     }
-
+    console.log("token recived")
     const decoded = jwt.verify(token, process.env.JWT_KEY);
     console.log("decoded data", decoded);
     const user =
