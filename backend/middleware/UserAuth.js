@@ -2,7 +2,7 @@ import bcrypt from "bcrypt";
 
 const hashPassword = async function(req, res, next) {
   if (!req.body.password) {
-    return next(new Error("Password is required"));
+    return res.status(400).json({message:"no password field get"});
   }
   try {
     const salt = await bcrypt.genSalt(10);

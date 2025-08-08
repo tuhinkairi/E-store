@@ -1,3 +1,961 @@
+# User API Testing Collection
+
+This document provides comprehensive test cases for all User API endpoints using various testing methods.
+
+## Prerequisites
+
+```javascript
+// Test Configuration
+const BASE_URL = "http://localhost:3000/api/v1/user";
+const ADMIN_TOKEN = "your_admin_jwt_token_here";
+const USER_TOKEN = "your_user_jwt_token_here";
+const TEST_USER_ID = "64a7b8c9d1e2f3a4b5c6d7e8";
+
+// Headers
+const ADMIN_HEADERS = {
+  "Authorization": `Bearer ${ADMIN_TOKEN}`,
+  "Content-Type": "application/json",
+  "x-request-id": `test_${Date.now()}`
+};
+
+const USER_HEADERS = {
+  "Authorization": `Bearer ${USER_TOKEN}`,
+  "Content-Type": "application/json",
+  "x-request-id": `test_${Date.now()}`
+};
+
+const PUBLIC_HEADERS = {
+  "Content-Type": "application/json",
+  "x-request-id": `test_${Date.now()}`
+};
+```
+
+---
+
+## 1. User Registration Tests 🌐
+
+### Test Case 1.1: Successful User Registration
+```javascript
+const testUserRegistrationSuccess = async () => {
+  const userData = {
+    firstName: "John",
+    lastName: "Doe",
+    email: "john.doe@example.com",
+    password: "SecurePass123!",
+    birthDate: "1990-05-15",
+    phone: "+1234567890",
+    marketingConsent: true,
+    genderPreference: "male",
+    stylePreferences: ["casual", "formal"],
+    priceRange: "50-100",
+    addressType: "home",
+    street: "123 Main St",
+    apartment: "Apt 4B",
+    city: "New York",
+    state: "NY",
+    zipCode: "10001",
+    country: "USA",
+    categories: ["clothing", "accessories"],
+    occasions: ["work", "casual"],
+    orderUpdates: true,
+    promotionalEmails: false,
+    smsNotifications: true,
+    styleRecommendations: true,
+    isAdmin: false
+  };
+
+  try {
+    const response = await fetch(`${BASE_URL}/register`, {
+      method: 'POST',
+      headers: PUBLIC_HEADERS,
+      body: JSON.stringify(userData)
+    });
+    
+    const result = await response.json();
+    console.log('✅ User Registration Success:', result);
+    
+    // Store token for other tests
+    if (result.token) {
+      localStorage.setItem('test_user_token', result.token);
+    }
+    
+    return result;
+  } catch (error) {
+    console.error('❌ User Registration Failed:', error);
+  }
+};
+```
+
+### Test Case 1.2: Registration with Missing Required Fields
+```javascript
+const testUserRegistrationMissingFields = async () => {
+  const invalidData = {
+    firstName: "John",
+    email: "john@example.com"
+    // Missing: lastName, password (required fields)
+  };
+
+  const response = await fetch(`${BASE_URL}/register`, {
+    method: 'POST',
+    headers: PUBLIC_HEADERS,
+    body: JSON.stringify(invalidData)
+  });
+  
+  const result = await response.json();
+  console.log('Expected 400 Error for missing fields:', result);
+};
+```
+
+### Test Case 1.3: Registration with Duplicate Email
+```javascript
+const testUserRegistrationDuplicateEmail = async () => {
+  const userData = {
+    firstName: "Jane",
+    lastName: "Smith",
+    email: "john.doe@example.com", // Same email as previous test
+    password: "AnotherPass123!",
+    marketingConsent: false,
+    stylePreferences: ["casual"],
+    addressType: "home",
+    street: "456 Oak Ave",
+    city: "Boston",
+    state: "MA",
+    zipCode: "02101",
+    country: "USA",
+    categories: ["clothing"],
+    occasions: ["casual"],
+    orderUpdates: true,
+    promotionalEmails: false,
+    smsNotifications: false,
+    styleRecommendations: false
+  };
+
+  const response = await fetch(`${BASE_URL}/register`, {
+    method: 'POST',
+    headers: PUBLIC_HEADERS,
+    body: JSON.stringify(userData)
+  });
+  
+  const result = await response.json();
+  console.log('Expected 400 Error for duplicate email:', result);
+};
+```
+
+### Test Case 1.4: Registration with Invalid Email Format
+```javascript
+const testUserRegistrationInvalidEmail = async () => {
+  const userData = {
+    firstName: "Invalid",
+    lastName: "Email",
+    email: "not-an-email", // Invalid format
+    password: "ValidPass123!",
+    marketingConsent: false,
+    stylePreferences: ["casual"],
+    addressType: "home",
+    street: "789 Pine St",
+    city: "Chicago",
+    state: "IL",
+    zipCode: "60601",
+    country: "USA",
+    categories: ["clothing"],
+    occasions: ["casual"],
+    orderUpdates: true,
+    promotionalEmails: false,
+    smsNotifications: false,
+    styleRecommendations: false
+  };
+
+  const response = await fetch(`${BASE_URL}/register`, {
+    method: 'POST',
+    headers: PUBLIC_HEADERS,
+    body: JSON.stringify(userData)
+  });
+  
+  const result = await response.json();
+  console.log('Expected validation error for invalid email:', result);
+};
+```
+
+### Test Case 1.5: Registration with Optional Fields Only
+```javascript
+const testUserRegistrationMinimalData = async () => {
+  const minimalData = {
+    firstName: "Minimal",
+    lastName: "User",
+    email: "minimal.user@example.com",
+    password: "MinimalPass123!",
+    marketingConsent: false,
+    stylePreferences: ["casual"],
+    addressType: "home",
+    street: "321 Elm St",
+    city: "Denver",
+    state: "CO",
+    zipCode: "80201",
+    country: "USA",
+    categories: ["clothing"],
+    occasions: ["casual"],
+    orderUpdates: false,
+    promotionalEmails: false,
+    smsNotifications: false,
+    styleRecommendations: false
+  };
+
+  const response = await fetch(`${BASE_URL}/register`, {
+    method: 'POST',
+    headers: PUBLIC_HEADERS,
+    body: JSON.stringify(minimalData)
+  });
+  
+  const result = await response.json();
+  console.log('✅ Minimal Registration Success:', result);
+};
+```
+
+---
+
+## 2. User Login Tests 🌐
+
+### Test Case 2.1: Successful Login with Credentials
+```javascript
+const testUserLoginSuccess = async () => {
+  const loginData = {
+    email: "john.doe@example.com",
+    password: "SecurePass123!"
+  };
+
+  const response = await fetch(`${BASE_URL}/login`, {
+    method: 'POST',
+    headers: PUBLIC_HEADERS,
+    body: JSON.stringify(loginData)
+  });
+  
+  const result = await response.json();
+  console.log('✅ User Login Success:', result);
+  
+  // Store token for other tests
+  if (result.token) {
+    localStorage.setItem('test_user_token', result.token);
+  }
+  
+  return result;
+};
+```
+
+### Test Case 2.2: Login with Valid Token (Already Authenticated)
+```javascript
+const testUserLoginWithToken = async () => {
+  const storedToken = localStorage.getItem('test_user_token');
+  
+  const response = await fetch(`${BASE_URL}/login`, {
+    method: 'POST',
+    headers: {
+      "Authorization": `Bearer ${storedToken}`,
+      "Content-Type": "application/json",
+      "x-request-id": `test_${Date.now()}`
+    },
+    body: JSON.stringify({}) // Empty body since token is used
+  });
+  
+  const result = await response.json();
+  console.log('✅ Token-based Authentication Success:', result);
+};
+```
+
+### Test Case 2.3: Login with Invalid Credentials
+```javascript
+const testUserLoginInvalidCredentials = async () => {
+  const invalidLoginData = {
+    email: "john.doe@example.com",
+    password: "WrongPassword123!"
+  };
+
+  const response = await fetch(`${BASE_URL}/login`, {
+    method: 'POST',
+    headers: PUBLIC_HEADERS,
+    body: JSON.stringify(invalidLoginData)
+  });
+  
+  const result = await response.json();
+  console.log('Expected 401 Error for invalid credentials:', result);
+};
+```
+
+### Test Case 2.4: Login with Non-existent Email
+```javascript
+const testUserLoginNonexistentEmail = async () => {
+  const nonexistentLoginData = {
+    email: "nonexistent@example.com",
+    password: "AnyPassword123!"
+  };
+
+  const response = await fetch(`${BASE_URL}/login`, {
+    method: 'POST',
+    headers: PUBLIC_HEADERS,
+    body: JSON.stringify(nonexistentLoginData)
+  });
+  
+  const result = await response.json();
+  console.log('Expected 404 Error for non-existent user:', result);
+};
+```
+
+### Test Case 2.5: Login with Missing Fields
+```javascript
+const testUserLoginMissingFields = async () => {
+  const incompleteLoginData = {
+    email: "john.doe@example.com"
+    // Missing password
+  };
+
+  const response = await fetch(`${BASE_URL}/login`, {
+    method: 'POST',
+    headers: PUBLIC_HEADERS,
+    body: JSON.stringify(incompleteLoginData)
+  });
+  
+  const result = await response.json();
+  console.log('Expected 400 Error for missing password:', result);
+};
+```
+
+### Test Case 2.6: Login with Invalid Email Format
+```javascript
+const testUserLoginInvalidEmailFormat = async () => {
+  const invalidEmailData = {
+    email: "invalid-email-format",
+    password: "ValidPassword123!"
+  };
+
+  const response = await fetch(`${BASE_URL}/login`, {
+    method: 'POST',
+    headers: PUBLIC_HEADERS,
+    body: JSON.stringify(invalidEmailData)
+  });
+  
+  const result = await response.json();
+  console.log('Expected 400 Error for invalid email format:', result);
+};
+```
+
+---
+
+## 3. Update User Tests 🔒
+
+### Test Case 3.1: Successful User Self-Update
+```javascript
+const testUserUpdateSuccess = async () => {
+  const updateData = {
+    firstName: "John Updated",
+    phone: "+1987654321",
+    stylePreferences: ["casual", "formal", "business"],
+    priceRange: "100-200",
+    city: "Los Angeles",
+    state: "CA"
+  };
+
+  const response = await fetch(`${BASE_URL}/update/`, {
+    method: 'PATCH',
+    headers: USER_HEADERS,
+    body: JSON.stringify(updateData)
+  });
+  
+  const result = await response.json();
+  console.log('✅ User Update Success:', result);
+};
+```
+
+### Test Case 3.2: Admin Update Another User
+```javascript
+const testAdminUpdateUser = async (targetUserId) => {
+  const updateData = {
+    firstName: "Admin Updated Name",
+    isAdmin: false,
+    marketingConsent: false
+  };
+
+  // Modify headers to target specific user (this would need API modification)
+  const adminHeaders = {
+    ...ADMIN_HEADERS,
+    'target-user-id': targetUserId // Custom header approach
+  };
+
+  const response = await fetch(`${BASE_URL}/update/`, {
+    method: 'PATCH',
+    headers: adminHeaders,
+    body: JSON.stringify(updateData)
+  });
+  
+  const result = await response.json();
+  console.log('✅ Admin Update Success:', result);
+};
+```
+
+### Test Case 3.3: Update with Invalid Fields
+```javascript
+const testUserUpdateInvalidFields = async () => {
+  const invalidUpdateData = {
+    email: "invalid-email-format", // Invalid email
+    birthDate: "invalid-date", // Invalid date
+    phone: "123", // Invalid phone format
+    invalidField: "should be rejected"
+  };
+
+  const response = await fetch(`${BASE_URL}/update/`, {
+    method: 'PATCH',
+    headers: USER_HEADERS,
+    body: JSON.stringify(invalidUpdateData)
+  });
+  
+  const result = await response.json();
+  console.log('Expected validation errors:', result);
+};
+```
+
+### Test Case 3.4: Update with Empty Data
+```javascript
+const testUserUpdateEmptyData = async () => {
+  const emptyUpdateData = {};
+
+  const response = await fetch(`${BASE_URL}/update/`, {
+    method: 'PATCH',
+    headers: USER_HEADERS,
+    body: JSON.stringify(emptyUpdateData)
+  });
+  
+  const result = await response.json();
+  console.log('Expected 400 Error for no fields:', result);
+};
+```
+
+### Test Case 3.5: Non-admin User Trying to Update Admin Fields
+```javascript
+const testUserUpdateAdminFields = async () => {
+  const adminFieldsData = {
+    isAdmin: true // Regular user trying to make themselves admin
+  };
+
+  const response = await fetch(`${BASE_URL}/update/`, {
+    method: 'PATCH',
+    headers: USER_HEADERS,
+    body: JSON.stringify(adminFieldsData)
+  });
+  
+  const result = await response.json();
+  console.log('Admin fields should be rejected for non-admin:', result);
+};
+```
+
+### Test Case 3.6: Unauthorized Update Attempt
+```javascript
+const testUserUpdateUnauthorized = async () => {
+  const updateData = {
+    firstName: "Unauthorized Update"
+  };
+
+  const response = await fetch(`${BASE_URL}/update/`, {
+    method: 'PATCH',
+    headers: PUBLIC_HEADERS, // No token
+    body: JSON.stringify(updateData)
+  });
+  
+  const result = await response.json();
+  console.log('Expected 401 Error for no authentication:', result);
+};
+```
+
+---
+
+## 4. Delete User Tests 🔒
+
+### Test Case 4.1: Successful User Self-Deletion
+```javascript
+const testUserDeleteSuccess = async () => {
+  // Create a temporary user first for deletion
+  const tempUser = await testUserRegistrationMinimalData();
+  
+  // Use the token from registration
+  const tempHeaders = {
+    "Authorization": `Bearer ${tempUser.token}`,
+    "Content-Type": "application/json",
+    "x-request-id": `test_${Date.now()}`
+  };
+
+  const response = await fetch(`${BASE_URL}/delete/`, {
+    method: 'DELETE',
+    headers: tempHeaders
+  });
+  
+  const result = await response.json();
+  console.log('✅ User Deletion Success:', result);
+};
+```
+
+### Test Case 4.2: Delete User Without Authentication
+```javascript
+const testUserDeleteUnauthorized = async () => {
+  const response = await fetch(`${BASE_URL}/delete/`, {
+    method: 'DELETE',
+    headers: PUBLIC_HEADERS // No authentication token
+  });
+  
+  const result = await response.json();
+  console.log('Expected 401 Error for no authentication:', result);
+};
+```
+
+### Test Case 4.3: Delete User with Invalid Token
+```javascript
+const testUserDeleteInvalidToken = async () => {
+  const invalidHeaders = {
+    "Authorization": "Bearer invalid_token_here",
+    "Content-Type": "application/json",
+    "x-request-id": `test_${Date.now()}`
+  };
+
+  const response = await fetch(`${BASE_URL}/delete/`, {
+    method: 'DELETE',
+    headers: invalidHeaders
+  });
+  
+  const result = await response.json();
+  console.log('Expected 401/403 Error for invalid token:', result);
+};
+```
+
+---
+
+## 5. Get Users Tests 🔒
+
+### Test Case 5.1: Get All Users (Admin)
+```javascript
+const testGetAllUsersAdmin = async () => {
+  const response = await fetch(`${BASE_URL}/get`, {
+    method: 'GET',
+    headers: ADMIN_HEADERS
+  });
+  
+  const result = await response.json();
+  console.log('✅ Get All Users Success:', result);
+};
+```
+
+### Test Case 5.2: Get Users Without Authentication
+```javascript
+const testGetAllUsersUnauthorized = async () => {
+  const response = await fetch(`${BASE_URL}/get`, {
+    method: 'GET',
+    headers: PUBLIC_HEADERS // No authentication
+  });
+  
+  const result = await response.json();
+  console.log('Expected 401 Error for no authentication:', result);
+};
+```
+
+### Test Case 5.3: Get Users with Regular User Token
+```javascript
+const testGetAllUsersRegularUser = async () => {
+  const response = await fetch(`${BASE_URL}/get`, {
+    method: 'GET',
+    headers: USER_HEADERS // Regular user token
+  });
+  
+  const result = await response.json();
+  console.log('Should work if endpoint allows authenticated users:', result);
+};
+```
+
+---
+
+## Complete Test Suite Runner
+
+### JavaScript Test Runner
+```javascript
+const runAllUserTests = async () => {
+  console.log('🚀 Starting User API Tests...\n');
+  
+  try {
+    // 1. Registration Tests
+    console.log('📝 Testing User Registration...');
+    await testUserRegistrationSuccess();
+    await testUserRegistrationMissingFields();
+    await testUserRegistrationDuplicateEmail();
+    await testUserRegistrationInvalidEmail();
+    await testUserRegistrationMinimalData();
+    
+    // 2. Login Tests
+    console.log('\n🔑 Testing User Login...');
+    await testUserLoginSuccess();
+    await testUserLoginWithToken();
+    await testUserLoginInvalidCredentials();
+    await testUserLoginNonexistentEmail();
+    await testUserLoginMissingFields();
+    await testUserLoginInvalidEmailFormat();
+    
+    // 3. Update Tests
+    console.log('\n✏️ Testing User Update...');
+    await testUserUpdateSuccess();
+    await testUserUpdateInvalidFields();
+    await testUserUpdateEmptyData();
+    await testUserUpdateAdminFields();
+    await testUserUpdateUnauthorized();
+    
+    // 4. Get Users Tests
+    console.log('\n📋 Testing Get Users...');
+    await testGetAllUsersAdmin();
+    await testGetAllUsersUnauthorized();
+    await testGetAllUsersRegularUser();
+    
+    // 5. Delete User Tests (run last as it removes users)
+    console.log('\n🗑️ Testing User Deletion...');
+    await testUserDeleteSuccess();
+    await testUserDeleteUnauthorized();
+    await testUserDeleteInvalidToken();
+    
+    console.log('\n✅ All user tests completed!');
+  } catch (error) {
+    console.error('❌ User test suite failed:', error);
+  }
+};
+
+// Run the test suite
+runAllUserTests();
+```
+
+---
+
+## Postman Collection
+
+### Environment Variables
+```json
+{
+  "base_url": "http://localhost:3000/api/v1/user",
+  "admin_token": "your_admin_jwt_token_here",
+  "user_token": "your_user_jwt_token_here",
+  "test_email": "test.user@example.com"
+}
+```
+
+### Postman Pre-request Script (for Registration)
+```javascript
+// Generate unique email for testing
+const timestamp = Date.now();
+const randomString = Math.random().toString(36).substring(7);
+const uniqueEmail = `test.${timestamp}.${randomString}@example.com`;
+
+pm.environment.set("unique_email", uniqueEmail);
+pm.environment.set("test_password", "TestPass123!");
+```
+
+### Postman Test Scripts
+
+#### For Registration Request:
+```javascript
+pm.test("Status code is 201", function () {
+    pm.response.to.have.status(201);
+});
+
+pm.test("Response has token", function () {
+    const jsonData = pm.response.json();
+    pm.expect(jsonData).to.have.property('token');
+    pm.expect(jsonData).to.have.property('message');
+    
+    // Store token for subsequent requests
+    pm.environment.set("user_token", jsonData.token);
+});
+
+pm.test("Token is valid format", function () {
+    const jsonData = pm.response.json();
+    const token = jsonData.token;
+    pm.expect(token).to.match(/^[A-Za-z0-9-_]+\.[A-Za-z0-9-_]+\.[A-Za-z0-9-_]*$/);
+});
+```
+
+#### For Login Request:
+```javascript
+pm.test("Status code is 200", function () {
+    pm.response.to.have.status(200);
+});
+
+pm.test("Response has user data", function () {
+    const jsonData = pm.response.json();
+    pm.expect(jsonData).to.have.property('user');
+    pm.expect(jsonData).to.have.property('token');
+    pm.expect(jsonData.user).to.have.property('email');
+    
+    // Store token for other requests
+    pm.environment.set("user_token", jsonData.token);
+});
+
+pm.test("Password not exposed", function () {
+    const jsonData = pm.response.json();
+    pm.expect(jsonData.user).to.not.have.property('password');
+});
+```
+
+#### For Update Request:
+```javascript
+pm.test("Status code is 200", function () {
+    pm.response.to.have.status(200);
+});
+
+pm.test("Response shows updated fields", function () {
+    const jsonData = pm.response.json();
+    pm.expect(jsonData).to.have.property('updatedFields');
+    pm.expect(jsonData).to.have.property('user');
+    pm.expect(jsonData.updatedFields).to.be.an('array');
+});
+```
+
+---
+
+## cURL Commands
+
+### Register User
+```bash
+curl -X POST http://localhost:3000/api/v1/user/register \
+  -H "Content-Type: application/json" \
+  -H "x-request-id: test_$(date +%s)" \
+  -d '{
+    "firstName": "John",
+    "lastName": "Doe",
+    "email": "john.doe@example.com",
+    "password": "SecurePass123!",
+    "marketingConsent": true,
+    "stylePreferences": ["casual"],
+    "addressType": "home",
+    "street": "123 Main St",
+    "city": "New York",
+    "state": "NY",
+    "zipCode": "10001",
+    "country": "USA",
+    "categories": ["clothing"],
+    "occasions": ["casual"],
+    "orderUpdates": true,
+    "promotionalEmails": false,
+    "smsNotifications": true,
+    "styleRecommendations": true
+  }'
+```
+
+### Login User
+```bash
+curl -X POST http://localhost:3000/api/v1/user/login \
+  -H "Content-Type: application/json" \
+  -H "x-request-id: test_$(date +%s)" \
+  -d '{
+    "email": "john.doe@example.com",
+    "password": "SecurePass123!"
+  }'
+```
+
+### Update User (Self)
+```bash
+curl -X PATCH http://localhost:3000/api/v1/user/update/ \
+  -H "Authorization: Bearer your_user_token" \
+  -H "Content-Type: application/json" \
+  -H "x-request-id: test_$(date +%s)" \
+  -d '{
+    "firstName": "John Updated",
+    "phone": "+1987654321",
+    "city": "Los Angeles"
+  }'
+```
+
+### Get All Users (Admin)
+```bash
+curl -X GET http://localhost:3000/api/v1/user/get \
+  -H "Authorization: Bearer your_admin_token" \
+  -H "x-request-id: test_$(date +%s)"
+```
+
+### Delete User (Self)
+```bash
+curl -X DELETE http://localhost:3000/api/v1/user/delete/ \
+  -H "Authorization: Bearer your_user_token" \
+  -H "x-request-id: test_$(date +%s)"
+```
+
+---
+
+## Performance Testing with Artillery
+
+### Artillery Configuration
+```yaml
+# artillery-user-config.yml
+config:
+  target: 'http://localhost:3000'
+  phases:
+    - duration: 30
+      arrivalRate: 5
+
+scenarios:
+  - name: "User Registration Flow"
+    weight: 30
+    requests:
+      - post:
+          url: "/api/v1/user/register"
+          headers:
+            x-request-id: "load_test_{{ $uuid }}"
+          json:
+            firstName: "Load"
+            lastName: "Test{{ $randomInt(1, 1000) }}"
+            email: "loadtest{{ $randomInt(1, 10000) }}@example.com"
+            password: "LoadTest123!"
+            marketingConsent: false
+            stylePreferences: ["casual"]
+            addressType: "home"
+            street: "123 Load Test St"
+            city: "Test City"
+            state: "TS"
+            zipCode: "12345"
+            country: "USA"
+            categories: ["clothing"]
+            occasions: ["casual"]
+            orderUpdates: true
+            promotionalEmails: false
+            smsNotifications: false
+            styleRecommendations: false
+
+  - name: "User Login Flow"
+    weight: 50
+    requests:
+      - post:
+          url: "/api/v1/user/login"
+          headers:
+            x-request-id: "login_test_{{ $uuid }}"
+          json:
+            email: "john.doe@example.com"
+            password: "SecurePass123!"
+
+  - name: "Get Users (Admin)"
+    weight: 20
+    requests:
+      - get:
+          url: "/api/v1/user/get"
+          headers:
+            Authorization: "Bearer {{ admin_token }}"
+            x-request-id: "get_test_{{ $uuid }}"
+```
+
+Run with: `artillery run artillery-user-config.yml`
+
+---
+
+## Test Data Setup
+
+### Sample Users for Testing
+```javascript
+const testUsers = [
+  {
+    firstName: "Admin",
+    lastName: "User",
+    email: "admin@example.com",
+    password: "AdminPass123!",
+    marketingConsent: true,
+    stylePreferences: ["luxury", "formal"],
+    priceRange: "200+",
+    addressType: "office",
+    street: "456 Admin Ave",
+    city: "Admin City",
+    state: "AC",
+    zipCode: "54321",
+    country: "USA",
+    categories: ["all"],
+    occasions: ["all"],
+    orderUpdates: true,
+    promotionalEmails: true,
+    smsNotifications: true,
+    styleRecommendations: true,
+    isAdmin: true
+  },
+  {
+    firstName: "Regular",
+    lastName: "User",
+    email: "regular@example.com",
+    password: "RegularPass123!",
+    phone: "+1555123456",
+    birthDate: "1985-03-20",
+    marketingConsent: false,
+    genderPreference: "female",
+    stylePreferences: ["casual", "trendy"],
+    priceRange: "25-75",
+    addressType: "home",
+    street: "789 Regular Rd",
+    apartment: "Unit 2A",
+    city: "Regular Town",
+    state: "RT",
+    zipCode: "67890",
+    country: "USA",
+    categories: ["clothing", "shoes"],
+    occasions: ["casual", "work"],
+    orderUpdates: false,
+    promotionalEmails: false,
+    smsNotifications: true,
+    styleRecommendations: false,
+    isAdmin: false
+  }
+];
+
+// Function to create test users
+const setupUserTestData = async () => {
+  for (const user of testUsers) {
+    try {
+      const response = await fetch(`${BASE_URL}/register`, {
+        method: 'POST',
+        headers: PUBLIC_HEADERS,
+        body: JSON.stringify(user)
+      });
+      const result = await response.json();
+      console.log(`Created test user: ${user.email}`, result);
+    } catch (error) {
+      console.error(`Failed to create test user ${user.email}:`, error);
+    }
+  }
+};
+```
+
+---
+
+## Security Testing
+
+### Test Invalid JWT Tokens
+```javascript
+const testSecurityScenarios = async () => {
+  const invalidTokens = [
+    "invalid.token.here",
+    "Bearer malformed_token",
+    "expired_token_here",
+    null,
+    undefined,
+    ""
+  ];
+
+  for (const token of invalidTokens) {
+    console.log(`Testing with token: ${token}`);
+    
+    const headers = token ? {
+      "Authorization": `Bearer ${token}`,
+      "Content-Type": "application/json"
+    } : PUBLIC_HEADERS;
+
+    try {
+      const response = await fetch(`${BASE_URL}/get`, {
+        method: 'GET',
+        headers: headers
+      });
+      
+      const result = await response.json();
+      console.log(`Response for token "${token}":`, result.message);
+    } catch (error) {
+      console.error(`Error with token "${token}":`, error.message);
+    }
+  }
+};
+```
+
+This comprehensive testing collection covers all User API endpoints with various scenarios including success cases, error cases, security testing, and performance testing. The tests can be run using JavaScript, Postman, cURL commands, or integrated into CI/CD pipelines for automated testing.
+
 # Product API Documentation
 
 ## Base URL
