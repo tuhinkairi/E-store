@@ -2069,5 +2069,629 @@ const setupTestData = async () => {
   }
 };
 ```
+# Wishlist API Documentation
 
-This comprehensive testing collection covers all endpoints with various scenarios including success cases, error cases, edge cases, and performance testing. You can run these tests using JavaScript, Postman, cURL commands, or integrate them into your CI/CD pipeline.
+A comprehensive Node.js/Express API for managing user wishlists with MongoDB integration, JWT authentication, and detailed logging.
+
+## 📋 Table of Contents
+
+- [Features](#features)
+- [Prerequisites](#prerequisites)
+- [Installation](#installation)
+- [Configuration](#configuration)
+- [Database Schema](#database-schema)
+- [Authentication](#authentication)
+- [API Endpoints](#api-endpoints)
+- [Usage Examples](#usage-examples)
+- [Error Handling](#error-handling)
+- [Logging](#logging)
+- [Testing](#testing)
+- [Troubleshooting](#troubleshooting)
+
+## ✨ Features
+
+- **JWT Authentication** - Secure user authentication with token verification
+- **MongoDB Integration** - Mongoose ODM with advanced schema validation
+- **Comprehensive Logging** - Detailed request/response logging with unique request IDs
+- **Error Handling** - Structured error responses with proper HTTP status codes
+- **Data Validation** - Input validation and sanitization
+- **Population** - Automatic population of product and user references
+- **Duplicate Prevention** - Built-in duplicate product prevention
+- **Performance Tracking** - Response time monitoring
+
+## 🔧 Prerequisites
+
+- Node.js (v16 or higher)
+- MongoDB (v4.4 or higher)
+- npm or yarn package manager
+
+## 📦 Installation
+
+1. **Clone the repository**
+```bash
+git clone <your-repo-url>
+cd wishlist-api
+```
+
+2. **Install dependencies**
+```bash
+npm install express mongoose cors morgan winston
+# or
+yarn add express mongoose cors morgan winston
+```
+
+3. **Install dev dependencies (optional)**
+```bash
+npm install --save-dev nodemon
+```
+
+## ⚙️ Configuration
+
+### Environment Variables
+
+Create a `.env` file in the root directory:
+
+```env
+# Database
+MONGODB_URI=mongodb://localhost:27017/ecommerce
+# or for MongoDB Atlas
+MONGODB_URI=mongodb+srv://username:password@cluster.mongodb.net/ecommerce
+
+# Server
+PORT=3000
+NODE_ENV=development
+
+# JWT (configure in your auth middleware)
+JWT_SECRET=your-super-secret-jwt-key
+JWT_EXPIRES_IN=7d
+```
+
+### Project Structure
+```
+project/
+├── middleware/
+│   └── VerifyToken.js
+├── model/
+│   └── ExportModel.js
+├── routes/
+│   └── wishlist.js
+├── logs/
+│   ├── error.log
+│   └── combined.log
+└── server.js
+```
+
+## 🗃️ Database Schema
+
+### Wishlist Schema
+```javascript
+{
+  userId: ObjectId (ref: 'User', required, unique),
+  items: [{
+    productId: ObjectId (ref: 'Product', required),
+    addedAt: Date (default: now),
+    preferredSize: String (optional),
+    preferredColor: String (optional)
+  }],
+  createdAt: Date (default: now),
+  updatedAt: Date (auto-updated)
+}
+```
+
+### User Schema (Reference)
+```javascript
+{
+  firstName: String (required),
+  lastName: String (required),
+  email: String (required, unique),
+  // ... other user fields
+}
+```
+
+### Product Schema (Reference)
+```javascript
+{
+  name: String (required),
+  price: Number (required),
+  originalPrice: Number (optional),
+  image: ObjectId (ref: 'Image'),
+  category: String (required),
+  colors: [String] (required),
+  sizes: [String] (required),
+  // ... other product fields
+}
+```
+
+## 🔐 Authentication
+
+All endpoints require JWT authentication via the `VerifyToken` middleware.
+
+### Token Format
+```
+Authorization: Bearer <your-jwt-token>
+```
+
+### Token Payload
+```javascript
+{
+  id: "user-object-id",
+  email: "user@example.com",
+  // ... other user data
+}
+```
+
+## 🚀 API Endpoints
+
+### 1. Add to Wishlist
+Add a product to the user's wishlist.
+
+```http
+POST /api/v1/wishlist/add
+Authorization: Bearer <token>
+Content-Type: application/json
+```
+
+**Request Body:**
+```json
+{
+  "productId": "507f1f77bcf86cd799439011",
+  "preferredSize": "L",
+  "preferredColor": "Black"
+}
+```
+
+**Response (201):**
+```json
+{
+  "success": true,
+  "message": "Item added to wishlist successfully",
+  "data": {
+    "_id": "507f1f77bcf86cd799439013",
+    "userId": "507f1f77bcf86cd799439010",
+    "items": [
+      {
+        "productId": {
+          "_id": "507f1f77bcf86cd799439011",
+          "name": "Wireless Headphones",
+          "price": 99.99,
+          "image": "507f1f77bcf86cd799439012"
+        },
+        "preferredSize": "L",
+        "preferredColor": "Black",
+        "addedAt": "2024-08-10T10:30:00.000Z"
+      }
+    ],
+    "createdAt": "2024-08-10T10:30:00.000Z",
+    "updatedAt": "2024-08-10T10:30:00.000Z"
+  }
+}
+```
+
+### 2. Remove from Wishlist
+Remove a product from the user's wishlist.
+
+```http
+DELETE /api/v1/wishlist/remove
+Authorization: Bearer <token>
+Content-Type: application/json
+```
+
+**Request Body:**
+```json
+{
+  "productId": "507f1f77bcf86cd799439011"
+}
+```
+
+**Response (200):**
+```json
+{
+  "success": true,
+  "message": "Item removed from wishlist successfully",
+  "data": {
+    "_id": "507f1f77bcf86cd799439013",
+    "userId": "507f1f77bcf86cd799439010",
+    "items": [],
+    "createdAt": "2024-08-10T10:30:00.000Z",
+    "updatedAt": "2024-08-10T10:31:00.000Z"
+  }
+}
+```
+
+### 3. Update Wishlist Item
+Update preferences for an existing item in the wishlist.
+
+```http
+PUT /api/v1/wishlist/update
+Authorization: Bearer <token>
+Content-Type: application/json
+```
+
+**Request Body:**
+```json
+{
+  "productId": "507f1f77bcf86cd799439011",
+  "preferredSize": "XL",
+  "preferredColor": "Navy Blue"
+}
+```
+
+**Response (200):**
+```json
+{
+  "success": true,
+  "message": "Item preferences updated successfully",
+  "data": {
+    "_id": "507f1f77bcf86cd799439013",
+    "userId": "507f1f77bcf86cd799439010",
+    "items": [
+      {
+        "productId": {
+          "_id": "507f1f77bcf86cd799439011",
+          "name": "Wireless Headphones",
+          "price": 99.99,
+          "image": "507f1f77bcf86cd799439012"
+        },
+        "preferredSize": "XL",
+        "preferredColor": "Navy Blue",
+        "addedAt": "2024-08-10T10:30:00.000Z"
+      }
+    ],
+    "createdAt": "2024-08-10T10:30:00.000Z",
+    "updatedAt": "2024-08-10T10:32:00.000Z"
+  }
+}
+```
+
+## 💻 Usage Examples
+
+### Basic Setup
+```javascript
+import express from 'express';
+import mongoose from 'mongoose';
+import WishlistRoutes from './routes/wishlist.js';
+
+const app = express();
+
+// Middleware
+app.use(express.json());
+
+// Connect to MongoDB
+await mongoose.connect(process.env.MONGODB_URI);
+
+// Apply wishlist routes
+WishlistRoutes(app);
+
+// Start server
+app.listen(3000, () => {
+  console.log('Server running on port 3000');
+});
+```
+
+### Frontend Integration
+
+#### JavaScript/Fetch
+```javascript
+// Add to wishlist
+async function addToWishlist(productId, size, color) {
+  const response = await fetch('/api/v1/wishlist/add', {
+    method: 'POST',
+    headers: {
+      'Content-Type': 'application/json',
+      'Authorization': `Bearer ${localStorage.getItem('token')}`
+    },
+    body: JSON.stringify({
+      productId,
+      preferredSize: size,
+      preferredColor: color
+    })
+  });
+  
+  const data = await response.json();
+  
+  if (data.success) {
+    console.log('Added to wishlist:', data.data);
+  } else {
+    console.error('Error:', data.message);
+  }
+}
+
+// Remove from wishlist
+async function removeFromWishlist(productId) {
+  const response = await fetch('/api/v1/wishlist/remove', {
+    method: 'DELETE',
+    headers: {
+      'Content-Type': 'application/json',
+      'Authorization': `Bearer ${localStorage.getItem('token')}`
+    },
+    body: JSON.stringify({ productId })
+  });
+  
+  const data = await response.json();
+  return data;
+}
+
+// Update item preferences
+async function updateWishlistItem(productId, size, color) {
+  const response = await fetch('/api/v1/wishlist/update', {
+    method: 'PUT',
+    headers: {
+      'Content-Type': 'application/json',
+      'Authorization': `Bearer ${localStorage.getItem('token')}`
+    },
+    body: JSON.stringify({
+      productId,
+      preferredSize: size,
+      preferredColor: color
+    })
+  });
+  
+  return await response.json();
+}
+```
+
+#### React Example
+```jsx
+import { useState } from 'react';
+
+function WishlistButton({ productId, onUpdate }) {
+  const [loading, setLoading] = useState(false);
+  
+  const handleAddToWishlist = async () => {
+    setLoading(true);
+    try {
+      const response = await fetch('/api/v1/wishlist/add', {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+          'Authorization': `Bearer ${localStorage.getItem('token')}`
+        },
+        body: JSON.stringify({ productId })
+      });
+      
+      const data = await response.json();
+      
+      if (data.success) {
+        onUpdate(data.data);
+        alert('Added to wishlist!');
+      } else {
+        alert(data.message);
+      }
+    } catch (error) {
+      console.error('Error:', error);
+      alert('Failed to add to wishlist');
+    } finally {
+      setLoading(false);
+    }
+  };
+  
+  return (
+    <button 
+      onClick={handleAddToWishlist}
+      disabled={loading}
+      className="wishlist-btn"
+    >
+      {loading ? 'Adding...' : 'Add to Wishlist'}
+    </button>
+  );
+}
+```
+
+## ❌ Error Handling
+
+### HTTP Status Codes
+
+| Status Code | Description | Example |
+|-------------|-------------|---------|
+| `200` | Success - Operation completed | Item updated successfully |
+| `201` | Created - Item added to wishlist | Item added successfully |
+| `400` | Bad Request - Invalid input data | Invalid product ID format |
+| `401` | Unauthorized - Authentication required | Invalid or missing token |
+| `404` | Not Found - Resource doesn't exist | Product/wishlist not found |
+| `409` | Conflict - Resource already exists | Product already in wishlist |
+| `500` | Internal Server Error - Server issue | Database connection error |
+
+### Error Response Format
+```json
+{
+  "success": false,
+  "message": "Error description",
+  "error": "Detailed error message (development only)"
+}
+```
+
+### Common Error Scenarios
+
+#### Invalid Product ID
+```json
+{
+  "success": false,
+  "message": "Valid product ID is required"
+}
+```
+
+#### Product Already in Wishlist
+```json
+{
+  "success": false,
+  "message": "Product already exists in wishlist"
+}
+```
+
+#### Authentication Required
+```json
+{
+  "success": false,
+  "message": "User authentication required"
+}
+```
+
+## 📝 Logging
+
+The API provides comprehensive logging for monitoring and debugging.
+
+### Log Levels
+- **INFO**: Normal operations, request tracking
+- **WARN**: Warning conditions, validation failures
+- **ERROR**: Error conditions, exceptions
+
+### Log Format
+```
+[OPERATION] Description - UserID: <id>, RequestID: <id>, Additional info
+```
+
+### Sample Logs
+```
+[ADD_WISHLIST] Request initiated - UserID: 507f1f77bcf86cd799439011, RequestID: abc123def, Timestamp: 2024-08-10T10:30:00.000Z
+[ADD_WISHLIST] Product verified - UserID: 507f1f77bcf86cd799439011, RequestID: abc123def, ProductID: 507f1f77bcf86cd799439012, Name: Wireless Headphones, Price: $99.99
+[ADD_WISHLIST] Item added successfully - UserID: 507f1f77bcf86cd799439011, RequestID: abc123def, ProductID: 507f1f77bcf86cd799439012, Items count: 3, Response time: 245ms
+```
+
+### Log Files
+- `logs/combined.log` - All log levels
+- `logs/error.log` - Error logs only
+
+## 🧪 Testing
+
+### Manual Testing with cURL
+
+#### Add to Wishlist
+```bash
+curl -X POST http://localhost:3000/api/v1/wishlist/add \
+  -H "Content-Type: application/json" \
+  -H "Authorization: Bearer YOUR_JWT_TOKEN" \
+  -d '{
+    "productId": "507f1f77bcf86cd799439011",
+    "preferredSize": "L",
+    "preferredColor": "Black"
+  }'
+```
+
+#### Remove from Wishlist
+```bash
+curl -X DELETE http://localhost:3000/api/v1/wishlist/remove \
+  -H "Content-Type: application/json" \
+  -H "Authorization: Bearer YOUR_JWT_TOKEN" \
+  -d '{
+    "productId": "507f1f77bcf86cd799439011"
+  }'
+```
+
+#### Update Wishlist Item
+```bash
+curl -X PUT http://localhost:3000/api/v1/wishlist/update \
+  -H "Content-Type: application/json" \
+  -H "Authorization: Bearer YOUR_JWT_TOKEN" \
+  -d '{
+    "productId": "507f1f77bcf86cd799439011",
+    "preferredSize": "XL",
+    "preferredColor": "Navy"
+  }'
+```
+
+### Testing with Postman
+
+1. Create a new collection called "Wishlist API"
+2. Set up environment variables:
+   - `baseUrl`: `http://localhost:3000`
+   - `token`: `your-jwt-token`
+3. Create requests for each endpoint
+4. Use `{{baseUrl}}` and `{{token}}` in your requests
+
+### Unit Testing (Optional)
+```javascript
+// Example with Jest and Supertest
+import request from 'supertest';
+import app from '../server.js';
+
+describe('Wishlist API', () => {
+  let token;
+  
+  beforeAll(async () => {
+    // Get authentication token
+    const response = await request(app)
+      .post('/api/v1/auth/login')
+      .send({ email: 'test@example.com', password: 'password' });
+    token = response.body.token;
+  });
+  
+  test('should add item to wishlist', async () => {
+    const response = await request(app)
+      .post('/api/v1/wishlist/add')
+      .set('Authorization', `Bearer ${token}`)
+      .send({
+        productId: '507f1f77bcf86cd799439011',
+        preferredSize: 'L'
+      });
+    
+    expect(response.status).toBe(201);
+    expect(response.body.success).toBe(true);
+  });
+});
+```
+
+## 🔧 Troubleshooting
+
+### Common Issues
+
+#### "User authentication required"
+- **Cause**: Missing or invalid JWT token
+- **Solution**: Ensure token is included in Authorization header
+```javascript
+headers: {
+  'Authorization': `Bearer ${your-token}`
+}
+```
+
+#### "Product not found"
+- **Cause**: Invalid product ID or product doesn't exist
+- **Solution**: Verify product exists in database and ID is correct
+
+#### "Product already exists in wishlist"
+- **Cause**: Attempting to add duplicate product
+- **Solution**: Check if product is already in wishlist before adding
+
+#### "Failed to connect to MongoDB"
+- **Cause**: Database connection issues
+- **Solution**: 
+  - Check MongoDB is running
+  - Verify connection string in `.env`
+  - Check network connectivity
+
+#### "ValidationError"
+- **Cause**: Invalid data format or missing required fields
+- **Solution**: Check request body matches expected schema
+
+### Debug Mode
+Enable detailed logging by setting:
+```env
+NODE_ENV=development
+```
+
+### Performance Issues
+- Monitor response times in logs
+- Check database indexes
+- Consider connection pooling for high traffic
+
+### Memory Issues
+- Monitor log file sizes
+- Consider log rotation
+- Check for memory leaks in long-running processes
+
+## 📚 Additional Resources
+
+- [MongoDB Documentation](https://docs.mongodb.com/)
+- [Mongoose Documentation](https://mongoosejs.com/docs/)
+- [Express.js Documentation](https://expressjs.com/)
+- [JWT Documentation](https://jwt.io/)
+
+## 🤝 Support
+
+For issues or questions:
+1. Check the troubleshooting section
+2. Review the logs for detailed error information
+3. Create an issue in the project repository
+
+## 📄 License
+
+This project is licensed under the MIT License - see the LICENSE file for details.
