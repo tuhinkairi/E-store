@@ -1,18 +1,17 @@
 import { useState } from "react";
 import { ShoppingBag, Menu, X} from 'lucide-react';
-import { Link, useLocation, useNavigate } from "react-router-dom";
+import { Link, useNavigate } from "react-router-dom";
 import { endpoints } from "../../data/endpoints";
 import { NavLink } from "react-router-dom";
 
 
-const Header = ({solid}:{solid?:boolean}) => {
-    const path = useLocation().pathname
+const Header = () => {
     const navigate = useNavigate()
     const [isMenuOpen, setIsMenuOpen] = useState(false);
     const [isLogin, setLogin] = useState(true)
 
     return (
-        <header className={`${path=="/collections" || solid ? "bg-cream/95":"fixed"} top-0 w-full  backdrop-blur-md z-50 border-b border-sage-200/30`}>
+        <header className={`fixed bg-cream/95 top-0 w-full  backdrop-blur-md z-50 border-b border-sage-200/30`}>
             <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
                 <div className="flex items-center justify-between h-20">
                     <div className="flex items-center space-x-3">
