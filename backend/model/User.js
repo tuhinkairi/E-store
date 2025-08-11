@@ -20,7 +20,7 @@ const UserSchema = new mongoose.Schema({
     sparse: true, // Allows multiple documents with null/undefined values
     unique: true 
   },
-  
+  image: {type:String, default:null},
   // Preferences with defaults
   marketingConsent: { type: Boolean, default: false },
   genderPreference: { type: String, trim: true }, // Optional

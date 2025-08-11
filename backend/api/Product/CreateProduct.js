@@ -80,7 +80,8 @@ export default function CreateProduct(app) {
         collections,
         colors,
         sizes,
-        stock
+        stock,
+        image
       };
 
       // Add optional fields if provided

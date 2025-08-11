@@ -8,8 +8,7 @@ const ProductSchema = new mongoose.Schema({
   category: { type: String, required: true },
   collections: { type: String, required: true },
   image: {
-    type: mongoose.Schema.Types.ObjectId,
-    ref: "Image", // Note: should match your Image model name
+    type: [String],
     required: false,
     default: null,
   },
