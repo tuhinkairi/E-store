@@ -23,7 +23,13 @@ const Header = () => {
 
                     <nav className="hidden md:flex space-x-12">
                         {endpoints.map((item) => (
-                            <NavLink key={item.title} to={item.link} className="text-sage-800 hover:text-gold-600 transition-colors font-medium text-sm tracking-widest">
+                            <NavLink
+                                key={item.title}
+                                to={item.link}
+                                className={({ isActive }: { isActive: boolean }) =>
+                                    `${isActive ? "text-gold-600" : "text-sage-800 hover:text-gold-600"} transition-colors font-medium text-sm tracking-widest`
+                                }
+                            >
                                 {item.title}
                             </NavLink>
                         ))}

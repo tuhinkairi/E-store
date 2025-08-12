@@ -1,5 +1,5 @@
 import { useState } from 'react';
-import { MapPin, Phone, Mail, Clock, Send } from 'lucide-react';
+import { MapPin, Phone, Mail, Clock, Send, Play } from 'lucide-react';
 
 const ContactUs = () => {
     const [formData, setFormData] = useState({
@@ -41,38 +41,38 @@ const ContactUs = () => {
     return (
         <div className="min-h-screen" style={{ backgroundColor: 'var(--color-cream)' }}>
             {/* Hero Section */}
-            <section
-                className="relative py-32 px-4 text-center h-screen content-center"
-                style={{
-                    background: `linear-gradient(135deg, var(--gradient-from-sage-900-80) 0%, var(--gradient-via-sage-800-40) 100%)`
-                }}
-            >
-                <div className="absolute inset-0 opacity-20">
-                    <div className="w-full h-full bg-gradient-to-br from-transparent via-transparent to-white/10"></div>
-                </div>
-
-                <div className="relative z-10 max-w-4xl mx-auto">
-                    <h1
-                        className="text-5xl md:text-6xl font-bold mb-6 tracking-wide"
-                        style={{ color: 'var(--color-cream)' }}
-                    >
-                        GET IN TOUCH
-                    </h1>
-                    <p
-                        className="text-xl md:text-2xl font-serif italic mb-8 max-w-2xl mx-auto"
-                        style={{ color: 'var(--text-cream-90)' }}
-                    >
-                        Connect with Heritage
-                    </p>
-                    <p
-                        className="text-xl max-w-3xl mx-auto leading-relaxed"
-                        style={{ color: 'var(--text-cream-80)' }}
-                    >
-                        We're here to help you discover timeless elegance. Whether you have questions about our collections,
-                        need styling advice, or want to share your feedback, we'd love to hear from you.
-                    </p>
-                </div>
-            </section>
+            <section className="relative min-h-screen flex items-center justify-center overflow-hidden">
+        <div className="absolute inset-0">
+          <img 
+            src="/api/placeholder/1920/1080" 
+            alt="Elysian Heritage" 
+            className="w-full h-full object-cover"
+          />
+          <div className="absolute inset-0 bg-gradient-to-r from-sage-900/95 via-sage-800/60 to-transparent"></div>
+        </div>
+        
+        <div className="relative z-10 max-w-4xl mx-auto px-4 text-center">
+          <div className="animate-float">
+            <h1 className="text-5xl md:text-7xl font-light text-cream mb-8 leading-tight">
+              Contact Us
+              <br />
+              <span className="text-gold-400 italic">Get in Touch </span>
+            </h1>
+          </div>
+          <p className="text-xl md:text-2xl text-cream/90 mb-12 max-w-3xl mx-auto leading-relaxed">
+            For over seven decades, we have devoted ourselves to creating garments that embody the perfect marriage of traditional craftsmanship and contemporary sophistication.
+          </p>
+          <div className="flex flex-col sm:flex-row gap-6 justify-center">
+            <button className="bg-gold-500 text-white px-8 py-4 rounded-lg font-medium hover:bg-gold-600 transition-all duration-300 transform hover:scale-105">
+              Discover Our Story
+            </button>
+            <button className="border-2 border-cream/30 text-cream px-8 py-4 rounded-lg font-medium hover:bg-cream/10 transition-all duration-300 flex items-center justify-center gap-2">
+              <Play className="w-5 h-5" />
+              Watch Our Journey
+            </button>
+          </div>
+        </div>
+      </section>
 
             {/* Contact Information & Form Section */}
             <section className="py-20 px-4">
