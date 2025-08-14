@@ -178,12 +178,12 @@ const handleArrayToggle = (field: string, value: string | number): void => {
       <div className="container mx-auto px-4 py-8">
         {/* Header */}
         <div className="text-center mb-8">
-          <div className="flex items-center justify-center space-x-3 mb-4">
+          {/* <div className="flex items-center justify-center space-x-3 mb-4">
             <div className="w-12 h-12 bg-sage-900 rounded-full flex items-center justify-center">
               <span className="text-xl font-light text-cream">E</span>
             </div>
             <h1 className="text-2xl font-light text-sage-900">ELYSIAN</h1>
-          </div>
+          </div> */}
           {currentStep > 0 && currentStep < 6 && (
             <div>
               <h2 className="text-xl font-medium text-sage-900">{steps[currentStep].title}</h2>
