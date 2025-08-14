@@ -1,6 +1,6 @@
 import { Shield } from "lucide-react";
 import CheckboxInput from "./CheckboxInput";
-import type { NotificationsStepProps } from "../../../../types/user";
+import type { NotificationsStepProps, UserProps } from "../../../../types/user";
 
 const NotificationsStep = ({ formData, onChange }:NotificationsStepProps) => {
   const notificationOptions = [
@@ -38,7 +38,7 @@ const NotificationsStep = ({ formData, onChange }:NotificationsStepProps) => {
           {notificationOptions.map((option) => (
             <CheckboxInput
               key={option.key}
-              checked={formData[option.key]}
+              checked={formData[option.key as keyof UserProps] as boolean}
               onChange={(value) => onChange(option.key, value)}
               label={option.label}
               description={option.description}

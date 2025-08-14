@@ -36,13 +36,22 @@ const StepNavigation = ({
                 ))}
             </div>
 
-            <button
+            {currentStep === totalSteps - 2 ?
+            <button type="submit"
                 onClick={onNext}
                 className="bg-sage-900 text-cream px-6 py-2 rounded-lg hover:bg-sage-800 transition-colors flex items-center"
             >
-                {currentStep === totalSteps - 2 ? 'Complete' : 'Continue'}
+                Complete 
                 <ArrowRight className="h-5 w-5 ml-2" />
             </button>
+            :<button
+                onClick={onNext}
+                className="bg-sage-900 text-cream px-6 py-2 rounded-lg hover:bg-sage-800 transition-colors flex items-center"
+            >
+                 Continue
+                <ArrowRight className="h-5 w-5 ml-2" />
+            </button>
+            }
         </div>
 
         {canSkip && (

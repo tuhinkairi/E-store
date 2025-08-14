@@ -1,4 +1,4 @@
-import { useEffect, useState } from "react";
+import { useCallback, useState } from "react";
 
 
 import WelcomeStep from "./component/WelcomeStepComponent";
@@ -38,7 +38,10 @@ const UserOnboarding = () => {
     orderUpdates: true,
     promotionalEmails: true,
     smsNotifications: false,
-    styleRecommendations: true
+    styleRecommendations: true,
+    isAdmin:false,
+    token:"",
+    isLoggedIn:false
   });
 
   const [errors, setErrors] = useState<ValidationErrors>({});
@@ -170,20 +173,17 @@ const handleArrayToggle = (field: string, value: string | number): void => {
         return <WelcomeStep onNext={nextStep} />;
     }
   };
-  useEffect(()=>{
-    console.log(formData)
+
+  const handelSubmit = useCallback(()=>{
+    alert(formData)
   },[formData])
+  
+ 
   return (
     <div className="min-h-screen bg-gradient-to-br from-cream via-sage-50 to-cream">
       <div className="container mx-auto px-4 py-8">
         {/* Header */}
         <div className="text-center mb-8">
-          {/* <div className="flex items-center justify-center space-x-3 mb-4">
-            <div className="w-12 h-12 bg-sage-900 rounded-full flex items-center justify-center">
-              <span className="text-xl font-light text-cream">E</span>
-            </div>
-            <h1 className="text-2xl font-light text-sage-900">ELYSIAN</h1>
-          </div> */}
           {currentStep > 0 && currentStep < 6 && (
             <div>
               <h2 className="text-xl font-medium text-sage-900">{steps[currentStep].title}</h2>
@@ -199,9 +199,9 @@ const handleArrayToggle = (field: string, value: string | number): void => {
 
         {/* Main Content */}
         <div className="max-w-4xl mx-auto">
-          <div className="bg-cream rounded-2xl shadow-lg p-8 md:p-12">
+          <form onSubmit={handelSubmit} className="bg-cream rounded-2xl shadow-lg p-8 md:p-12">
             {renderStepContent()}
-          </div>
+          </form>
         </div>
 
         {/* Navigation */}
