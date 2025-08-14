@@ -3,10 +3,17 @@ import { Eye, EyeOff, ArrowRight, Mail } from 'lucide-react';
 import LogoHeader from './LogoHeader';
 import LoginEndpoint from '../../../axios/auth/login';
 import { useNavigate } from 'react-router-dom';
+import { useAppDispatch, useAppSelector } from '../../../store/hooks';
+import LoadingScreen from '../../../components/fallback/LoadingScreen';
+import { setLoading } from '../../../store/features/GlobalSlice';
+import { setUserAuth } from '../../../store/features/UserSlice';
 
 const LoginForm = ({ switchToSignup }: { switchToSignup: () => void }) => {
   const navigate = useNavigate()
-  const [token, setToken] = useState<string | null>(localStorage.getItem('elegance_session'));
+  const isLoading = useAppSelector((state) => state.loading.isLoading)
+  const token = useAppSelector((state) => state.user?.token)
+  const isLoggedIn = useAppSelector((state) => state.user?.isLoggedIn)
+  const dispatch = useAppDispatch()
   const [formData, setFormData] = useState({ email: '', password: '', rememberMe: false, token: token });
 
   const [showPassword, setShowPassword] = useState(false);
@@ -14,20 +21,31 @@ const LoginForm = ({ switchToSignup }: { switchToSignup: () => void }) => {
   const handleChange = (key: string, value: boolean | string) => setFormData(prev => ({ ...prev, [key]: value }));
 
   const handleLogin = useCallback(() => {
-    
+    dispatch(setLoading(true))
     LoginEndpoint(formData).then(data => {
-      localStorage.setItem('elegance_session', formData.rememberMe ? data?.token ?? "": "") //only save token if remember me have
-      setToken(data?.token || null)
+      if (data?.user && data.token) { 
+        // format data
+        const logged_user = data.user
+        logged_user.token = data.token;
+        logged_user.isLoggedIn = true;
+        dispatch(setUserAuth(logged_user))
+      }
       console.log(data)
-    }).catch(err=>console.log(err))
+    }).catch(err => console.log(err)).finally(() => dispatch(setLoading(false)))
     console.log('Login attempt:', formData);
-  }, [formData]);
+  }, [formData, dispatch]);
 
-  useEffect(()=>{
-    if (token) {
+  useEffect(() => {
+    dispatch(setLoading(true))
+    if (isLoggedIn) {
       navigate("/")
     }
-  },[token, navigate])
+    dispatch(setLoading(false))
+
+  }, [isLoggedIn, navigate, dispatch])
+  if (isLoading) {
+    return <LoadingScreen fullScreen size='large' />
+  }
   return (
     <div className="min-h-screen bg-cream grid grid-cols-2 items-center justify-center p-4 relative">
       <div className=''>
@@ -68,7 +86,7 @@ const LoginForm = ({ switchToSignup }: { switchToSignup: () => void }) => {
                 <button
                   type="button"
                   onClick={() => setShowPassword(prev => !prev)}
-                  className="absolute right-4 top-1/2 transform -translate-y-1/2 text-cream-60 hover:text-cream"
+                  className="absolute right-4 top-1/2 transform -translate-y-1/2 text-cream-60 hover:text-gold-600"
                 >
                   {showPassword ? <EyeOff /> : <Eye />}
                 </button>

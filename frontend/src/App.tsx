@@ -3,49 +3,46 @@ import Footer from "./components/layouts/Footer";
 import Header from "./components/layouts/Header";
 import RoutingPage from "./RoutingPage";
 import ErrorPage from "./components/fallback/ErrorPage";
-import { useEffect, useState } from "react";
-import LoadingScreen from "./components/fallback/LoadingScreen";
+import { useState, useEffect } from "react";
 
 export default function App() {
-  const path = useLocation().pathname
-  const [error, setError] = useState<Error>();
-  const [loading, setLoading] = useState<boolean>(true)
+  const path = useLocation().pathname;
+  const [error, setError] = useState<Error | null>(null);
   const navigate = useNavigate();
+
   useEffect(() => {
-    try {
-      
-      setLoading(true)
-      setTimeout(() => {
-        setLoading(false)
-      }, 1000);
-    } catch (error) {
-      setError(error as Error)
-    }
-  }, [error, navigate])
+    const handleError = (event: ErrorEvent) => {
+      setError(event.error || new Error("An unknown error occurred"));
+    };
 
+    window.addEventListener("error", handleError);
+    return () => {
+      window.removeEventListener("error", handleError);
+    };
+  }, []);
 
-  if (loading) {
-    return (
-      <LoadingScreen
-        size="large"
-      />
-    );
-  }
   if (error) {
     return (
       <ErrorPage
         error={error}
         onRetry={() => window.location.reload()}
-        onNavigateHome={() => navigate('/')}
+        onNavigateHome={() => navigate("/")}
       />
     );
-
   }
+
+  const hideLayoutPaths = [
+    "/dashboard/user",
+    "/dashboard",
+    "/onboarding",
+    "/login",
+  ];
+
   return (
     <section>
-      {!["/dashboard/user", "/dashboard", "/onboarding", "/login"].includes(path) && <Header />}
+      {!hideLayoutPaths.includes(path) && <Header />}
       <RoutingPage />
-      {!["/dashboard/user","/dashboard", "/onboarding", "/login"].includes(path) && <Footer />}
+      {!hideLayoutPaths.includes(path) && <Footer />}
     </section>
-  )
+  );
 }

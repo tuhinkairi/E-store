@@ -124,14 +124,7 @@ export default function VerifyUser(app) {
       });
 
       // Prepare user data (exclude sensitive information)
-      const safeUserData = {
-        id: user._id,
-        email: user.email,
-        isAdmin: user.isAdmin,
-        createdAt: user.createdAt,
-        updatedAt: user.updatedAt
-        // Add other safe fields as needed
-      };
+      const safeUserData = user;
 
       const responseTime = Date.now() - startTime;
       console.log(`[${new Date().toISOString()}] [INFO] [${requestId}] Login successful`, {

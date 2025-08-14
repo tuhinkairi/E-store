@@ -24,6 +24,11 @@ export interface UserProps{
   promotionalEmails: boolean;
   smsNotifications: boolean;
   styleRecommendations: boolean;
+  isAdmin: boolean;
+
+  // Auth fields
+  token: string | null;
+  isLoggedIn: boolean;
 }
 export interface ValidationErrors {
   [key: string]: string;
