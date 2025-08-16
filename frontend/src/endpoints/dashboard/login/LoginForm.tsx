@@ -7,11 +7,14 @@ import { useAppDispatch, useAppSelector } from '../../../store/hooks';
 import LoadingScreen from '../../../components/fallback/LoadingScreen';
 import { setLoading } from '../../../store/features/GlobalSlice';
 import { setUserAuth } from '../../../store/features/UserSlice';
+import { useValidateToken } from '../../../hooks/useValidateToken';
 
 const LoginForm = ({ switchToSignup }: { switchToSignup: () => void }) => {
+  const {isValid} = useValidateToken()
   const navigate = useNavigate()
   const isLoading = useAppSelector((state) => state.loading.isLoading)
-  const token = useAppSelector((state) => state.user?.token)
+  const token = useAppSelector((state) => state.user?.token ? state.user?.token : state.user)?.toString()
+
   const isLoggedIn = useAppSelector((state) => state.user?.isLoggedIn)
   const dispatch = useAppDispatch()
   const [formData, setFormData] = useState({ email: '', password: '', rememberMe: false, token: token });
@@ -23,7 +26,7 @@ const LoginForm = ({ switchToSignup }: { switchToSignup: () => void }) => {
   const handleLogin = useCallback(() => {
     dispatch(setLoading(true))
     LoginEndpoint(formData).then(data => {
-      if (data?.user && data.token) { 
+      if (data?.user && data.token) {
         // format data
         const logged_user = data.user
         logged_user.token = data.token;
@@ -43,7 +46,7 @@ const LoginForm = ({ switchToSignup }: { switchToSignup: () => void }) => {
     dispatch(setLoading(false))
 
   }, [isLoggedIn, navigate, dispatch])
-  if (isLoading) {
+  if (isLoading || isValid) {
     return <LoadingScreen fullScreen size='large' />
   }
   return (

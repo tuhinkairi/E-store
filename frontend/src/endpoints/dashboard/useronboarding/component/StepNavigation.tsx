@@ -1,4 +1,5 @@
 import { ArrowLeft, ArrowRight } from "lucide-react";
+import { useCallback } from "react";
 
 const StepNavigation = ({
     currentStep,
@@ -6,16 +7,22 @@ const StepNavigation = ({
     onPrev,
     onNext,
     onSkip,
+    handelSubmit,
     canSkip = false
 }: {
-    currentStep:number,
-    totalSteps:number,
-    onPrev:()=>void,
-    onNext:()=>void,
-    onSkip:()=>void,
-    canSkip?:boolean
-}) => (
-    <>
+    currentStep: number,
+    totalSteps: number,
+    onPrev: () => void,
+    onNext: () => void,
+    onSkip: () => void,
+    handelSubmit: () => void
+    canSkip?: boolean
+}) => {
+    const SubmitingForm = useCallback(() => {
+        handelSubmit()
+        onNext()
+    }, [handelSubmit, onNext])
+    return (<>
         <div className="flex justify-between items-center mt-8 max-w-4xl mx-auto">
             <button
                 onClick={onPrev}
@@ -37,20 +44,20 @@ const StepNavigation = ({
             </div>
 
             {currentStep === totalSteps - 2 ?
-            <button type="submit"
-                onClick={onNext}
-                className="bg-sage-900 text-cream px-6 py-2 rounded-lg hover:bg-sage-800 transition-colors flex items-center"
-            >
-                Complete 
-                <ArrowRight className="h-5 w-5 ml-2" />
-            </button>
-            :<button
-                onClick={onNext}
-                className="bg-sage-900 text-cream px-6 py-2 rounded-lg hover:bg-sage-800 transition-colors flex items-center"
-            >
-                 Continue
-                <ArrowRight className="h-5 w-5 ml-2" />
-            </button>
+                <button
+                    onClick={SubmitingForm}
+                    className="bg-sage-900 text-cream px-6 py-2 rounded-lg hover:bg-sage-800 transition-colors flex items-center"
+                >
+                    Complete
+                    <ArrowRight className="h-5 w-5 ml-2" />
+                </button>
+                : <button
+                    onClick={onNext}
+                    className="bg-sage-900 text-cream px-6 py-2 rounded-lg hover:bg-sage-800 transition-colors flex items-center"
+                >
+                    Continue
+                    <ArrowRight className="h-5 w-5 ml-2" />
+                </button>
             }
         </div>
 
@@ -64,6 +71,7 @@ const StepNavigation = ({
                 </button>
             </div>
         )}
-    </>
-);
+    </>)
+}
+    ;
 export default StepNavigation;

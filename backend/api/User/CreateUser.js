@@ -89,7 +89,8 @@ export default function CreateUser(app) {
       res.cookie("elegance_session", token, { maxAge: 360000 });
       res.status(201).json({ 
         message: "User created successfully", 
-        token: token 
+        token: token, 
+        user:user
       });
       console.log("user created successfully")
     } catch (error) {

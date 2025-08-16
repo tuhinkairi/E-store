@@ -15,5 +15,6 @@ export interface LoginResponse {
 
 export interface OnboardingResponse{
     message:string,
-    token:string
+    token:string,
+    user:UserProps
 }

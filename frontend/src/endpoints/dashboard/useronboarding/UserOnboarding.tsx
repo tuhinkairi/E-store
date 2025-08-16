@@ -1,6 +1,4 @@
 import { useCallback, useState } from "react";
-
-
 import WelcomeStep from "./component/WelcomeStepComponent";
 import AccountStep from "./component/AccountStep";
 import PreferencesStep from "./component/PreferenceStep";
@@ -11,9 +9,16 @@ import CompleteStep from "./component/CompleteStep";
 import ProgressBar from "./component/ProgressBar";
 import StepNavigation from "./component/StepNavigation";
 import type { OnboardingStep, UserProps, ValidationErrors } from "../../../types/user";
+import { useAppDispatch, useAppSelector } from "../../../store/hooks";
+import LoadingScreen from "../../../components/fallback/LoadingScreen";
+import { setLoading } from "../../../store/features/GlobalSlice";
+import OnboardingEndpoint from "../../../axios/auth/onboarding";
+import { setUserAuth } from "../../../store/features/UserSlice";
 
 const UserOnboarding = () => {
   const [currentStep, setCurrentStep] = useState<number>(0);
+  const dispatch = useAppDispatch()
+  const isLoading = useAppSelector(s => s.loading.isLoading)
   const [formData, setFormData] = useState<UserProps>({
     firstName: '',
     lastName: '',
@@ -39,9 +44,9 @@ const UserOnboarding = () => {
     promotionalEmails: true,
     smsNotifications: false,
     styleRecommendations: true,
-    isAdmin:false,
-    token:"",
-    isLoggedIn:false
+    isAdmin: false,
+    token: "",
+    isLoggedIn: false
   });
 
   const [errors, setErrors] = useState<ValidationErrors>({});
@@ -92,24 +97,24 @@ const UserOnboarding = () => {
     return Object.keys(newErrors).length === 0;
   };
 
-const handleInputChange = (field: string, value: string | boolean): void => {
-  setFormData(prev => ({ ...prev, [field]: value }));
-  if (errors[field]) {
-    setErrors(prev => ({ ...prev, [field]: '' }));
-  }
-};
+  const handleInputChange = (field: string, value: string | boolean): void => {
+    setFormData(prev => ({ ...prev, [field]: value }));
+    if (errors[field]) {
+      setErrors(prev => ({ ...prev, [field]: '' }));
+    }
+  };
 
-const handleArrayToggle = (field: string, value: string | number): void => {
-  setFormData(prev => {
-    const currentArray = prev[field as keyof UserProps] as (string | number)[];
-    return {
-      ...prev,
-      [field]: currentArray.includes(value)
-        ? currentArray.filter(item => item !== value)
-        : [...currentArray, value],
-    };
-  });
-};
+  const handleArrayToggle = (field: string, value: string | number): void => {
+    setFormData(prev => {
+      const currentArray = prev[field as keyof UserProps] as (string | number)[];
+      return {
+        ...prev,
+        [field]: currentArray.includes(value)
+          ? currentArray.filter(item => item !== value)
+          : [...currentArray, value],
+      };
+    });
+  };
 
   const nextStep = (): void => {
     if (validateStep(currentStep)) {
@@ -127,58 +132,69 @@ const handleArrayToggle = (field: string, value: string | number): void => {
 
   const renderStepContent = () => {
     switch (currentStep) {
-      case 0: 
+      case 0:
         return <WelcomeStep onNext={nextStep} />;
-      case 1: 
+      case 1:
         return (
-          <AccountStep 
-            formData={formData} 
-            onChange={handleInputChange} 
-            errors={errors} 
+          <AccountStep
+            formData={formData}
+            onChange={handleInputChange}
+            errors={errors}
           />
         );
-      case 2: 
+      case 2:
         return (
-          <PreferencesStep 
-            formData={formData} 
+          <PreferencesStep
+            formData={formData}
             onChange={handleInputChange}
             onArrayToggle={handleArrayToggle}
           />
         );
-      case 3: 
+      case 3:
         return (
-          <AddressStep 
-            formData={formData} 
-            onChange={handleInputChange} 
-            errors={errors} 
+          <AddressStep
+            formData={formData}
+            onChange={handleInputChange}
+            errors={errors}
           />
         );
-      case 4: 
+      case 4:
         return (
-          <InterestsStep 
-            formData={formData} 
-            onArrayToggle={handleArrayToggle} 
+          <InterestsStep
+            formData={formData}
+            onArrayToggle={handleArrayToggle}
           />
         );
-      case 5: 
+      case 5:
         return (
-          <NotificationsStep 
-            formData={formData} 
-            onChange={handleInputChange} 
+          <NotificationsStep
+            formData={formData}
+            onChange={handleInputChange}
           />
         );
-      case 6: 
+      case 6:
         return <CompleteStep />;
-      default: 
+      default:
         return <WelcomeStep onNext={nextStep} />;
     }
   };
 
-  const handelSubmit = useCallback(()=>{
-    alert(formData)
-  },[formData])
-  
- 
+  const handelSubmit = useCallback(() => {
+    dispatch(setLoading(true))
+    OnboardingEndpoint(formData).then((data) => {
+      if (data?.token && data.user) {
+        const NewUser = data.user;
+        NewUser.token = data.token;
+        NewUser.isLoggedIn = true;
+        dispatch(setUserAuth(NewUser))
+      }
+    }).catch((err)=>console.log(err)).finally(() => dispatch(setLoading(false))
+  )
+  }, [formData, dispatch])
+
+  if (isLoading) {
+    <LoadingScreen fullScreen size="large" />
+  }
   return (
     <div className="min-h-screen bg-gradient-to-br from-cream via-sage-50 to-cream">
       <div className="container mx-auto px-4 py-8">
@@ -212,6 +228,7 @@ const handleArrayToggle = (field: string, value: string | number): void => {
             onPrev={prevStep}
             onNext={nextStep}
             onSkip={skipToEnd}
+            handelSubmit={handelSubmit}
             canSkip={currentStep > 1 && currentStep < 5}
           />
         )}

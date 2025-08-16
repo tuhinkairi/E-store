@@ -1,6 +1,9 @@
 import { Check, Gift, Heart, Star } from "lucide-react";
+import { useNavigate } from "react-router-dom";
 
-const CompleteStep = () => (
+const CompleteStep = () =>{ 
+  const navigate = useNavigate()
+  return (
   <div className="text-center space-y-8">
     <div className="space-y-4">
       <div className="w-20 h-20 bg-gradient-to-r from-sage-900 to-sage-700 rounded-full flex items-center justify-center mx-auto">
@@ -32,11 +35,11 @@ const CompleteStep = () => (
 
     <div className="space-y-4">
       <div className="grid grid-cols-1 md:grid-cols-2 gap-4 max-w-md mx-auto">
-        <button className="bg-sage-900 text-cream px-6 py-3 rounded-lg hover:bg-sage-800 transition-colors">
+        <button onClick={()=>navigate("/collections")} className="bg-sage-900 text-cream px-6 py-3 rounded-lg hover:bg-sage-800 transition-colors">
           Start Shopping
         </button>
-        <button className="border border-sage-900 text-sage-900 px-6 py-3 rounded-lg hover:bg-sage-50 transition-colors">
-          Complete Profile
+        <button onClick={()=>navigate("/dashboard/user")} className="border border-sage-900 text-sage-900 px-6 py-3 rounded-lg hover:bg-sage-50 transition-colors">
+          Dashboard
         </button>
       </div>
 
@@ -48,5 +51,5 @@ const CompleteStep = () => (
       </p>
     </div>
   </div>
-);
+)};
 export default CompleteStep;

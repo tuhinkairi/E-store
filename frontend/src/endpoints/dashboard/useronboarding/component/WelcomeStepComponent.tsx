@@ -1,7 +1,20 @@
 import { ArrowRight, Award, Truck, UserCheck } from "lucide-react";
 import { FeatureCard } from "./FeatureCard";
+import { useNavigate } from "react-router-dom";
+import { useValidateToken } from "../../../../hooks/useValidateToken";
+import LoadingScreen from "../../../../components/fallback/LoadingScreen";
 
-const WelcomeStep = ({ onNext }:{onNext:()=>void}) => (
+const WelcomeStep = ({ onNext }:{onNext:()=>void}) => {
+  const {isValid, loading,userData} = useValidateToken()
+  const navigate = useNavigate()
+  if (isValid) {
+    console.log(userData)
+    navigate("/dashboard/user")
+  }
+  if (loading) {
+    return <LoadingScreen />
+  }
+  return(
   <div className="text-center space-y-8">
     <div className="space-y-4">
       <div className="w-20 h-20 bg-sage-900 rounded-full flex items-center justify-center mx-auto">
@@ -39,5 +52,5 @@ const WelcomeStep = ({ onNext }:{onNext:()=>void}) => (
       <ArrowRight className="h-5 w-5 ml-2" />
     </button>
   </div>
-);
+)};
 export default WelcomeStep;
