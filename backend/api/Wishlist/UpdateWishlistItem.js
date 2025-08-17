@@ -1,6 +1,10 @@
+import mongoose from "mongoose";
+import VerifyToken from "../../middleware/VerifyToken.js";
+import { Wishlist } from "../../model/ExportModel.js";
+
 // 3. UPDATE WISHLIST ITEM
-export function UpdateWishlistItem(app) {
-  app.put("/api/v1/wishlist/update", VerifyToken, async (req, res) => {
+export default function UpdateWishlistItem(app) {
+  app.patch("/api/v1/wishlist/update", VerifyToken, async (req, res) => {
     console.log(`/api/v1/wishlist/update, Timestamp: ${new Date().toISOString()}`);
     const startTime = Date.now();
     const userId = req.user?.id;

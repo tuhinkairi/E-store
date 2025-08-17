@@ -3,7 +3,7 @@ import { Wishlist, Product } from "../../model/ExportModel.js";
 import mongoose from "mongoose";
 
 // 1. ADD TO WISHLIST
-export function AddToWishlist(app) {
+export default function AddToWishlist(app) {
   app.post("/api/v1/wishlist/add", VerifyToken, async (req, res) => {
     console.log(`/api/v1/wishlist/add, Timestamp: ${new Date().toISOString()}`);
     const startTime = Date.now();

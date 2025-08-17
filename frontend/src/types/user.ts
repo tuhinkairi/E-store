@@ -1,3 +1,4 @@
+
 // interfaces/onboarding.interfaces.ts
 export interface UserProps{
   firstName: string;
@@ -25,7 +26,10 @@ export interface UserProps{
   smsNotifications: boolean;
   styleRecommendations: boolean;
   isAdmin: boolean;
-
+  createdAt: string;
+  updatedAt: string;
+  orders:string[];
+  wishlist:string[];
   // Auth fields
   token: string | null;
   isLoggedIn: boolean;

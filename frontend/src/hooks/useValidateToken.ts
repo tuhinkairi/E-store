@@ -7,20 +7,28 @@ import { logout, setUserAuth } from "../store/features/UserSlice";
 import { useNavigate } from "react-router-dom";
 
 export const useValidateToken = () => {
-    const token = useAppSelector((state) => state.user?.token? state.user?.token: state.user)?.toString()
-    const dispatch = useAppDispatch()
-    const navigate = useNavigate()
-    const [isValid, setIsValid] = useState<boolean | null>(null);
-    const userData = useAppSelector(s=> s.user)
-    const loading = useAppSelector(s=>s.loading)
+    const token = useAppSelector((state) =>
+        state.user?.token ? state.user?.token : state.user
+    )?.toString();
+
+    const dispatch = useAppDispatch();
+    const navigate = useNavigate();
+    const userData = useAppSelector((s) => s.user);
+    const [isValid, setIsValid] = useState<boolean>(!!userData?.isLoggedIn);
+    const loading = useAppSelector((s) => s.loading.isLoading);
     const [error, setError] = useState<string | null>(null);
 
     const validate = useCallback(async () => {
-        console.log(token)
+        // 🚀 Short-circuit if already logged in
+        if (userData?.isLoggedIn) {
+            setIsValid(true);
+            return;
+        }
+
         if (!token) {
             setIsValid(false);
             setError("No token found");
-            navigate("/login")
+            navigate("/login");
             return;
         }
 
@@ -28,31 +36,31 @@ export const useValidateToken = () => {
         setError(null);
 
         try {
-            const response = await getUser()
+            const response = await getUser();
 
             if (response) {
                 response.token = token;
-                response.isLoggedIn = true
-                console.log("response",response)
+                response.isLoggedIn = true;
                 dispatch(setUserAuth(response));
                 setIsValid(true);
             } else {
                 setIsValid(false);
-                setError(response ?? "Token validation failed");
-                logout()
+                setError("Token validation failed");
+                dispatch(logout());
             }
         } catch (err: any) {
             setIsValid(false);
             setError(err?.message || "Request failed");
-            logout()
+            dispatch(logout());
         } finally {
             dispatch(setLoading(false));
         }
-    }, [token, navigate,dispatch]);
+    }, [token, userData?.isLoggedIn, navigate, dispatch]);
 
     useEffect(() => {
         validate();
-    }, [validate]);
+        dispatch(setLoading(false));
+    }, [validate, dispatch]);
 
     return { isValid, userData, loading, error, refetch: validate };
 };

@@ -1,11 +1,11 @@
-import { useState } from 'react';
-import { 
-  User, 
-  Package, 
-  Heart, 
-  CreditCard, 
-  MapPin, 
-  Settings, 
+import { useEffect, useState } from 'react';
+import {
+  User,
+  Package,
+  Heart,
+  CreditCard,
+  MapPin,
+  Settings,
   RotateCcw,
   Gift,
 } from 'lucide-react';
@@ -19,20 +19,32 @@ import PlaceholderContent from './PlaceHolder';
 import DashboardHeader from './DashboardHeader';
 import Sidebar from './SideBar';
 import Overview from './Overview';
+import { useNavigate } from 'react-router-dom';
+import { useValidateToken } from '../../../hooks/useValidateToken';
+import LoadingScreen from '../../../components/fallback/LoadingScreen';
 
 // Component imports
 
 const UserDashboard = () => {
+  const navigate = useNavigate()
+  const {isValid, loading, userData} = useValidateToken()
   const [activeTab, setActiveTab] = useState<TabType>('overview');
   const [sidebarOpen, setSidebarOpen] = useState(false);
   const [orderFilter, setOrderFilter] = useState('all');
 
+  useEffect(() => {
+    if (!isValid) {
+      console.log(userData)
+      navigate("/login")
+    }
+  },[isValid, navigate,loading,userData])
+  
   // Sample data - in a real app this would come from your API
   const user: UserProps = {
-    name: "Sarah Mitchell",
-    email: "sarah.mitchell@email.com",
-    joinDate: "March 2023",
-    totalOrders: 24,
+    name: userData?.firstName+" "+userData?.lastName,
+    email: userData?.email??"N/A",
+    joinDate: userData?.createdAt ? userData?.createdAt.split("T")[0] : "N/A",
+    totalOrders: userData?.orders?.length??0,
     totalSpent: 2840,
     loyaltyPoints: 1250,
     avatar: null
@@ -48,7 +60,7 @@ const UserDashboard = () => {
       products: ["Heritage Cashmere Coat", "Classic Oxford Shirt"]
     },
     {
-      id: "ORD-2024-002", 
+      id: "ORD-2024-002",
       date: "2024-01-20",
       status: "shipped",
       total: 225,
@@ -57,7 +69,7 @@ const UserDashboard = () => {
     },
     {
       id: "ORD-2024-003",
-      date: "2024-01-25", 
+      date: "2024-01-25",
       status: "processing",
       total: 395,
       items: 1,
@@ -89,7 +101,7 @@ const UserDashboard = () => {
       isDefault: false,
       name: "Sarah Mitchell",
       street: "456 Business Ave",
-      city: "New York", 
+      city: "New York",
       state: "NY",
       zip: "10002",
       country: "United States"
@@ -107,7 +119,7 @@ const UserDashboard = () => {
     },
     {
       id: 2,
-      type: "Mastercard", 
+      type: "Mastercard",
       last4: "8888",
       expiryMonth: "08",
       expiryYear: "2025",
@@ -128,49 +140,52 @@ const UserDashboard = () => {
 
   const renderContent = () => {
     switch (activeTab) {
-      case 'overview': 
+      case 'overview':
         return (
-          <Overview 
+          <Overview
             user={user}
             orders={orders}
             wishlistItems={wishlistItems}
             setActiveTab={setActiveTab}
           />
         );
-      case 'orders': 
+      case 'orders':
         return (
-          <Orders 
+          <Orders
             orders={orders}
             orderFilter={orderFilter}
             setOrderFilter={setOrderFilter}
           />
         );
-      case 'wishlist': 
+      case 'wishlist':
         return <Wishlist wishlistItems={wishlistItems} />;
-      case 'addresses': 
+      case 'addresses':
         return <Addresses addresses={addresses} />;
-      case 'payment': 
+      case 'payment':
         return <PaymentMethods paymentMethods={paymentMethods} />;
-      case 'settings': 
+      case 'settings':
         return <AccountSettings user={user} />;
       case 'returns':
         return <PlaceholderContent message="Returns & Exchanges coming soon..." />;
       case 'loyalty':
         return <PlaceholderContent message="Loyalty Program details coming soon..." />;
-      default: 
+      default:
         return <PlaceholderContent />;
     }
   };
 
+  if (loading) {
+    return <LoadingScreen/>
+  }
   return (
     <div className="min-h-screen bg-sage-50">
-      <DashboardHeader 
+      <DashboardHeader
         sidebarOpen={sidebarOpen}
         setSidebarOpen={setSidebarOpen}
       />
 
       <div className="flex">
-        <Sidebar 
+        <Sidebar
           activeTab={activeTab}
           setActiveTab={setActiveTab}
           sidebarOpen={sidebarOpen}

@@ -15,6 +15,10 @@ import GetUser from "../api/User/GetUser.js";
 import Logout from "../api/User/LogoutUser.js";
 import UpdateUser from "../api/User/UpdateUser.js";
 import VerifyUser from "../api/User/VerifyUser.js";
+import AddToWishlist from "../api/Wishlist/AddToWishlist.js";
+import GetWishlist from "../api/Wishlist/GetWIshList.js";
+import RemoveFromWishlist from "../api/Wishlist/RemoveFromWishlist.js";
+import UpdateWishlistItem from "../api/Wishlist/UpdateWishlistItem.js";
 
 
 export default function routerControl(app) {
@@ -40,4 +44,10 @@ export default function routerControl(app) {
   GetUserOrderHistory(app)
   GetOrders(app)
   GetOrderById(app)
+
+  // wishlist
+  GetWishlist(app)
+  AddToWishlist(app)
+  RemoveFromWishlist(app)
+  UpdateWishlistItem(app) 
 }

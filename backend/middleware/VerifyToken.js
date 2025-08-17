@@ -12,7 +12,7 @@ const VerifyToken = async (req, res, next) => {
     }
 
     if (authHeader && authHeader.startsWith("Bearer ")) {
-      token = authHeader.split(" ")[1].split("\"")[1];
+      token = authHeader.split(" ")[1].split("\"")[1]?? authHeader.split(" ")[1];
     }
     console.log(Date.now() ," -- Token Recived --", token);
     if (!token && req.cookies && req.cookies.elegance_session) {

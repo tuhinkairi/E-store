@@ -41,7 +41,7 @@ const LoginForm = ({ switchToSignup }: { switchToSignup: () => void }) => {
   useEffect(() => {
     dispatch(setLoading(true))
     if (isLoggedIn) {
-      navigate("/")
+      navigate("/dashboard/user")
     }
     dispatch(setLoading(false))
 

@@ -1,5 +1,9 @@
+import mongoose from "mongoose";
+import VerifyToken from "../../middleware/VerifyToken.js";
+import { Wishlist } from "../../model/ExportModel.js";
+
 // 2. REMOVE FROM WISHLIST
-export function RemoveFromWishlist(app) {
+export default function RemoveFromWishlist(app) {
   app.delete("/api/v1/wishlist/remove", VerifyToken, async (req, res) => {
     console.log(`/api/v1/wishlist/remove, Timestamp: ${new Date().toISOString()}`);
     const startTime = Date.now();
