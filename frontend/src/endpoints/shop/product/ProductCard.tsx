@@ -36,12 +36,12 @@ const ProductCard: React.FC<ProductCardProps> = ({
           alt={product.name}
           className="w-full h-full object-cover group-hover:scale-105 transition-transform duration-500"
         />
-        {product.isNew && (
+        {product.is_New && (
           <span className="absolute top-3 left-3 bg-gold-500 text-white px-2 py-1 text-xs font-medium rounded">
             NEW
           </span>
         )}
-        {product.originalPrice && (
+        {product.originalPrice && product.originalPrice > product.price && (
           <span className="absolute top-3 right-3 bg-red-500 text-white px-2 py-1 text-xs font-medium rounded">
             SALE
           </span>

@@ -1,7 +1,8 @@
 // components/dashboard/DashboardHeader.tsx
 import React from 'react';
-import { Menu, Bell, User } from 'lucide-react';
+import { Menu, Bell, User, Home } from 'lucide-react';
 import type { DashboardHeaderProps } from '../../../types/dashboard';
+import { NavLink } from 'react-router-dom';
 
 const DashboardHeader: React.FC<DashboardHeaderProps> = ({
   sidebarOpen,
@@ -28,7 +29,8 @@ const DashboardHeader: React.FC<DashboardHeaderProps> = ({
           </div>
         </div>
         <div className="flex items-center space-x-4">
-          <Bell className="h-5 w-5 text-sage-600" />
+          <NavLink to={"/"}><Home className="h-5 w-5 text-sage-600 hover:text-sage-800" /></NavLink>
+          <Bell className="h-5 w-5 text-sage-600 hover:text-sage-800" />
           <div className="w-8 h-8 bg-sage-200 rounded-full flex items-center justify-center">
             <User className="h-5 w-5 text-sage-600" />
           </div>

@@ -32,7 +32,7 @@ export const sortProducts = (products: ProductItem[], sortBy: string): ProductIt
       case 'rating':
         return b.rating - a.rating;
       case 'newest':
-        return (b.isNew ? 1 : 0) - (a.isNew ? 1 : 0);
+        return (b.is_New ? 1 : 0) - (a.is_New ? 1 : 0);
       default:
         return a.name.localeCompare(b.name);
     }

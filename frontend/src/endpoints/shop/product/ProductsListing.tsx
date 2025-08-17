@@ -1,14 +1,21 @@
-import { useState, useMemo } from 'react';
+import { useState, useMemo, useEffect } from 'react';
 import { filterProducts, sortProducts } from '../../../utils/FilterProduct';
-import type { SortBy, ViewMode } from '../../../types/product';
+import type {  ProductItem, SortBy, ViewMode } from '../../../types/product';
 import PageHeader from './PageHeader';
 import SearchControls from './SearchControl';
-import { categories, collections, products, sortOptions } from '../../../data/products';
+import { categories, collections, sortOptions } from '../../../data/products';
 import FilterSidebar from './FilterSideBar';
 import ProductGrid from './ProductGrid';
+import getProduct from '../../../axios/product/getProduct';
+import { setLoading } from '../../../store/features/GlobalSlice';
+import { useAppDispatch, useAppSelector } from '../../../store/hooks';
+import LoadingScreen from '../../../components/fallback/LoadingScreen';
 
 
 const ProductListingPage = () => {
+  const [products, setProductList] = useState<ProductItem[]>([]) 
+  const loading = useAppSelector(s=>s.loading.isLoading)
+  const dispatch = useAppDispatch()
   const [searchTerm, setSearchTerm] = useState('');
   const [selectedCategory, setSelectedCategory] = useState('All');
   const [selectedCollection, setSelectedCollection] = useState('All');
@@ -17,6 +24,16 @@ const ProductListingPage = () => {
   const [viewMode, setViewMode] = useState<ViewMode>('grid');
   const [showFilters, setShowFilters] = useState(false);
   const [favorites, setFavorites] = useState(new Set<number | string>());
+
+  // product fetching 
+  useEffect(()=>{
+    dispatch(setLoading(true))
+    getProduct().then((data)=>{
+      if(data){
+        setProductList(data)
+      }
+    }).finally(()=>dispatch(setLoading(false)))
+  },[dispatch])
 
   const filteredAndSortedProducts = useMemo(() => {
     const filtered = filterProducts(
@@ -28,7 +45,7 @@ const ProductListingPage = () => {
     );
 
     return sortProducts(filtered, sortBy);
-  }, [searchTerm, selectedCategory, selectedCollection, priceRange, sortBy]);
+  }, [searchTerm, selectedCategory, selectedCollection, priceRange, sortBy, products]);
 
   const toggleFavorite = (productId: number | string) => {
     const newFavorites = new Set(favorites);
@@ -47,6 +64,9 @@ const ProductListingPage = () => {
     setSearchTerm('');
   };
 
+  if(loading){
+    return <LoadingScreen fullScreen={false}/>
+  }
   return (
     <div className="min-h-screen bg-cream">
       <div className="container mx-auto px-4 py-8">

@@ -14,7 +14,7 @@ export const products: ProductItem[] = [
     reviews: 24,
     colors: ["Black", "Camel", "Navy"],
     sizes: ["XS", "S", "M", "L", "XL"],
-    isNew: false,
+    is_New: false,
     isFavorite: false,
     description: "Hand-tailored cashmere coat with timeless silhouette"
   },
@@ -30,7 +30,7 @@ export const products: ProductItem[] = [
     reviews: 18,
     colors: ["White", "Light Blue", "Pink"],
     sizes: ["XS", "S", "M", "L", "XL"],
-    isNew: false,
+    is_New: false,
     isFavorite: false,
     description: "Premium cotton oxford shirt with refined details"
   },
@@ -46,7 +46,7 @@ export const products: ProductItem[] = [
     reviews: 31,
     colors: ["Beige", "Black", "Navy"],
     sizes: ["XS", "S", "M", "L", "XL"],
-    isNew: true,
+    is_New: true,
     isFavorite: false,
     description: "Classic wool trench with contemporary cut"
   },
@@ -62,7 +62,7 @@ export const products: ProductItem[] = [
     reviews: 42,
     colors: ["Cream", "Gray", "Navy"],
     sizes: ["XS", "S", "M", "L", "XL"],
-    isNew: false,
+    is_New: false,
     isFavorite: false,
     description: "Soft merino wool sweater with elegant drape"
   },
@@ -78,7 +78,7 @@ export const products: ProductItem[] = [
     reviews: 16,
     colors: ["Ivory", "Blush", "Sage"],
     sizes: ["XS", "S", "M", "L", "XL"],
-    isNew: true,
+    is_New: true,
     isFavorite: false,
     description: "Luxurious silk blouse with fluid silhouette"
   },
@@ -94,7 +94,7 @@ export const products: ProductItem[] = [
     reviews: 29,
     colors: ["Black", "Charcoal", "Cream"],
     sizes: ["XS", "S", "M", "L", "XL"],
-    isNew: false,
+    is_New: false,
     isFavorite: false,
     description: "Impeccably tailored blazer with modern proportions"
   }

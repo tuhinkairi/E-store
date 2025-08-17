@@ -12,7 +12,7 @@ export interface ProductItem {
   reviews: number;
   colors: string[];
   sizes: string[];
-  isNew: boolean;
+  is_New: boolean;
   isFavorite: boolean;
   description: string;
 }
