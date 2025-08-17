@@ -5,6 +5,7 @@ import getUser from "../axios/auth/getUser";
 import { setLoading } from "../store/features/GlobalSlice";
 import { logout, setUserAuth } from "../store/features/UserSlice";
 import { useNavigate } from "react-router-dom";
+import getWishlist from "../axios/user/getWishlist";
 
 export const useValidateToken = () => {
     const token = useAppSelector((state) =>
@@ -37,8 +38,12 @@ export const useValidateToken = () => {
 
         try {
             const response = await getUser();
-
+            
             if (response) {
+                const wishlist = await getWishlist()
+                if (wishlist) {
+                    response.wishlist = wishlist
+                }
                 response.token = token;
                 response.isLoggedIn = true;
                 dispatch(setUserAuth(response));

@@ -1,14 +1,20 @@
 
-export interface WishlistItem {
-  productId: string;   // Reference to Product
-  addedAt: Date;
-  preferredSize?: string;
-  preferredColor?: string;
+export interface WhislistItem {
+  _id: string;
+  name: string;
+  price: number;
+  originalPrice: number;
+  category: string;
+  image: string[];
+  colors: string[];
+  sizes: string[];
+  stock: number;
 }
 
-export interface Wishlist {
-  userId: string;      // Reference to User
-  items: WishlistItem[];
-  createdAt: Date;
-  updatedAt: Date;
+export interface WishlistResult {
+  productId: WhislistItem;
+  preferredSize: string;
+  preferredColor: string;
+  _id: string;
+  addedAt: string; // ISO date string
 }

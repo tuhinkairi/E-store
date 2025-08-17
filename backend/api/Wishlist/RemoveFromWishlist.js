@@ -70,7 +70,7 @@ export default function RemoveFromWishlist(app) {
       console.log(`[REMOVE_WISHLIST] Wishlist saved - UserID: ${userId}, RequestID: ${requestId}, WishlistID: ${wishlist._id}`);
 
       // Populate for response
-      await wishlist.populate("items.productId", "name price originalPrice image category colors sizes");
+      await wishlist.populate("items.productId", "name price originalPrice image category colors sizes stock");
 
       const responseTime = Date.now() - startTime;
       console.log(`[REMOVE_WISHLIST] Item removed successfully - UserID: ${userId}, RequestID: ${requestId}, ProductID: ${productId}, Items count: ${wishlist.items.length}, Response time: ${responseTime}ms`);

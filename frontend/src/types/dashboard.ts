@@ -1,4 +1,5 @@
 // interfaces/dashboard.interfaces.ts
+import type { WishlistResult } from "./wishlist";
 
 export interface User {
   name: string;
@@ -71,7 +72,7 @@ export interface SidebarProps {
 export interface OverviewProps {
   user: User;
   orders: Order[];
-  wishlistItems: WishlistItem[];
+  wishlistItems: WishlistResult[];
   setActiveTab: (tab: TabType) => void;
 }
 

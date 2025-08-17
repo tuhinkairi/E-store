@@ -9,7 +9,7 @@ import {
   RotateCcw,
   Gift,
 } from 'lucide-react';
-import type { Address, Order, PaymentMethod, SidebarItem, TabType, User as UserProps, WishlistItem } from '../../../types/dashboard';
+import type { Address, Order, PaymentMethod, SidebarItem, TabType, User as UserProps } from '../../../types/dashboard';
 import Orders from './Orders';
 import Wishlist from './Wishlist';
 import Addresses from './Addresses';
@@ -22,6 +22,7 @@ import Overview from './Overview';
 import { useNavigate } from 'react-router-dom';
 import { useValidateToken } from '../../../hooks/useValidateToken';
 import LoadingScreen from '../../../components/fallback/LoadingScreen';
+import type { WishlistResult } from '../../../types/wishlist';
 
 // Component imports
 
@@ -77,11 +78,7 @@ const UserDashboard = () => {
     }
   ];
 
-  const wishlistItems: WishlistItem[] = [
-    { id: 1, name: "Silk Blouse", price: 185, image: null, inStock: true },
-    { id: 2, name: "Tailored Blazer", price: 345, image: null, inStock: false },
-    { id: 3, name: "Classic Oxford Shirt", price: 165, image: null, inStock: true }
-  ];
+  const wishlistItems: WishlistResult[] = userData?.wishlist ?? [];
 
   const addresses: Address[] = [
     {

@@ -1,3 +1,4 @@
+import type { WishlistResult } from "./wishlist";
 
 // interfaces/onboarding.interfaces.ts
 export interface UserProps{
@@ -29,7 +30,7 @@ export interface UserProps{
   createdAt: string;
   updatedAt: string;
   orders:string[];
-  wishlist:string[];
+  wishlist:WishlistResult[];
   // Auth fields
   token: string | null;
   isLoggedIn: boolean;
