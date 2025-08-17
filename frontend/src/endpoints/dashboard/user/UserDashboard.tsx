@@ -9,7 +9,7 @@ import {
   RotateCcw,
   Gift,
 } from 'lucide-react';
-import type { Address, Order, PaymentMethod, SidebarItem, TabType, User as UserProps } from '../../../types/dashboard';
+import type { Order, PaymentMethod, SidebarItem, TabType, User as UserProps } from '../../../types/dashboard';
 import Orders from './Orders';
 import Wishlist from './Wishlist';
 import Addresses from './Addresses';
@@ -80,30 +80,6 @@ const UserDashboard = () => {
 
   const wishlistItems: WishlistResult[] = userData?.wishlist ?? [];
 
-  const addresses: Address[] = [
-    {
-      id: 1,
-      type: "Home",
-      isDefault: true,
-      name: "Sarah Mitchell",
-      street: "123 Heritage Lane",
-      city: "New York",
-      state: "NY",
-      zip: "10001",
-      country: "United States"
-    },
-    {
-      id: 2,
-      type: "Office",
-      isDefault: false,
-      name: "Sarah Mitchell",
-      street: "456 Business Ave",
-      city: "New York",
-      state: "NY",
-      zip: "10002",
-      country: "United States"
-    }
-  ];
 
   const paymentMethods: PaymentMethod[] = [
     {
@@ -157,7 +133,7 @@ const UserDashboard = () => {
       case 'wishlist':
         return <Wishlist wishlistItems={wishlistItems} />;
       case 'addresses':
-        return <Addresses addresses={addresses} />;
+        return <Addresses  address={userData}/>;
       case 'payment':
         return <PaymentMethods paymentMethods={paymentMethods} />;
       case 'settings':
