@@ -22,7 +22,7 @@ const SearchControls: React.FC<SearchControlsProps> = ({
             placeholder="Search products..."
             value={searchTerm}
             onChange={(e) => onSearchChange(e.target.value)}
-            className="w-full pl-10 pr-4 py-3 border border-sage-200/30 rounded-lg focus:outline-none focus:ring-2 focus:ring-gold-400 focus:border-transparent"
+            className="w-full pl-10 pr-4 py-3 border border-sage-600 rounded-lg focus:outline-none focus:ring-2 focus:ring-gold-400 focus:border-transparent"
           />
         </div>
       </div>
