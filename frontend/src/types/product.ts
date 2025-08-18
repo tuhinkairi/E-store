@@ -1,7 +1,7 @@
 // interfaces/product.interfaces.ts
 
 export interface ProductItem {
-  id: number;
+  _id: number | string;
   name: string;
   price: number;
   originalPrice: number | null;

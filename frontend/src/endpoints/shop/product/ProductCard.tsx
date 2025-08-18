@@ -47,11 +47,11 @@ const ProductCard: React.FC<ProductCardProps> = ({
           </span>
         )}
         <button
-          onClick={() => onToggleFavorite(product.id)}
+          onClick={() => onToggleFavorite(product._id)}
           className="absolute top-3 right-3 p-2 bg-white/80 backdrop-blur-sm rounded-full opacity-0 group-hover:opacity-100 transition-opacity duration-300"
         >
           <Heart 
-            className={`w-4 h-4 ${favorites.has(product.id) ? 'fill-red-500 text-red-500' : 'text-sage-700'}`}
+            className={`w-4 h-4 ${favorites.has(product._id) ? 'fill-red-500 text-red-500' : 'text-sage-700'}`}
           />
         </button>
         <div className="absolute bottom-3 left-3 opacity-0 group-hover:opacity-100 transition-opacity duration-300">

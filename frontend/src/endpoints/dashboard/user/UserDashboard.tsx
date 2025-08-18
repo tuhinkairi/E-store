@@ -28,7 +28,7 @@ import type { WishlistResult } from '../../../types/wishlist';
 
 const UserDashboard = () => {
   const navigate = useNavigate()
-  const {isValid, loading, userData} = useValidateToken()
+  const {isValid, loading, userData, refetch} = useValidateToken()
   const [activeTab, setActiveTab] = useState<TabType>('overview');
   const [sidebarOpen, setSidebarOpen] = useState(false);
   const [orderFilter, setOrderFilter] = useState('all');
@@ -38,7 +38,8 @@ const UserDashboard = () => {
       console.log(userData)
       navigate("/login")
     }
-  },[isValid, navigate,loading,userData])
+    refetch()
+  },[isValid, navigate,loading,userData, refetch])
   
   // Sample data - in a real app this would come from your API
   const user: UserProps = {

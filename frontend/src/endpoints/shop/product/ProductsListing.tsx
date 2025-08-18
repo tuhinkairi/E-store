@@ -8,13 +8,18 @@ import FilterSidebar from './FilterSideBar';
 import ProductGrid from './ProductGrid';
 import getProduct from '../../../axios/product/getProduct';
 import { setLoading } from '../../../store/features/GlobalSlice';
-import { useAppDispatch, useAppSelector } from '../../../store/hooks';
+import { useAppDispatch } from '../../../store/hooks';
 import LoadingScreen from '../../../components/fallback/LoadingScreen';
+import { useValidateToken } from '../../../hooks/useValidateToken';
+import { updateUserAuthField } from '../../../store/features/UserSlice';
+import addWishlist from '../../../axios/product/addWishlist';
+import removeFromWishlist from '../../../axios/product/removeFromWishlist';
 
 
 const ProductListingPage = () => {
+  const {loading, userData} = useValidateToken()
+  const wishlist = userData?.wishlist ?? []
   const [products, setProductList] = useState<ProductItem[]>([]) 
-  const loading = useAppSelector(s=>s.loading.isLoading)
   const dispatch = useAppDispatch()
   const [searchTerm, setSearchTerm] = useState('');
   const [selectedCategory, setSelectedCategory] = useState('All');
@@ -30,7 +35,7 @@ const ProductListingPage = () => {
     dispatch(setLoading(true))
     getProduct().then((data)=>{
       if(data){
-        setProductList(data)
+        setProductList([...data])
       }
     }).finally(()=>dispatch(setLoading(false)))
   },[dispatch])
@@ -47,15 +52,52 @@ const ProductListingPage = () => {
     return sortProducts(filtered, sortBy);
   }, [searchTerm, selectedCategory, selectedCollection, priceRange, sortBy, products]);
 
-  const toggleFavorite = (productId: number | string) => {
-    const newFavorites = new Set(favorites);
-    if (newFavorites.has(productId)) {
-      newFavorites.delete(productId);
+const toggleFavorite = async (productId: number | string) => {
+  const newFavorites = new Set(favorites);
+  const isCurrentlyFavorited = newFavorites.has(productId);
+  
+  // Optimistic update - update UI immediately
+  if (isCurrentlyFavorited) {
+    newFavorites.delete(productId);
+  } else {
+    newFavorites.add(productId);
+  }
+  setFavorites(newFavorites);
+  
+  try {
+    if (isCurrentlyFavorited) {
+      // Remove from wishlist
+      await removeFromWishlist({productId});
+      const updatedWishlist = wishlist?.filter(item => item.productId._id !== productId) || [];
+      dispatch(updateUserAuthField({
+        field: 'wishlist',
+        value: updatedWishlist
+      }));
     } else {
+      // Add to wishlist
+      const data = await addWishlist({ productId: productId });
+      if (data) {
+        const updatedWishlist = wishlist;
+        updatedWishlist.push(data)
+        dispatch(updateUserAuthField({
+          field: 'wishlist',
+          value: updatedWishlist
+
+        }));
+      }
+    }
+  } catch (error) {
+    console.error('Wishlist operation failed:', error);
+    // Revert the optimistic update
+    if (isCurrentlyFavorited) {
       newFavorites.add(productId);
+    } else {
+      newFavorites.delete(productId);
     }
     setFavorites(newFavorites);
-  };
+    // Show error message to user
+  }
+};
 
   const handleClearFilters = () => {
     setSelectedCategory('All');

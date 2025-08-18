@@ -28,7 +28,7 @@ const ProductGrid: React.FC<ProductGridProps> = ({
         }>
           {products.map(product => (
             <ProductCard 
-              key={product.id} 
+              key={product._id} 
               product={product} 
               isListView={viewMode === 'list'}
               favorites={favorites}

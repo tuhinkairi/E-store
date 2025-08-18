@@ -8,7 +8,7 @@ export interface UserProps{
   password: string;
   confirmPassword: string;
   birthDate: string;
-  phone: string;
+  phone: string | number;
   marketingConsent: boolean;
   genderPreference: string;
   stylePreferences: string[];
