@@ -13,7 +13,7 @@ const FilterSidebar: React.FC<FilterSidebarProps> = ({
   onClearFilters
 }) => {
   return (
-    <div className="bg-white p-6 rounded-lg shadow-sm border border-sage-200/30">
+    <div className="bg-white p-6 rounded-lg shadow-sm border border-sage-200/30 sticky top-20">
       <div className="flex items-center justify-between mb-6">
         <h3 className="text-lg font-semibold text-sage-900">Filters</h3>
         <button
