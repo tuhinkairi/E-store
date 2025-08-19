@@ -2,11 +2,11 @@ import React from 'react';
 import { Heart, Star, ShoppingBag } from 'lucide-react';
 import type { ProductCardProps } from '../../../types/product';
 
-const ProductCard: React.FC<ProductCardProps> = ({ 
-  product, 
-  isListView, 
-  favorites, 
-  onToggleFavorite 
+const ProductCard: React.FC<ProductCardProps> = ({
+  product,
+  isListView,
+  favorites,
+  onToggleFavorite
 }) => {
   const getColorStyle = (color: string) => {
     const colorMap: { [key: string]: string } = {
@@ -24,33 +24,35 @@ const ProductCard: React.FC<ProductCardProps> = ({
       'ivory': '#fffff0',
       'blush': '#fdf2f8'
     };
-    
+
     return colorMap[color.toLowerCase()] || '#d1d5db';
   };
 
   return (
     <div className={`bg-white rounded-lg shadow-sm border border-sage-200/30 overflow-hidden group hover:shadow-md transition-all duration-300 ${isListView ? 'flex' : ''}`}>
       <div className={`relative ${isListView ? 'w-48 flex-shrink-0' : 'aspect-[3/4]'} overflow-hidden`}>
-        <img 
-          src={product.image} 
+        <img
+          src={product.image}
           alt={product.name}
           className="w-full h-full object-cover group-hover:scale-105 transition-transform duration-500"
         />
-        {product.is_New && (
-          <span className="absolute top-3 left-3 bg-gold-500 text-white px-2 py-1 text-xs font-medium rounded">
-            NEW
-          </span>
-        )}
-        {product.originalPrice && product.originalPrice > product.price && (
-          <span className="absolute top-3 right-3 bg-red-500 text-white px-2 py-1 text-xs font-medium rounded">
-            SALE
-          </span>
-        )}
+        <div className='absolute top-3 left-3'>
+          {product.is_New && (
+            <span className=" bg-gold-500 text-white px-2 py-1 text-xs font-medium rounded mr-2">
+              NEW
+            </span>
+          )}
+          {product.originalPrice && product.originalPrice > product.price && (
+            <span className=" bg-red-500 text-white px-2 py-1 text-xs font-medium rounded">
+              SALE
+            </span>
+          )}
+        </div>
         <button
           onClick={() => onToggleFavorite(product._id)}
-          className="absolute top-3 right-3 p-2 bg-white/80 backdrop-blur-sm rounded-full opacity-0 group-hover:opacity-100 transition-opacity duration-300"
+          className="absolute top-3 right-3 p-2 bg-white/80 backdrop-blur-sm rounded-full transition-opacity duration-300"
         >
-          <Heart 
+          <Heart
             className={`w-4 h-4 ${favorites.has(product._id) ? 'fill-red-500 text-red-500' : 'text-sage-700'}`}
           />
         </button>
@@ -61,7 +63,7 @@ const ProductCard: React.FC<ProductCardProps> = ({
           </button>
         </div>
       </div>
-      
+
       <div className={`p-4 ${isListView ? 'flex-1' : ''}`}>
         <div className="flex items-center gap-2 mb-2">
           <span className="text-xs font-medium text-sage-600 bg-sage-50 px-2 py-1 rounded">
@@ -69,15 +71,15 @@ const ProductCard: React.FC<ProductCardProps> = ({
           </span>
           <span className="text-xs text-sage-600">{product.collection}</span>
         </div>
-        
+
         <h3 className="font-medium text-sage-900 mb-1 group-hover:text-sage-700 transition-colors">
           {product.name}
         </h3>
-        
+
         <p className="text-sm text-sage-600 mb-3 line-clamp-2">
           {product.description}
         </p>
-        
+
         <div className="flex items-center gap-2 mb-3">
           <div className="flex items-center gap-1">
             <Star className="w-4 h-4 fill-gold-500 text-gold-500" />
@@ -85,7 +87,7 @@ const ProductCard: React.FC<ProductCardProps> = ({
           </div>
           <span className="text-sm text-sage-600">({product.reviews} reviews)</span>
         </div>
-        
+
         <div className="flex items-center justify-between">
           <div className="flex items-center gap-2">
             <span className="text-lg font-semibold text-sage-900">
@@ -97,7 +99,7 @@ const ProductCard: React.FC<ProductCardProps> = ({
               </span>
             )}
           </div>
-          
+
           <div className="flex items-center gap-1">
             {product.colors.slice(0, 3).map((color, index) => (
               <div

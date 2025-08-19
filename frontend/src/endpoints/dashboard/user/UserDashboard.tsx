@@ -32,15 +32,16 @@ const UserDashboard = () => {
   const [activeTab, setActiveTab] = useState<TabType>('overview');
   const [sidebarOpen, setSidebarOpen] = useState(false);
   const [orderFilter, setOrderFilter] = useState('all');
-
+  
   useEffect(() => {
     if (!isValid) {
       console.log(userData)
       navigate("/login")
     }
+  },[isValid, navigate,loading,userData])
+  useEffect(()=>{
     refetch()
-  },[isValid, navigate,loading,userData, refetch])
-  
+  },[refetch])
   // Sample data - in a real app this would come from your API
   const user: UserProps = {
     name: userData?.firstName+" "+userData?.lastName,

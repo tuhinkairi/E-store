@@ -1,6 +1,6 @@
 import { useState, useMemo, useEffect } from 'react';
 import { filterProducts, sortProducts } from '../../../utils/FilterProduct';
-import type {  ProductItem, SortBy, ViewMode } from '../../../types/product';
+import type { ProductItem, SortBy, ViewMode } from '../../../types/product';
 import PageHeader from './PageHeader';
 import SearchControls from './SearchControl';
 import { categories, collections, sortOptions } from '../../../data/products';
@@ -17,9 +17,9 @@ import removeFromWishlist from '../../../axios/product/removeFromWishlist';
 
 
 const ProductListingPage = () => {
-  const {loading, userData} = useValidateToken()
+  const { loading, userData } = useValidateToken()
   const wishlist = userData?.wishlist ?? []
-  const [products, setProductList] = useState<ProductItem[]>([]) 
+  const [products, setProductList] = useState<ProductItem[]>([])
   const dispatch = useAppDispatch()
   const [searchTerm, setSearchTerm] = useState('');
   const [selectedCategory, setSelectedCategory] = useState('All');
@@ -31,14 +31,23 @@ const ProductListingPage = () => {
   const [favorites, setFavorites] = useState(new Set<number | string>());
 
   // product fetching 
-  useEffect(()=>{
-    dispatch(setLoading(true))
-    getProduct().then((data)=>{
-      if(data){
-        setProductList([...data])
-      }
-    }).finally(()=>dispatch(setLoading(false)))
-  },[dispatch])
+  useEffect(() => {
+    dispatch(setLoading(true));
+    getProduct()
+      .then((data) => {
+        if (data) {
+          setProductList([...data]);
+          const fevList = new Set<number | string>();
+          if (userData?.wishlist) {
+            userData.wishlist.forEach((e) => {
+              fevList.add(e.productId._id);
+            });
+          }
+          setFavorites(fevList);
+        }
+      })
+      .finally(() => dispatch(setLoading(false)));
+  }, [dispatch, userData]);
 
   const filteredAndSortedProducts = useMemo(() => {
     const filtered = filterProducts(
@@ -52,52 +61,56 @@ const ProductListingPage = () => {
     return sortProducts(filtered, sortBy);
   }, [searchTerm, selectedCategory, selectedCollection, priceRange, sortBy, products]);
 
-const toggleFavorite = async (productId: number | string) => {
-  const newFavorites = new Set(favorites);
-  const isCurrentlyFavorited = newFavorites.has(productId);
-  
-  // Optimistic update - update UI immediately
-  if (isCurrentlyFavorited) {
-    newFavorites.delete(productId);
-  } else {
-    newFavorites.add(productId);
-  }
-  setFavorites(newFavorites);
-  
-  try {
-    if (isCurrentlyFavorited) {
-      // Remove from wishlist
-      await removeFromWishlist({productId});
-      const updatedWishlist = wishlist?.filter(item => item.productId._id !== productId) || [];
-      dispatch(updateUserAuthField({
-        field: 'wishlist',
-        value: updatedWishlist
-      }));
-    } else {
-      // Add to wishlist
-      const data = await addWishlist({ productId: productId });
-      if (data) {
-        const updatedWishlist = wishlist;
-        updatedWishlist.push(data)
-        dispatch(updateUserAuthField({
-          field: 'wishlist',
-          value: updatedWishlist
+  const toggleFavorite = async (productId: number | string) => {
+    const newFavorites = new Set(favorites);
+    const isCurrentlyFavorited = newFavorites.has(productId);
 
-        }));
-      }
-    }
-  } catch (error) {
-    console.error('Wishlist operation failed:', error);
-    // Revert the optimistic update
+    // Optimistic update - update UI immediately
     if (isCurrentlyFavorited) {
-      newFavorites.add(productId);
-    } else {
       newFavorites.delete(productId);
+    } else {
+      newFavorites.add(productId);
     }
     setFavorites(newFavorites);
-    // Show error message to user
-  }
-};
+
+    try {
+      if (isCurrentlyFavorited) {
+        // Remove from wishlist
+        const data = await removeFromWishlist({ productId });
+        if (data) {
+          const updatedWishlist = wishlist;
+          updatedWishlist.filter(item=> item._id != productId)
+          dispatch(updateUserAuthField({
+            field: 'wishlist',
+            value: updatedWishlist
+
+          }));
+        }
+      } else {
+        // Add to wishlist
+        const data = await addWishlist({ productId: productId });
+        if (data) {
+          const updatedWishlist = wishlist;
+          updatedWishlist.push(data)
+          dispatch(updateUserAuthField({
+            field: 'wishlist',
+            value: updatedWishlist
+
+          }));
+        }
+      }
+    } catch (error) {
+      console.error('Wishlist operation failed:', error);
+      // Revert the optimistic update
+      if (isCurrentlyFavorited) {
+        newFavorites.add(productId);
+      } else {
+        newFavorites.delete(productId);
+      }
+      setFavorites(newFavorites);
+      // Show error message to user
+    }
+  };
 
   const handleClearFilters = () => {
     setSelectedCategory('All');
@@ -106,8 +119,8 @@ const toggleFavorite = async (productId: number | string) => {
     setSearchTerm('');
   };
 
-  if(loading){
-    return <LoadingScreen fullScreen={false}/>
+  if (loading) {
+    return <LoadingScreen fullScreen={false} />
   }
   return (
     <div className="min-h-screen bg-cream">

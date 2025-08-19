@@ -19,9 +19,9 @@ export const useValidateToken = () => {
     const loading = useAppSelector((s) => s.loading.isLoading);
     const [error, setError] = useState<string | null>(null);
 
-    const validate = useCallback(async () => {
+    const validate = useCallback(async (foece=false) => {
         // 🚀 Short-circuit if already logged in
-        if (userData?.isLoggedIn) {
+        if (userData?.isLoggedIn && !foece) {
             setIsValid(true);
             return;
         }
@@ -62,10 +62,14 @@ export const useValidateToken = () => {
         }
     }, [token, userData?.isLoggedIn, navigate, dispatch]);
 
+    const refetch = useCallback(()=>{
+        validate(true)
+    },[validate])
+
     useEffect(() => {
         validate();
         dispatch(setLoading(false));
     }, [validate, dispatch]);
 
-    return { isValid, userData, loading, error, refetch: validate };
+    return { isValid, userData, loading, error, refetch};
 };
