@@ -77,7 +77,7 @@ const Overview: React.FC<OverviewProps> = ({
         <div className="p-6 border-b border-sage-200">
           <div className="flex items-center justify-between">
             <h3 className="text-lg font-medium text-sage-900">Recent Orders</h3>
-            <button 
+            <button
               onClick={() => setActiveTab('orders')}
               className="text-sage-600 hover:text-sage-900 text-sm flex items-center"
             >
@@ -97,12 +97,15 @@ const Overview: React.FC<OverviewProps> = ({
                       {order.items[0].name} {order.items.length > 1 && `+${order.items.length - 1} more`}
                     </p>
                   </div>
+                  <p className="text-sage-600 text-sm mb-2 ml-5">
+                    Ordered on {new Date(order.createdAt).toLocaleDateString()}
+                  </p>
                 </div>
-                <div className="text-right">
-                  <p className="font-medium text-sage-900">${order.totalAmount}</p>
+                <div className="text-right flex items-center space-x-4">
                   <span className={`inline-block px-2 py-1 rounded-full text-xs font-medium ${getStatusColor(order.status)}`}>
                     {order.status}
                   </span>
+                  <p className="font-medium text-sage-900">${order.totalAmount}</p>
                 </div>
               </div>
             ))}

@@ -37,8 +37,8 @@ const Orders: React.FC<OrdersProps> = ({
       <div className="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-4">
         <h2 className="text-2xl font-light text-sage-900">Your Orders</h2>
         <div className="flex items-center space-x-4">
-          <select 
-            value={orderFilter} 
+          <select
+            value={orderFilter}
             onChange={handleFilterChange}
             className="border border-sage-200 rounded-lg px-3 py-2 text-sage-900 bg-cream"
           >
@@ -58,11 +58,9 @@ const Orders: React.FC<OrdersProps> = ({
           <div key={order.orderNumber} className="bg-cream border border-sage-200 rounded-lg p-6">
             <div className="flex flex-col lg:flex-row lg:items-center lg:justify-between gap-4">
               <div className="flex-1">
-                <div className="flex items-center justify-between mb-2">
+                <div className="flex items-center justify-between mb-2 ">
                   <h3 className="font-medium text-sage-900">{order.orderNumber}</h3>
-                  <span className={`px-3 py-1 rounded-full text-sm font-medium ${getStatusColor(order.status)}`}>
-                    {order.status}
-                  </span>
+
                 </div>
                 <p className="text-sage-600 text-sm mb-2">
                   Ordered on {new Date(order.createdAt).toLocaleDateString()}
@@ -74,6 +72,9 @@ const Orders: React.FC<OrdersProps> = ({
                 </div>
               </div>
               <div className="flex items-center space-x-4">
+                <span className={`px-3 py-1 rounded-full text-sm font-medium ${getStatusColor(order.status)}`}>
+                  {order.status}
+                </span>
                 <div className="text-right">
                   <p className="font-medium text-sage-900">${order.totalAmount}</p>
                   <p className="text-sm text-sage-600">
