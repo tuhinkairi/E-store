@@ -9,7 +9,6 @@ import { setLoading } from '../../../store/features/GlobalSlice';
 import LoadingScreen from '../../../components/fallback/LoadingScreen';
 
 function Wishlist({ wishlistItems }: { wishlistItems: WishlistResult[] }) {
-  console.log(wishlistItems)
   const dispatch = useAppDispatch()
   const loading = useAppSelector(s=>s.loading.isLoading)
   const HandelRemoveItem = useCallback((id: string) => {

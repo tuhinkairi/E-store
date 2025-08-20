@@ -1,4 +1,5 @@
 // interfaces/dashboard.interfaces.ts
+import type { OrderResponse } from "./order";
 import type { WishlistResult } from "./wishlist";
 
 export interface User {
@@ -11,14 +12,6 @@ export interface User {
   avatar: string | null;
 }
 
-export interface Order {
-  id: string;
-  date: string;
-  status: 'delivered' | 'shipped' | 'processing' | 'cancelled';
-  total: number;
-  items: number;
-  products: string[];
-}
 
 export interface WishlistItem {
   id: number;
@@ -71,13 +64,13 @@ export interface SidebarProps {
 
 export interface OverviewProps {
   user: User;
-  orders: Order[];
+  orders: OrderResponse[];
   wishlistItems: WishlistResult[];
   setActiveTab: (tab: TabType) => void;
 }
 
 export interface OrdersProps {
-  orders: Order[];
+  orders: OrderResponse[];
   orderFilter: string;
   setOrderFilter: (filter: string) => void;
 }

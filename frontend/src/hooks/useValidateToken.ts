@@ -1,27 +1,36 @@
 // src/hooks/useValidateToken.ts
-import { useEffect, useState, useCallback } from "react";
+import { useEffect, useState, useCallback, useRef } from "react";
 import { useAppDispatch, useAppSelector } from "../store/hooks";
 import getUser from "../axios/auth/getUser";
 import { setLoading } from "../store/features/GlobalSlice";
 import { logout, setUserAuth } from "../store/features/UserSlice";
-import { useNavigate } from "react-router-dom";
+import { useLocation, useNavigate } from "react-router-dom";
 import getWishlist from "../axios/user/getWishlist";
+import getUserOrders from "../axios/order/getOrders";
 
 export const useValidateToken = () => {
     const token = useAppSelector((state) =>
         state.user?.token ? state.user?.token : state.user
     )?.toString();
-
+    
+    const location = useLocation();
     const dispatch = useAppDispatch();
     const navigate = useNavigate();
     const userData = useAppSelector((s) => s.user);
-    const [isValid, setIsValid] = useState<boolean>(!!userData?.isLoggedIn);
     const loading = useAppSelector((s) => s.loading.isLoading);
+    
+    const [isValid, setIsValid] = useState<boolean>(!!userData?.isLoggedIn);
     const [error, setError] = useState<string | null>(null);
-
-    const validate = useCallback(async (foece=false) => {
-        // 🚀 Short-circuit if already logged in
-        if (userData?.isLoggedIn && !foece) {
+    
+    // Use ref to prevent unnecessary re-renders
+    const isExecutingRef = useRef(false);
+    
+    const validateAndFetchData = useCallback(async (forceValidation = false) => {
+        // Prevent concurrent executions
+        if (isExecutingRef.current) return;
+        
+        // Short-circuit if already logged in and not forcing validation
+        if (!forceValidation && userData?.isLoggedIn) {
             setIsValid(true);
             return;
         }
@@ -29,21 +38,36 @@ export const useValidateToken = () => {
         if (!token) {
             setIsValid(false);
             setError("No token found");
-            navigate("/login");
+            if (location.pathname.includes('/dashboard')) {
+                navigate("/login");
+            }
             return;
         }
 
+        isExecutingRef.current = true;
         dispatch(setLoading(true));
         setError(null);
-
+        
         try {
             const response = await getUser();
-            
+
             if (response) {
-                const wishlist = await getWishlist()
-                if (wishlist) {
-                    response.wishlist = wishlist
+                // Fetch additional data in parallel for better performance
+                const [wishlist, orders] = await Promise.allSettled([
+                    getWishlist(),
+                    getUserOrders()
+                ]);
+
+                // Add wishlist if successful
+                if (wishlist.status === 'fulfilled' && wishlist.value) {
+                    response.wishlist = wishlist.value;
                 }
+
+                // Add orders if successful
+                if (orders.status === 'fulfilled' && orders.value) {
+                    response.orders = orders.value;
+                }
+                
                 response.token = token;
                 response.isLoggedIn = true;
                 dispatch(setUserAuth(response));
@@ -59,17 +83,24 @@ export const useValidateToken = () => {
             dispatch(logout());
         } finally {
             dispatch(setLoading(false));
+            isExecutingRef.current = false;
         }
-    }, [token, userData?.isLoggedIn, navigate, dispatch]);
-
-    const refetch = useCallback(()=>{
-        validate(true)
-    },[validate])
+    }, [dispatch, token, navigate, location.pathname, userData?.isLoggedIn]);
 
     useEffect(() => {
-        validate();
+        const isDashboardRoute = location.pathname.includes('/dashboard');
+        
+        // For dashboard routes, always validate the token
+        // For other routes, only validate if not already logged in
+        const shouldValidate = isDashboardRoute || !userData?.isLoggedIn;
+        
+        if (shouldValidate) {
+            validateAndFetchData(isDashboardRoute);
+        }
+        
+        // Set loading to false when component mounts
         dispatch(setLoading(false));
-    }, [validate, dispatch]);
+    }, [validateAndFetchData, location.pathname, userData?.isLoggedIn, dispatch]);
 
-    return { isValid, userData, loading, error, refetch};
+    return { isValid, userData, loading, error };
 };

@@ -9,7 +9,7 @@ import {
   RotateCcw,
   Gift,
 } from 'lucide-react';
-import type { Order, PaymentMethod, SidebarItem, TabType, User as UserProps } from '../../../types/dashboard';
+import type { PaymentMethod, SidebarItem, TabType, User as UserProps } from '../../../types/dashboard';
 import Orders from './Orders';
 import Wishlist from './Wishlist';
 import Addresses from './Addresses';
@@ -23,12 +23,13 @@ import { useNavigate } from 'react-router-dom';
 import { useValidateToken } from '../../../hooks/useValidateToken';
 import LoadingScreen from '../../../components/fallback/LoadingScreen';
 import type { WishlistResult } from '../../../types/wishlist';
+import type { OrderResponse } from '../../../types/order';
 
 // Component imports
 
 const UserDashboard = () => {
   const navigate = useNavigate()
-  const {isValid, loading, userData, refetch} = useValidateToken()
+  const {isValid, loading, userData} = useValidateToken()
   const [activeTab, setActiveTab] = useState<TabType>('overview');
   const [sidebarOpen, setSidebarOpen] = useState(false);
   const [orderFilter, setOrderFilter] = useState('all');
@@ -38,14 +39,13 @@ const UserDashboard = () => {
       console.log(userData)
       navigate("/login")
     }
-  },[isValid, navigate,loading,userData])
-  useEffect(()=>{
-    refetch()
-  },[refetch])
+  },[isValid, navigate,userData])
+
+  
   // Sample data - in a real app this would come from your API
   const user: UserProps = {
     name: userData?.firstName+" "+userData?.lastName,
-    email: userData?.email??"N/A",
+    email: userData?.email ?? "N/A",
     joinDate: userData?.createdAt ? userData?.createdAt.split("T")[0] : "N/A",
     totalOrders: userData?.orders?.length??0,
     totalSpent: 2840,
@@ -53,32 +53,7 @@ const UserDashboard = () => {
     avatar: null
   };
 
-  const orders: Order[] = [
-    {
-      id: "ORD-2024-001",
-      date: "2024-01-15",
-      status: "delivered",
-      total: 485,
-      items: 2,
-      products: ["Heritage Cashmere Coat", "Classic Oxford Shirt"]
-    },
-    {
-      id: "ORD-2024-002",
-      date: "2024-01-20",
-      status: "shipped",
-      total: 225,
-      items: 1,
-      products: ["Merino Wool Sweater"]
-    },
-    {
-      id: "ORD-2024-003",
-      date: "2024-01-25",
-      status: "processing",
-      total: 395,
-      items: 1,
-      products: ["Wool Trench Coat"]
-    }
-  ];
+  const orders: OrderResponse[]  = userData?.orders ?? []
 
   const wishlistItems: WishlistResult[] = userData?.wishlist ?? [];
 

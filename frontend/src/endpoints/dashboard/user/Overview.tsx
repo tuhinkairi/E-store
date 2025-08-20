@@ -1,7 +1,8 @@
 // components/dashboard/Overview.tsx
 import React from 'react';
 import { ShoppingBag, CreditCard, Heart, Package, ChevronRight } from 'lucide-react';
-import type { Order, OverviewProps } from '../../../types/dashboard';
+import type { OverviewProps } from '../../../types/dashboard';
+import type { OrderResponse } from '../../../types/order';
 
 const Overview: React.FC<OverviewProps> = ({
   user,
@@ -9,12 +10,15 @@ const Overview: React.FC<OverviewProps> = ({
   wishlistItems,
   setActiveTab
 }) => {
-  const getStatusColor = (status: Order['status']): string => {
+  const getStatusColor = (status: OrderResponse['status']): string => {
     switch (status) {
-      case 'delivered': return 'bg-green-100 text-green-800';
-      case 'shipped': return 'bg-blue-100 text-blue-800';
-      case 'processing': return 'bg-gold-400 text-sage-900';
-      case 'cancelled': return 'bg-red-100 text-red-800';
+      // "Pending" | "Processing" | "Shipped" | "Delivered" | "Cancelled" | "Returned";
+      case 'Delivered': return 'bg-green-100 text-green-800';
+      case 'Pending': return 'bg-pink-100 text-pink-800';
+      case 'Shipped': return 'bg-blue-100 text-blue-800';
+      case 'Processing': return 'bg-gold-400 text-sage-900';
+      case 'Cancelled': return 'bg-red-100 text-red-800';
+      case 'Returned': return 'bg-orange-100 text-orange-800';
       default: return 'bg-sage-200 text-sage-800';
     }
   };
@@ -84,18 +88,18 @@ const Overview: React.FC<OverviewProps> = ({
         <div className="p-6">
           <div className="space-y-4">
             {orders.slice(0, 3).map((order) => (
-              <div key={order.id} className="flex items-center justify-between p-4 border border-sage-200 rounded-lg">
+              <div key={order.orderNumber} className="flex items-center justify-between p-4 border border-sage-200 rounded-lg">
                 <div className="flex items-center space-x-4">
                   <Package className="h-5 w-5 text-sage-600" />
                   <div>
-                    <p className="font-medium text-sage-900">{order.id}</p>
+                    <p className="font-medium text-sage-900">{order.orderNumber}</p>
                     <p className="text-sm text-sage-600">
-                      {order.products[0]} {order.items > 1 && `+${order.items - 1} more`}
+                      {order.items[0].name} {order.items.length > 1 && `+${order.items.length - 1} more`}
                     </p>
                   </div>
                 </div>
                 <div className="text-right">
-                  <p className="font-medium text-sage-900">${order.total}</p>
+                  <p className="font-medium text-sage-900">${order.totalAmount}</p>
                   <span className={`inline-block px-2 py-1 rounded-full text-xs font-medium ${getStatusColor(order.status)}`}>
                     {order.status}
                   </span>

@@ -1,11 +1,4 @@
-
-export interface OrderItem {
-  productId: string;   // Reference to Product
-  quantity: number;
-  priceAtPurchase: number;              // Price locked at purchase
-  size?: string;                        // Optional size
-  color?: string;                       // Optional color
-}
+import type { ProductItem } from "./product";
 
 export interface ShippingAddress {
   addressType: string;
@@ -17,9 +10,9 @@ export interface ShippingAddress {
   country: string;
 }
 
-export interface Order{
+export interface OrderResponse{
   userId: string;      // Reference to User
-  items: OrderItem[];
+  items: ProductItem[];
   totalAmount: number;
   status: "Pending" | "Processing" | "Shipped" | "Delivered" | "Cancelled" | "Returned";
   paymentStatus: "Pending" | "Paid" | "Failed" | "Refunded";

@@ -1,3 +1,4 @@
+import type { OrderResponse } from "./order";
 import type { WishlistResult } from "./wishlist";
 
 // interfaces/onboarding.interfaces.ts
@@ -29,7 +30,7 @@ export interface UserProps{
   isAdmin: boolean;
   createdAt: string;
   updatedAt: string;
-  orders:string[];
+  orders:OrderResponse[];
   wishlist:WishlistResult[];
   // Auth fields
   token: string | null;
