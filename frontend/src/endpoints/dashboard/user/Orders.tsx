@@ -36,31 +36,32 @@ const Orders: React.FC<OrdersProps> = ({
     <div className="space-y-6">
       <div className="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-4">
         <h2 className="text-2xl font-light text-sage-900">Your Orders</h2>
-        <div className="flex items-center space-x-4">
-          <select
-            value={orderFilter}
-            onChange={handleFilterChange}
-            className="border border-sage-200 rounded-lg px-3 py-2 text-sage-900 bg-cream"
-          >
-            <option value="all">All Orders</option>
-            <option value="Processing">Processing</option>
-            <option value="Pending">Pending</option>
-            <option value="Shipped">Shipped</option>
-            <option value="Delivered">Delivered</option>
-            <option value="Cancelled">Cancelled</option>
-            <option value="Returned">Returned</option>
-          </select>
-        </div>
+        {filteredOrders.length>0 &&
+          <div className="flex items-center space-x-4">
+            <select
+              value={orderFilter}
+              onChange={handleFilterChange}
+              className="border border-sage-200 rounded-lg px-3 py-2 text-sage-900 bg-cream"
+            >
+              <option value="all">All Orders</option>
+              <option value="Processing">Processing</option>
+              <option value="Pending">Pending</option>
+              <option value="Shipped">Shipped</option>
+              <option value="Delivered">Delivered</option>
+              <option value="Cancelled">Cancelled</option>
+              <option value="Returned">Returned</option>
+            </select>
+          </div>
+        }
       </div>
 
       <div className="space-y-4">
-        {filteredOrders.map((order) => (
+        {filteredOrders.length ? filteredOrders.map((order) => (
           <div key={order.orderNumber} className="bg-cream border border-sage-200 rounded-lg p-6">
             <div className="flex flex-col lg:flex-row lg:items-center lg:justify-between gap-4">
               <div className="flex-1">
                 <div className="flex items-center justify-between mb-2 ">
                   <h3 className="font-medium text-sage-900">{order.orderNumber}</h3>
-
                 </div>
                 <p className="text-sage-600 text-sm mb-2">
                   Ordered on {new Date(order.createdAt).toLocaleDateString()}
@@ -97,7 +98,11 @@ const Orders: React.FC<OrdersProps> = ({
               </div>
             </div>
           </div>
-        ))}
+        )) : (
+          <div className="text-center p-6 bg-sage-50 rounded-lg">
+            <p className="text-sage-600 text-2xl">No orders found</p>
+          </div>
+        )}
       </div>
     </div>
   );

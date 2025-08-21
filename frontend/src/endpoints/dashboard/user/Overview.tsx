@@ -74,7 +74,7 @@ const Overview: React.FC<OverviewProps> = ({
       </div>
 
       {/* Recent Orders */}
-      <div className="bg-cream border border-sage-200 rounded-lg">
+      {orders.length>0 && <div className="bg-cream border border-sage-200 rounded-lg">
         <div className="p-6 border-b border-sage-200">
           <div className="flex items-center justify-between">
             <h3 className="text-lg font-medium text-sage-900">Recent Orders</h3>
@@ -112,7 +112,7 @@ const Overview: React.FC<OverviewProps> = ({
             ))}
           </div>
         </div>
-      </div>
+      </div>}
     </div>
   );
 };

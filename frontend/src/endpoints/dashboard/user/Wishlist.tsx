@@ -28,11 +28,11 @@ function Wishlist({ wishlistItems }: { wishlistItems: WishlistResult[] }) {
     <div className="space-y-6">
       <div className="flex items-center justify-between">
         <h2 className="text-2xl font-light text-sage-900">Your Wishlist</h2>
-        <p className="text-sage-600">{wishlistItems.length} items</p>
+        {wishlistItems.length>0 && <p className="text-sage-600">{wishlistItems.length} items</p>}
       </div>
 
       <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
-        {wishlistItems.map((item) => (
+        {wishlistItems.length ? wishlistItems.map((item) => (
           <div key={item.productId._id} className="bg-cream border border-sage-200 rounded-lg overflow-hidden">
             <div className="aspect-square bg-sage-50 flex items-center justify-center">
               <Package className="h-12 w-12 text-sage-600" />
@@ -59,7 +59,11 @@ function Wishlist({ wishlistItems }: { wishlistItems: WishlistResult[] }) {
               </div>
             </div>
           </div>
-        ))}
+        )):(
+          <div className="col-span-1 md:col-span-2 lg:col-span-3 text-center p-6 bg-sage-50 rounded-lg">
+            <p className="text-sage-600 text-2xl">Your wishlist is empty</p>
+          </div>
+        )}
       </div>
     </div>
   );

@@ -87,7 +87,7 @@ const UserDashboard = () => {
   ];
 
   if (loading) {
-    return <LoadingScreen/>
+    return <LoadingScreen />
   }
   
   const renderContent = () => {

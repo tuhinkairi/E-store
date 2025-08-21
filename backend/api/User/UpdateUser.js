@@ -16,7 +16,7 @@ export default function UpdateUser(app) {
       const authenticatedUserId = req.user?.id;
 
       console.log(
-        `[${new Date().toISOString()}] [INFO] [${requestId}] PATCH /api/v1/user/update/:id - Update attempt`,
+        `[${new Date().toISOString()}] [INFO] [${requestId}] PATCH /api/v1/user/update/ - Update attempt`,
         {
           targetUserId: userId,
           authenticatedUserId: authenticatedUserId,
