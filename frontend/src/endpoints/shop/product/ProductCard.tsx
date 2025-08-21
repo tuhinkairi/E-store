@@ -1,6 +1,7 @@
 import React from 'react';
 import { Heart, Star, ShoppingBag } from 'lucide-react';
 import type { ProductCardProps } from '../../../types/product';
+import { useNavigate } from 'react-router-dom';
 
 const ProductCard: React.FC<ProductCardProps> = ({
   product,
@@ -8,6 +9,7 @@ const ProductCard: React.FC<ProductCardProps> = ({
   favorites,
   onToggleFavorite
 }) => {
+  const navigate = useNavigate();
   const getColorStyle = (color: string) => {
     const colorMap: { [key: string]: string } = {
       'white': '#fff',
@@ -27,7 +29,6 @@ const ProductCard: React.FC<ProductCardProps> = ({
 
     return colorMap[color.toLowerCase()] || '#d1d5db';
   };
-
   return (
     <div className={`bg-white rounded-lg shadow-sm border border-sage-200/30 overflow-hidden group hover:shadow-md transition-all duration-300 ${isListView ? 'flex' : ''}`}>
       <div className={`relative ${isListView ? 'w-48 flex-shrink-0' : 'aspect-[3/4]'} overflow-hidden`}>
@@ -37,12 +38,12 @@ const ProductCard: React.FC<ProductCardProps> = ({
           className="w-full h-full object-cover group-hover:scale-105 transition-transform duration-500"
         />
         <div className='absolute top-3 left-3'>
-          {product.is_New && (
+          {product.is_New===true && (
             <span className=" bg-gold-500 text-white px-2 py-1 text-xs font-medium rounded mr-2">
               NEW
             </span>
           )}
-          {product.originalPrice && product.originalPrice > product.price && (
+          {product.originalPrice!==null && product.originalPrice > product.price && (
             <span className=" bg-red-500 text-white px-2 py-1 text-xs font-medium rounded">
               SALE
             </span>
@@ -57,7 +58,7 @@ const ProductCard: React.FC<ProductCardProps> = ({
           />
         </button>
         <div className="absolute bottom-3 left-3 opacity-0 group-hover:opacity-100 transition-opacity duration-300">
-          <button className="bg-sage-800 text-cream px-4 py-2 text-sm font-medium rounded hover:bg-sage-700 transition-colors flex items-center gap-2">
+          <button onClick={()=>navigate("/collections/"+product._id)} className="bg-sage-800 text-cream px-4 py-2 text-sm font-medium rounded hover:bg-sage-700 transition-colors flex items-center gap-2">
             <ShoppingBag className="w-4 h-4" />
             Quick Add
           </button>
