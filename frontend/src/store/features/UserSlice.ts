@@ -28,9 +28,9 @@ const userSlice = createSlice({
     initialState,
     reducers: {
         setUserAuth: (state, action: PayloadAction<UserProps>) => {
-            state = action.payload;
-            saveState(state.token);
-            return action.payload;
+            const newState = action.payload;
+            saveState(newState.token);
+            return newState;
         },
         updateUserAuthField: <K extends keyof UserProps>(
             state: UserProps | null,

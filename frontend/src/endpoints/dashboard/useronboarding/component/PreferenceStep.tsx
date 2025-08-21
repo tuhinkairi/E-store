@@ -12,10 +12,10 @@ const PreferencesStep = ({ formData, onChange, onArrayToggle }:{formData:UserPro
   ];
 
   const priceRanges = [
-    { id: 'budget', label: 'Budget Conscious ($50-150)', value: '50-150' },
-    { id: 'moderate', label: 'Moderate ($150-300)', value: '150-300' },
-    { id: 'premium', label: 'Premium ($300-500)', value: '300-500' },
-    { id: 'luxury', label: 'Luxury ($500+)', value: '500+' }
+    { id: 'budget', label: 'Budget Conscious ($0-50)', value: '0-50' },
+    { id: 'moderate', label: 'Moderate ($50-150)', value: '50-150' },
+    { id: 'premium', label: 'Premium ($150-300)', value: '150-300' },
+    { id: 'luxury', label: 'Luxury ($300+)', value: '+300' }
   ];
 
   return (
@@ -29,7 +29,7 @@ const PreferencesStep = ({ formData, onChange, onArrayToggle }:{formData:UserPro
         <div>
           <label className="block text-sm font-medium text-sage-900 mb-3">I shop for:</label>
           <div className="grid grid-cols-3 gap-3">
-            {['Women', 'Men', 'All'].map((option) => (
+            {['Women', 'Men', 'Unisex'].map((option) => (
               <label key={option} className="flex items-center">
                 <input
                   type="radio"

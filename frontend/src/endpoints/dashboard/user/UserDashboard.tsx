@@ -33,12 +33,15 @@ const UserDashboard = () => {
   const [activeTab, setActiveTab] = useState<TabType>('overview');
   const [sidebarOpen, setSidebarOpen] = useState(false);
   const [orderFilter, setOrderFilter] = useState('all');
-  
+  const [orders, setOrders] = useState<OrderResponse[]>([]);
+  const [wishlistItems, setWishlistItems] = useState<WishlistResult[]>([]);
   useEffect(() => {
     if (!isValid) {
       console.log(userData)
       navigate("/login")
     }
+    setOrders(userData?.orders ?? []);
+    setWishlistItems(userData?.wishlist ?? []);
   },[isValid, navigate,userData])
 
   
@@ -52,11 +55,6 @@ const UserDashboard = () => {
     loyaltyPoints: 1250,
     avatar: null
   };
-
-  const orders: OrderResponse[]  = userData?.orders ?? []
-
-  const wishlistItems: WishlistResult[] = userData?.wishlist ?? [];
-
 
   const paymentMethods: PaymentMethod[] = [
     {
@@ -88,6 +86,10 @@ const UserDashboard = () => {
     { id: 'settings', label: 'Account Settings', icon: Settings }
   ];
 
+  if (loading) {
+    return <LoadingScreen/>
+  }
+  
   const renderContent = () => {
     switch (activeTab) {
       case 'overview':
@@ -114,19 +116,16 @@ const UserDashboard = () => {
       case 'payment':
         return <PaymentMethods paymentMethods={paymentMethods} />;
       case 'settings':
-        return <AccountSettings user={user} />;
+        return <AccountSettings/>;
       case 'returns':
         return <PlaceholderContent message="Returns & Exchanges coming soon..." />;
-      case 'loyalty':
-        return <PlaceholderContent message="Loyalty Program details coming soon..." />;
-      default:
-        return <PlaceholderContent />;
-    }
-  };
-
-  if (loading) {
-    return <LoadingScreen/>
-  }
+        case 'loyalty':
+          return <PlaceholderContent message="Loyalty Program details coming soon..." />;
+          default:
+            return <PlaceholderContent />;
+          }
+        };
+        
   return (
     <div className="min-h-screen bg-sage-50">
       <DashboardHeader

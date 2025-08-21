@@ -10,6 +10,7 @@ const Overview: React.FC<OverviewProps> = ({
   wishlistItems,
   setActiveTab
 }) => {
+  console.log(orders, wishlistItems);
   const getStatusColor = (status: OrderResponse['status']): string => {
     switch (status) {
       // "Pending" | "Processing" | "Shipped" | "Delivered" | "Cancelled" | "Returned";
@@ -87,7 +88,7 @@ const Overview: React.FC<OverviewProps> = ({
         </div>
         <div className="p-6">
           <div className="space-y-4">
-            {orders.slice(0, 3).map((order) => (
+            {orders.map((order) => (
               <div key={order.orderNumber} className="flex items-center justify-between p-4 border border-sage-200 rounded-lg">
                 <div className="flex items-center space-x-4">
                   <Package className="h-5 w-5 text-sage-600" />

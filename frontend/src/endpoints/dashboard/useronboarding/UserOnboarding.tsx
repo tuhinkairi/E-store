@@ -46,7 +46,11 @@ const UserOnboarding = () => {
     styleRecommendations: true,
     isAdmin: false,
     token: "",
-    isLoggedIn: false
+    isLoggedIn: false,
+    wishlist: [],
+    orders: [],
+    updatedAt: new Date().toISOString(),
+    createdAt: new Date().toISOString(),
   });
 
   const [errors, setErrors] = useState<ValidationErrors>({});

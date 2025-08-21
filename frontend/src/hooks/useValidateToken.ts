@@ -1,4 +1,3 @@
-// src/hooks/useValidateToken.ts
 import { useEffect, useState, useCallback, useRef } from "react";
 import { useAppDispatch, useAppSelector } from "../store/hooks";
 import getUser from "../axios/auth/getUser";
@@ -10,8 +9,7 @@ import getUserOrders from "../axios/order/getOrders";
 
 export const useValidateToken = () => {
     const token = useAppSelector((state) =>
-        state.user?.token ? state.user?.token : state.user
-    )?.toString();
+        state.user === null ? null : state.user?.token ? state.user?.token : state.user?.toString())
     
     const location = useLocation();
     const dispatch = useAppDispatch();
@@ -22,14 +20,11 @@ export const useValidateToken = () => {
     const [isValid, setIsValid] = useState<boolean>(!!userData?.isLoggedIn);
     const [error, setError] = useState<string | null>(null);
     
-    // Use ref to prevent unnecessary re-renders
     const isExecutingRef = useRef(false);
     
     const validateAndFetchData = useCallback(async (forceValidation = false) => {
-        // Prevent concurrent executions
         if (isExecutingRef.current) return;
         
-        // Short-circuit if already logged in and not forcing validation
         if (!forceValidation && userData?.isLoggedIn) {
             setIsValid(true);
             return;
@@ -49,28 +44,25 @@ export const useValidateToken = () => {
         setError(null);
         
         try {
-            const response = await getUser();
+            const userResponse = await getUser();
 
-            if (response) {
-                // Fetch additional data in parallel for better performance
+            if (userResponse) {
+                // Fetch additional data in parallel
                 const [wishlist, orders] = await Promise.allSettled([
                     getWishlist(),
                     getUserOrders()
                 ]);
 
-                // Add wishlist if successful
-                if (wishlist.status === 'fulfilled' && wishlist.value) {
-                    response.wishlist = wishlist.value;
-                }
-
-                // Add orders if successful
-                if (orders.status === 'fulfilled' && orders.value) {
-                    response.orders = orders.value;
-                }
+                // Create new user object instead of mutating
+                const completeUser = {
+                    ...userResponse,
+                    token,
+                    isLoggedIn: true,
+                    ...(wishlist.status === 'fulfilled' && wishlist.value ? { wishlist: wishlist.value } : {}),
+                    ...(orders.status === 'fulfilled' && orders.value ? { orders: orders.value } : {})
+                };
                 
-                response.token = token;
-                response.isLoggedIn = true;
-                dispatch(setUserAuth(response));
+                dispatch(setUserAuth(completeUser));
                 setIsValid(true);
             } else {
                 setIsValid(false);
@@ -81,6 +73,7 @@ export const useValidateToken = () => {
             setIsValid(false);
             setError(err?.message || "Request failed");
             dispatch(logout());
+            console.log(err);
         } finally {
             dispatch(setLoading(false));
             isExecutingRef.current = false;
@@ -89,16 +82,12 @@ export const useValidateToken = () => {
 
     useEffect(() => {
         const isDashboardRoute = location.pathname.includes('/dashboard');
-        
-        // For dashboard routes, always validate the token
-        // For other routes, only validate if not already logged in
         const shouldValidate = isDashboardRoute || !userData?.isLoggedIn;
         
         if (shouldValidate) {
             validateAndFetchData(isDashboardRoute);
         }
         
-        // Set loading to false when component mounts
         dispatch(setLoading(false));
     }, [validateAndFetchData, location.pathname, userData?.isLoggedIn, dispatch]);
 

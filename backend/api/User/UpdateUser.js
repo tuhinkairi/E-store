@@ -102,7 +102,6 @@ export default function UpdateUser(app) {
         "styleRecommendations",
         "isAdmin",
         "cart",
-        "createdAt",
         "updatedAt",
       ];
       const adminOnlyFields = ["isAdmin"];

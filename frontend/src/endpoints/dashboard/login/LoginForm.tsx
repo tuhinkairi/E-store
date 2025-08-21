@@ -6,16 +6,15 @@ import { useNavigate } from 'react-router-dom';
 import { useAppDispatch, useAppSelector } from '../../../store/hooks';
 import LoadingScreen from '../../../components/fallback/LoadingScreen';
 import { setLoading } from '../../../store/features/GlobalSlice';
+import getWishlist from '../../../axios/user/getWishlist';
+import getUserOrders from '../../../axios/order/getOrders';
 import { setUserAuth } from '../../../store/features/UserSlice';
-import { useValidateToken } from '../../../hooks/useValidateToken';
 
 const LoginForm = ({ switchToSignup }: { switchToSignup: () => void }) => {
-  const {isValid} = useValidateToken()
   const navigate = useNavigate()
   const isLoading = useAppSelector((state) => state.loading.isLoading)
   const token = useAppSelector((state) => state.user?.token ? state.user?.token : state.user)?.toString()
 
-  const isLoggedIn = useAppSelector((state) => state.user?.isLoggedIn)
   const dispatch = useAppDispatch()
   const [formData, setFormData] = useState({ email: '', password: '', rememberMe: false, token: token });
 
@@ -23,30 +22,46 @@ const LoginForm = ({ switchToSignup }: { switchToSignup: () => void }) => {
 
   const handleChange = (key: string, value: boolean | string) => setFormData(prev => ({ ...prev, [key]: value }));
 
-  const handleLogin = useCallback(() => {
-    dispatch(setLoading(true))
-    LoginEndpoint(formData).then(data => {
-      if (data?.user && data.token) {
-        // format data
-        const logged_user = data.user
-        logged_user.token = data.token;
-        logged_user.isLoggedIn = true;
-        dispatch(setUserAuth(logged_user))
+  const handleLogin = useCallback(async () => {
+    
+    try {
+      dispatch(setLoading(true));
+      const [loginData] = await Promise.allSettled([LoginEndpoint(formData)]);
+
+      if (loginData.status === "fulfilled" && loginData.value) {
+        // Create a new user object instead of mutating
+        const baseUser = {
+          ...loginData.value.user,
+          token: loginData.value.user,
+          isLoggedIn: false
+        };
+        dispatch(setUserAuth({ ...baseUser, token: loginData.value?.token }));
+
+        // Fetch additional data in parallel
+        const [wishlistResult, ordersResult] = await Promise.allSettled([
+          getWishlist(),
+          getUserOrders()
+        ]);
+
+        // Create final user object with all data
+        const finalUser = {
+          ...baseUser,
+          ...(wishlistResult.status === 'fulfilled' && wishlistResult.value ? { wishlist: wishlistResult.value } : {}),
+          ...(ordersResult.status === 'fulfilled' && ordersResult.value ? { orders: ordersResult.value } : {})
+        };
+        if (ordersResult.status === 'fulfilled') {
+          dispatch(setUserAuth({ ...finalUser, token: loginData.value?.token, isLoggedIn: true }));
+          navigate("/dashboard/user");
+        }
       }
-      console.log(data)
-    }).catch(err => console.log(err)).finally(() => dispatch(setLoading(false)))
-    console.log('Login attempt:', formData);
-  }, [formData, dispatch]);
-
-  useEffect(() => {
-    dispatch(setLoading(true))
-    if (isLoggedIn) {
-      navigate("/dashboard/user")
+    } catch (err) {
+      console.error('Login error:', err);
+    } finally {
+      dispatch(setLoading(false));
     }
-    dispatch(setLoading(false))
-
-  }, [isLoggedIn, navigate, dispatch])
-  if (isLoading || isValid) {
+  }, [formData, dispatch, navigate]);
+  useEffect(()=>console.log(isLoading),[isLoading])
+  if (isLoading) {
     return <LoadingScreen fullScreen size='large' />
   }
   return (
