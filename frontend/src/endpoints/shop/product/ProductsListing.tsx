@@ -1,6 +1,6 @@
 import { useState, useMemo, useEffect } from 'react';
 import { filterProducts, sortProducts } from '../../../utils/FilterProduct';
-import type { ProductItem, SortBy, ViewMode } from '../../../types/product';
+import type { SortBy, ViewMode } from '../../../types/product';
 import PageHeader from './PageHeader';
 import SearchControls from './SearchControl';
 import { categories, collections, sortOptions } from '../../../data/products';
@@ -8,18 +8,19 @@ import FilterSidebar from './FilterSideBar';
 import ProductGrid from './ProductGrid';
 import getProduct from '../../../axios/product/getProduct';
 import { setLoading } from '../../../store/features/GlobalSlice';
-import { useAppDispatch } from '../../../store/hooks';
+import { useAppDispatch, useAppSelector } from '../../../store/hooks';
 import LoadingScreen from '../../../components/fallback/LoadingScreen';
 import { useValidateToken } from '../../../hooks/useValidateToken';
 import { updateUserAuthField } from '../../../store/features/UserSlice';
 import addWishlist from '../../../axios/product/addWishlist';
 import removeFromWishlist from '../../../axios/product/removeFromWishlist';
+import { setProducts } from '../../../store/features/ProductSlice';
 
 
 const ProductListingPage = () => {
   const { loading, userData } = useValidateToken()
   const wishlist = userData?.wishlist ?? []
-  const [products, setProductList] = useState<ProductItem[]>([])
+  const products = useAppSelector(state => state.products.products);
   const dispatch = useAppDispatch()
   const [searchTerm, setSearchTerm] = useState('');
   const [selectedCategory, setSelectedCategory] = useState('All');
@@ -32,11 +33,12 @@ const ProductListingPage = () => {
 
   // product fetching 
   useEffect(() => {
+    
     dispatch(setLoading(true));
     getProduct()
       .then((data) => {
         if (data) {
-          setProductList([...data]);
+          dispatch(setProducts(data));
           const fevList = new Set<number | string>();
           if (userData?.wishlist) {
             userData.wishlist.forEach((e) => {
@@ -57,7 +59,7 @@ const ProductListingPage = () => {
       selectedCollection,
       priceRange
     );
-
+ 
     return sortProducts(filtered, sortBy);
   }, [searchTerm, selectedCategory, selectedCollection, priceRange, sortBy, products]);
 
@@ -83,7 +85,6 @@ const ProductListingPage = () => {
           dispatch(updateUserAuthField({
             field: 'wishlist',
             value: updatedWishlist
-
           }));
         }
       } else {

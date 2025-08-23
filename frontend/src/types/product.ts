@@ -15,6 +15,7 @@ export interface ProductItem {
   is_New: boolean;
   isFavorite: boolean;
   description: string;
+  stock: string;
 }
 
 export interface SortOption {

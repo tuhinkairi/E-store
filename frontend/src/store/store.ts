@@ -1,11 +1,13 @@
 import { configureStore } from "@reduxjs/toolkit";
 import loadingSlice from "./features/GlobalSlice";
 import userSlice from "./features/UserSlice";
+import productSlice from "./features/ProductSlice";
 
 export const store = configureStore({
   reducer: {
     loading: loadingSlice.reducer,
     user: userSlice.reducer,
+    products: productSlice.reducer, 
   },
   devTools: process.env.NODE_ENV !== "production",
 });
