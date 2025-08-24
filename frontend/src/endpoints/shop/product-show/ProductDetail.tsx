@@ -49,12 +49,12 @@ const ProductDetail = () => {
     try {
       // Check if product exists and has the required data
       if (product && product.price && product._id === id) {
-        console.log("Product already loaded", product._id, id);
+        // console.log("Product already loaded", product._id, id);
         setLoading(false);
         return;
       }
 
-      console.log("Fetching product for ID:", id);
+      // console.log("Fetching product for ID:", id);
       const productResult = await getProductById(id);
       if (productResult && productResult.price) {
         dispatch(selectProduct(productResult));

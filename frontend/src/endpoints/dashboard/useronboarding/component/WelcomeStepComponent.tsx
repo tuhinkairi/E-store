@@ -8,7 +8,7 @@ const WelcomeStep = ({ onNext }:{onNext:()=>void}) => {
   const {isValid, loading,userData} = useValidateToken()
   const navigate = useNavigate()
   if (isValid) {
-    console.log(userData)
+    // console.log(userData)
     navigate("/dashboard/user")
   }
   if (loading) {

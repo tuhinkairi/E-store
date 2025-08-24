@@ -9,7 +9,7 @@ const Orders: React.FC<OrdersProps> = ({
   orderFilter,
   setOrderFilter
 }) => {
-  console.log(orders)
+  // console.log(orders)
   const getStatusColor = (status: OrderResponse['status']): string => {
     switch (status) {
       // "Pending" | "Processing" | "Shipped" | "Delivered" | "Cancelled" | "Returned";

@@ -78,7 +78,7 @@ const NotFoundPage: React.FC<NotFoundPageProps> = ({
                     className="group p-6 bg-white border border-sage-200 rounded-lg hover:border-sage-300 hover:shadow-sm transition-all"
                     onClick={() => {
                       // Handle navigation to suggestion.path
-                      console.log(`Navigate to ${suggestion.path}`);
+                      // console.log(`Navigate to ${suggestion.path}`);
                     }}
                   >
                     <Icon className="w-8 h-8 text-sage-600 group-hover:text-sage-900 mx-auto mb-3 transition-colors" />
