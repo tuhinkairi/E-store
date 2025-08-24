@@ -1,8 +1,9 @@
 import { useState } from 'react';
 import { Heart, Star, Truck, Shield, RotateCcw, Minus, Plus, ShoppingCart } from 'lucide-react';
 import { useParams } from 'react-router-dom';
+import { useAppSelector } from '../../../store/hooks';
 
-interface Product {
+interface ProductTemp {
   id: number;
   name: string;
   brand: string;
@@ -25,20 +26,22 @@ interface Product {
 const ProductDetail = () => {
   const id = useParams().id;
   console.log(id)
+  const product = useAppSelector(s=>s.products.selectedProduct!)
   const [selectedColor, setSelectedColor] = useState(0);
-  const [selectedSize, setSelectedSize] = useState('');
+  const [selectedSize, setSelectedSize] = useState(product.sizes[0]);
   const [selectedImage, setSelectedImage] = useState(0);
-  const [quantity, setQuantity] = useState(1);
-  const [isFavorite, setIsFavorite] = useState(false);
+  const [quantity, setQuantity] = useState(1);  
+  const wishlisted = useAppSelector(s=>s.user?.wishlist)?.filter(w=>w.productId._id === product._id)[0];
+  const [isFavorite, setIsFavorite] = useState(wishlisted?.productId._id?  true : false);
   const [activeTab, setActiveTab] = useState('description');
 
-  const product: Product = {
+  const productTemp: ProductTemp = {
     id: 1,
     name: "Premium Cotton Polo Shirt",
     brand: "ELYSIAN",
     price: 229.99,
     originalPrice: 279.99,
-    rating: 4.5,
+    rating: 4,
     reviews: 128,
     isOnSale: true,
     colors: [
@@ -88,7 +91,7 @@ const ProductDetail = () => {
   };
 
   const handleQuantityChange = (change: number) => {
-    setQuantity(prev => Math.max(1, Math.min(product.stockCount, prev + change)));
+    setQuantity(prev => Math.max(1, Math.min(parseInt(product.stock), prev + change)));
   };
 
   return (
@@ -111,7 +114,7 @@ const ProductDetail = () => {
           <div className="space-y-4">
             {/* Main Image */}
             <div className="aspect-square bg-white rounded-lg overflow-hidden border border-[#E5E7E1] relative">
-              {product.isOnSale && (
+              {product.price< product.originalPrice! && (
                 <div className="absolute top-4 left-4 z-10 bg-red-600 text-white px-3 py-1 text-sm font-medium rounded">
                   SALE -18%
                 </div>
@@ -145,18 +148,18 @@ const ProductDetail = () => {
           <div className="space-y-6">
             <div>
               <h1 className="text-3xl font-light text-[#2A3A1A] mb-2">{product.name}</h1>
-              <p className="text-[#8B9A7A] text-lg">{product.brand}</p>
+              {/* <p className="text-[#8B9A7A] text-lg">{product.brand}</p> */}
             </div>
 
             {/* Rating */}
             <div className="flex items-center gap-4">
               <div className="flex items-center gap-2">
                 <div className="flex items-center gap-1">
-                  {renderStars(product.rating)}
+                  {renderStars(product.rating>0 ? product.rating : productTemp.rating)}
                 </div>
-                <span className="text-[#2A3A1A] font-medium">{product.rating}</span>
+                <span className="text-[#2A3A1A] font-medium">{product.rating>0 ? product.rating : productTemp.rating}</span>
               </div>
-              <span className="text-[#8B9A7A]">({product.reviews} reviews)</span>
+              <span className="text-[#8B9A7A]">({product.reviews===0? productTemp.reviews : product.reviews} reviews)</span>
             </div>
 
             {/* Price */}
@@ -165,7 +168,7 @@ const ProductDetail = () => {
               {product.originalPrice && (
                 <span className="text-xl text-[#8B9A7A] line-through">${product.originalPrice}</span>
               )}
-              {product.isOnSale && (
+              {product.originalPrice!==null && product.originalPrice > product.price && (
                 <span className="bg-red-100 text-red-800 px-2 py-1 text-sm rounded">Save ${((product.originalPrice || 0) - product.price).toFixed(2)}</span>
               )}
             </div>
@@ -175,7 +178,7 @@ const ProductDetail = () => {
 
             {/* Color Selection */}
             <div>
-              <h3 className="text-[#2A3A1A] font-medium mb-3">Color: {product.colors[selectedColor].name}</h3>
+              {/* <h3 className="text-[#2A3A1A] font-medium mb-3">Color: {product.colors[selectedColor].name}</h3> */}
               <div className="flex items-center gap-3">
                 {product.colors.map((color, index) => (
                   <button
@@ -184,8 +187,8 @@ const ProductDetail = () => {
                     className={`w-10 h-10 rounded-full border-2 transition-all ${
                       selectedColor === index ? 'border-[#2A3A1A] ring-2 ring-[#8B9A7A] ring-opacity-30' : 'border-[#E5E7E1] hover:border-[#8B9A7A]'
                     }`}
-                    style={{ backgroundColor: color.hex }}
-                    title={color.name}
+                    style={{ backgroundColor: color }}
+                    title={color}
                   />
                 ))}
               </div>
@@ -234,7 +237,7 @@ const ProductDetail = () => {
                   </button>
                 </div>
                 <span className="text-[#8B9A7A] text-sm">
-                  {product.stockCount} in stock
+                  {product.stock} in stock
                 </span>
               </div>
             </div>
@@ -304,7 +307,7 @@ const ProductDetail = () => {
                 <div>
                   <h3 className="text-lg font-medium text-[#2A3A1A] mb-4">Product Features</h3>
                   <ul className="space-y-2">
-                    {product.features.map((feature, index) => (
+                    {productTemp.features.map((feature, index) => (
                       <li key={index} className="flex items-center gap-3 text-[#6B7A5A]">
                         <div className="w-2 h-2 bg-[#8B9A7A] rounded-full flex-shrink-0" />
                         {feature}
@@ -319,7 +322,7 @@ const ProductDetail = () => {
               <div>
                 <h3 className="text-lg font-medium text-[#2A3A1A] mb-4">Specifications</h3>
                 <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
-                  {Object.entries(product.specifications).map(([key, value]) => (
+                  {Object.entries(productTemp.specifications).map(([key, value]) => (
                     <div key={key} className="flex justify-between py-2 border-b border-[#E5E7E1]">
                       <span className="text-[#6B7A5A] font-medium">{key}:</span>
                       <span className="text-[#2A3A1A]">{value}</span>
@@ -340,11 +343,11 @@ const ProductDetail = () => {
                 
                 <div className="flex items-center gap-6">
                   <div className="text-center">
-                    <div className="text-3xl font-light text-[#2A3A1A]">{product.rating}</div>
+                    <div className="text-3xl font-light text-[#2A3A1A]">{product.rating>0 ? product.rating : productTemp.rating}</div>
                     <div className="flex items-center justify-center gap-1 mb-1">
-                      {renderStars(product.rating)}
+                      {renderStars(product.rating>0 ? product.rating : productTemp.rating)}
                     </div>
-                    <div className="text-sm text-[#8B9A7A]">{product.reviews} reviews</div>
+                    <div className="text-sm text-[#8B9A7A]">{product.reviews===0? productTemp.reviews :product.reviews} reviews</div>
                   </div>
                   
                   <div className="flex-1 space-y-2">
