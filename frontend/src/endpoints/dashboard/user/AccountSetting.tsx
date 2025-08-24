@@ -220,7 +220,7 @@ const AccountSettings: React.FC = () => {
         return false;
       }
     } catch (error) {
-      // console.log(error)
+      console.log(error)
       showAlert('error', `An error occurred while updating ${section.toLowerCase()}.`);
       return false;
     } finally {

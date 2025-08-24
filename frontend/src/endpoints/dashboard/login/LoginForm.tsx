@@ -60,7 +60,7 @@ const LoginForm = ({ switchToSignup }: { switchToSignup: () => void }) => {
       dispatch(setLoading(false));
     }
   }, [formData, dispatch, navigate]);
-  useEffect(()=>// console.log(isLoading),[isLoading])
+  useEffect(()=>console.log(isLoading),[isLoading])
   if (isLoading) {
     return <LoadingScreen fullScreen size='large' />
   }

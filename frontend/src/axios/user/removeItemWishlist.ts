@@ -5,7 +5,7 @@ export default async function removeItemWishlist(id:string):Promise<WishlistResu
     const res= await axiosClient.delete("/wishlist/remove",{
         data:{"productId": id},
     })
-    // console.log(res.data)
+    console.log(res.data)
     if (res.data.data.items) {
         return res.data.data.items as WishlistResult[];
     }
