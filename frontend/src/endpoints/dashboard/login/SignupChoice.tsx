@@ -10,7 +10,7 @@ const SignupChoice = ({ goBack }: SignupChoiceProps) => {
   const navigate = useNavigate();
 
   const handleOAuth = (provider: string) => {
-    //console.log(`${provider} signup - redirect`);
+    console.log(`${provider} signup - redirect`);
   };
 
   return (

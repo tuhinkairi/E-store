@@ -5,7 +5,7 @@ import { useValidateToken } from "../../../../hooks/useValidateToken";
 import LoadingScreen from "../../../../components/fallback/LoadingScreen";
 
 const WelcomeStep = ({ onNext }:{onNext:()=>void}) => {
-  const {isValid, loading,userData} = useValidateToken()
+  const {isValid, loading} = useValidateToken()
   const navigate = useNavigate()
   if (isValid) {
     //console.log(userData)
