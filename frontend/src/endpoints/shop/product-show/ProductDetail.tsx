@@ -38,13 +38,13 @@ const ProductDetail = () => {
   const [isFavorite, setIsFavorite] = useState(false);
   const [activeTab, setActiveTab] = useState('description');
 
-  // Get wishlist data safely
+  // Get wishlist data safely 
   const wishlist = useAppSelector(s => s.user?.wishlist) || [];
   const wishlisted = product ? wishlist.find(w => w.productId._id === product._id) : null;
 
   const fetchProduct = useCallback(async () => {
     if (!id) return;
-    
+
     setLoading(true);
     try {
       // Check if product exists and has the required data
@@ -53,7 +53,7 @@ const ProductDetail = () => {
         setLoading(false);
         return;
       }
-      
+
       console.log("Fetching product for ID:", id);
       const productResult = await getProductById(id);
       if (productResult && productResult.price) {
@@ -138,7 +138,7 @@ const ProductDetail = () => {
   };
 
   const handleQuantityChange = (change: number) => {
-    const maxStock = parseInt(product?.stock !=undefined ? product?.stock: "1");
+    const maxStock = parseInt(product?.stock != undefined ? product?.stock : "1");
     setQuantity(prev => Math.max(1, Math.min(maxStock, prev + change)));
   };
 
@@ -185,9 +185,8 @@ const ProductDetail = () => {
                 <button
                   key={index}
                   onClick={() => setSelectedImage(index)}
-                  className={`aspect-square bg-white rounded-lg border-2 overflow-hidden transition-all ${
-                    selectedImage === index ? 'border-[#8B9A7A]' : 'border-[#E5E7E1] hover:border-[#8B9A7A]'
-                  }`}
+                  className={`aspect-square bg-white rounded-lg border-2 overflow-hidden transition-all ${selectedImage === index ? 'border-[#8B9A7A]' : 'border-[#E5E7E1] hover:border-[#8B9A7A]'
+                    }`}
                 >
                   <div className="w-full h-full bg-[#F6F7F4] flex items-center justify-center">
                     <span className="text-2xl">👔</span>
@@ -239,11 +238,10 @@ const ProductDetail = () => {
                     <button
                       key={index}
                       onClick={() => setSelectedColor(index)}
-                      className={`w-10 h-10 rounded-full border-2 transition-all ${
-                        selectedColor === index 
-                          ? 'border-[#2A3A1A] ring-2 ring-[#8B9A7A] ring-opacity-30' 
+                      className={`w-10 h-10 rounded-full border-2 transition-all ${selectedColor === index
+                          ? 'border-[#2A3A1A] ring-2 ring-[#8B9A7A] ring-opacity-30'
                           : 'border-[#E5E7E1] hover:border-[#8B9A7A]'
-                      }`}
+                        }`}
                       style={{ backgroundColor: typeof color === 'string' ? color : color || color }}
                       title={typeof color === 'string' ? color : color || 'Color'}
                     />
@@ -261,11 +259,10 @@ const ProductDetail = () => {
                     <button
                       key={size}
                       onClick={() => setSelectedSize(size)}
-                      className={`py-3 px-4 border rounded-lg text-sm font-medium transition-all ${
-                        selectedSize === size
+                      className={`py-3 px-4 border rounded-lg text-sm font-medium transition-all ${selectedSize === size
                           ? 'border-[#2A3A1A] bg-[#2A3A1A] text-white'
                           : 'border-[#E5E7E1] text-[#6B7A5A] hover:border-[#8B9A7A]'
-                      }`}
+                        }`}
                     >
                       {size}
                     </button>
@@ -316,8 +313,8 @@ const ProductDetail = () => {
                   <Heart size={20} className={isFavorite ? "fill-red-500 text-red-500" : "text-[#6B7A5A]"} />
                 </button>
               </div>
-              <button 
-                onClick={() => redirect(`/${id}/place-order`)} 
+              <button
+                onClick={() => redirect(`/${id}/place-order`)}
                 className="w-full bg-[#C4A556] text-white py-4 px-6 rounded-lg hover:bg-[#B49546] transition-colors font-medium"
               >
                 Buy Now
@@ -352,11 +349,10 @@ const ProductDetail = () => {
                 <button
                   key={tab}
                   onClick={() => setActiveTab(tab)}
-                  className={`px-6 py-4 text-sm font-medium capitalize border-b-2 transition-colors ${
-                    activeTab === tab
+                  className={`px-6 py-4 text-sm font-medium capitalize border-b-2 transition-colors ${activeTab === tab
                       ? 'border-[#8B9A7A] text-[#2A3A1A]'
                       : 'border-transparent text-[#6B7A5A] hover:text-[#2A3A1A]'
-                  }`}
+                    }`}
                 >
                   {tab}
                 </button>
