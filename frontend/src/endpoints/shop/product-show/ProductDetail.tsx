@@ -1,7 +1,10 @@
-import { useState } from 'react';
+import { useCallback, useEffect, useState } from 'react';
 import { Heart, Star, Truck, Shield, RotateCcw, Minus, Plus, ShoppingCart } from 'lucide-react';
-import { useParams } from 'react-router-dom';
-import { useAppSelector } from '../../../store/hooks';
+import { redirect, useParams } from 'react-router-dom';
+import { useAppDispatch, useAppSelector } from '../../../store/hooks';
+import getProductById from '../../../axios/product/getProductById';
+import { selectProduct } from '../../../store/features/ProductSlice';
+import LoadingScreen from '../../../components/fallback/LoadingScreen';
 
 interface ProductTemp {
   id: number;
@@ -25,15 +28,59 @@ interface ProductTemp {
 
 const ProductDetail = () => {
   const id = useParams().id;
-  console.log(id)
-  const product = useAppSelector(s=>s.products.selectedProduct!)
+  const dispatch = useAppDispatch()
+  const [loading, setLoading] = useState(true) // Start with loading true
+  const product = useAppSelector(s => s.products.selectedProduct)
   const [selectedColor, setSelectedColor] = useState(0);
-  const [selectedSize, setSelectedSize] = useState(product.sizes[0]);
   const [selectedImage, setSelectedImage] = useState(0);
-  const [quantity, setQuantity] = useState(1);  
-  const wishlisted = useAppSelector(s=>s.user?.wishlist)?.filter(w=>w.productId._id === product._id)[0];
-  const [isFavorite, setIsFavorite] = useState(wishlisted?.productId._id?  true : false);
+  const [quantity, setQuantity] = useState(1);
+  const [selectedSize, setSelectedSize] = useState("");
+  const [isFavorite, setIsFavorite] = useState(false);
   const [activeTab, setActiveTab] = useState('description');
+
+  // Get wishlist data safely
+  const wishlist = useAppSelector(s => s.user?.wishlist) || [];
+  const wishlisted = product ? wishlist.find(w => w.productId._id === product._id) : null;
+
+  const fetchProduct = useCallback(async () => {
+    if (!id) return;
+    
+    setLoading(true);
+    try {
+      // Check if product exists and has the required data
+      if (product && product.price && product._id === id) {
+        console.log("Product already loaded", product._id, id);
+        setLoading(false);
+        return;
+      }
+      
+      console.log("Fetching product for ID:", id);
+      const productResult = await getProductById(id);
+      if (productResult && productResult.price) {
+        dispatch(selectProduct(productResult));
+      }
+    } catch (err) {
+      console.error("Error fetching product:", err);
+    } finally {
+      setLoading(false);
+    }
+  }, [dispatch, id, product]);
+
+  // Initialize component state when product changes
+  useEffect(() => {
+    if (product) {
+      setSelectedColor(0);
+      setSelectedSize(product.sizes && product.sizes.length > 0 ? product.sizes[0] : "");
+      setSelectedImage(0);
+      setQuantity(1);
+      setIsFavorite(wishlisted ? true : false);
+    }
+  }, [product, wishlisted]);
+
+  // Fetch product data on mount or ID change
+  useEffect(() => {
+    fetchProduct();
+  }, [id, fetchProduct]); // Only depend on ID, not on product
 
   const productTemp: ProductTemp = {
     id: 1,
@@ -82,17 +129,23 @@ const ProductDetail = () => {
 
   const renderStars = (rating: number) => {
     return Array.from({ length: 5 }, (_, i) => (
-      <Star 
-        key={i} 
-        size={16} 
-        className={i < Math.floor(rating) ? "fill-yellow-400 text-yellow-400" : "text-gray-300"} 
+      <Star
+        key={i}
+        size={16}
+        className={i < Math.floor(rating) ? "fill-yellow-400 text-yellow-400" : "text-gray-300"}
       />
     ));
   };
 
   const handleQuantityChange = (change: number) => {
-    setQuantity(prev => Math.max(1, Math.min(parseInt(product.stock), prev + change)));
+    const maxStock = parseInt(product?.stock !=undefined ? product?.stock: "1");
+    setQuantity(prev => Math.max(1, Math.min(maxStock, prev + change)));
   };
+
+  // Show loading screen while fetching or if product is null
+  if (loading || !product) {
+    return <LoadingScreen />;
+  }
 
   return (
     <div className="min-h-screen" style={{ backgroundColor: '#F8F6F0' }}>
@@ -103,7 +156,7 @@ const ProductDetail = () => {
             <span>Home</span> <span className="mx-2">/</span>
             <span>Collections</span> <span className="mx-2">/</span>
             <span>Polo Shirts</span> <span className="mx-2">/</span>
-            <span className="text-[#2A3A1A]">Premium Cotton Polo Shirt</span>
+            <span className="text-[#2A3A1A]">{product.name || "Premium Cotton Polo Shirt"}</span>
           </nav>
         </div>
       </div>
@@ -114,9 +167,9 @@ const ProductDetail = () => {
           <div className="space-y-4">
             {/* Main Image */}
             <div className="aspect-square bg-white rounded-lg overflow-hidden border border-[#E5E7E1] relative">
-              {product.price< product.originalPrice! && (
+              {product.originalPrice && product.price < product.originalPrice && (
                 <div className="absolute top-4 left-4 z-10 bg-red-600 text-white px-3 py-1 text-sm font-medium rounded">
-                  SALE -18%
+                  SALE -{Math.round(((product.originalPrice - product.price) / product.originalPrice) * 100)}%
                 </div>
               )}
               <div className="absolute inset-0 flex items-center justify-center">
@@ -147,19 +200,18 @@ const ProductDetail = () => {
           {/* Product Info */}
           <div className="space-y-6">
             <div>
-              <h1 className="text-3xl font-light text-[#2A3A1A] mb-2">{product.name}</h1>
-              {/* <p className="text-[#8B9A7A] text-lg">{product.brand}</p> */}
+              <h1 className="text-3xl font-light text-[#2A3A1A] mb-2">{product.name || productTemp.name}</h1>
             </div>
 
             {/* Rating */}
             <div className="flex items-center gap-4">
               <div className="flex items-center gap-2">
                 <div className="flex items-center gap-1">
-                  {renderStars(product.rating>0 ? product.rating : productTemp.rating)}
+                  {renderStars(product.rating > 0 ? product.rating : productTemp.rating)}
                 </div>
-                <span className="text-[#2A3A1A] font-medium">{product.rating>0 ? product.rating : productTemp.rating}</span>
+                <span className="text-[#2A3A1A] font-medium">{product.rating > 0 ? product.rating : productTemp.rating}</span>
               </div>
-              <span className="text-[#8B9A7A]">({product.reviews===0? productTemp.reviews : product.reviews} reviews)</span>
+              <span className="text-[#8B9A7A]">({product.reviews === 0 ? productTemp.reviews : product.reviews} reviews)</span>
             </div>
 
             {/* Price */}
@@ -168,54 +220,62 @@ const ProductDetail = () => {
               {product.originalPrice && (
                 <span className="text-xl text-[#8B9A7A] line-through">${product.originalPrice}</span>
               )}
-              {product.originalPrice!==null && product.originalPrice > product.price && (
-                <span className="bg-red-100 text-red-800 px-2 py-1 text-sm rounded">Save ${((product.originalPrice || 0) - product.price).toFixed(2)}</span>
+              {product.originalPrice && product.originalPrice > product.price && (
+                <span className="bg-red-100 text-red-800 px-2 py-1 text-sm rounded">
+                  Save ${(product.originalPrice - product.price).toFixed(2)}
+                </span>
               )}
             </div>
 
             {/* Description */}
-            <p className="text-[#6B7A5A] leading-relaxed">{product.description}</p>
+            <p className="text-[#6B7A5A] leading-relaxed">{product.description || productTemp.description}</p>
 
             {/* Color Selection */}
-            <div>
-              {/* <h3 className="text-[#2A3A1A] font-medium mb-3">Color: {product.colors[selectedColor].name}</h3> */}
-              <div className="flex items-center gap-3">
-                {product.colors.map((color, index) => (
-                  <button
-                    key={index}
-                    onClick={() => setSelectedColor(index)}
-                    className={`w-10 h-10 rounded-full border-2 transition-all ${
-                      selectedColor === index ? 'border-[#2A3A1A] ring-2 ring-[#8B9A7A] ring-opacity-30' : 'border-[#E5E7E1] hover:border-[#8B9A7A]'
-                    }`}
-                    style={{ backgroundColor: color }}
-                    title={color}
-                  />
-                ))}
+            {product.colors && product.colors.length > 0 && (
+              <div>
+                <h3 className="text-[#2A3A1A] font-medium mb-3">Color</h3>
+                <div className="flex items-center gap-3">
+                  {product.colors.map((color, index) => (
+                    <button
+                      key={index}
+                      onClick={() => setSelectedColor(index)}
+                      className={`w-10 h-10 rounded-full border-2 transition-all ${
+                        selectedColor === index 
+                          ? 'border-[#2A3A1A] ring-2 ring-[#8B9A7A] ring-opacity-30' 
+                          : 'border-[#E5E7E1] hover:border-[#8B9A7A]'
+                      }`}
+                      style={{ backgroundColor: typeof color === 'string' ? color : color || color }}
+                      title={typeof color === 'string' ? color : color || 'Color'}
+                    />
+                  ))}
+                </div>
               </div>
-            </div>
+            )}
 
             {/* Size Selection */}
-            <div>
-              <h3 className="text-[#2A3A1A] font-medium mb-3">Size</h3>
-              <div className="grid grid-cols-6 gap-2">
-                {product.sizes.map((size) => (
-                  <button
-                    key={size}
-                    onClick={() => setSelectedSize(size)}
-                    className={`py-3 px-4 border rounded-lg text-sm font-medium transition-all ${
-                      selectedSize === size 
-                        ? 'border-[#2A3A1A] bg-[#2A3A1A] text-white' 
-                        : 'border-[#E5E7E1] text-[#6B7A5A] hover:border-[#8B9A7A]'
-                    }`}
-                  >
-                    {size}
-                  </button>
-                ))}
+            {product.sizes && product.sizes.length > 0 && (
+              <div>
+                <h3 className="text-[#2A3A1A] font-medium mb-3">Size</h3>
+                <div className="grid grid-cols-6 gap-2">
+                  {product.sizes.map((size) => (
+                    <button
+                      key={size}
+                      onClick={() => setSelectedSize(size)}
+                      className={`py-3 px-4 border rounded-lg text-sm font-medium transition-all ${
+                        selectedSize === size
+                          ? 'border-[#2A3A1A] bg-[#2A3A1A] text-white'
+                          : 'border-[#E5E7E1] text-[#6B7A5A] hover:border-[#8B9A7A]'
+                      }`}
+                    >
+                      {size}
+                    </button>
+                  ))}
+                </div>
+                <button className="text-[#8B9A7A] text-sm mt-2 underline hover:text-[#6B7A5A]">
+                  Size Guide
+                </button>
               </div>
-              <button className="text-[#8B9A7A] text-sm mt-2 underline hover:text-[#6B7A5A]">
-                Size Guide
-              </button>
-            </div>
+            )}
 
             {/* Quantity */}
             <div>
@@ -237,7 +297,7 @@ const ProductDetail = () => {
                   </button>
                 </div>
                 <span className="text-[#8B9A7A] text-sm">
-                  {product.stock} in stock
+                  {product.stock || 0} in stock
                 </span>
               </div>
             </div>
@@ -256,7 +316,10 @@ const ProductDetail = () => {
                   <Heart size={20} className={isFavorite ? "fill-red-500 text-red-500" : "text-[#6B7A5A]"} />
                 </button>
               </div>
-              <button className="w-full bg-[#C4A556] text-white py-4 px-6 rounded-lg hover:bg-[#B49546] transition-colors font-medium">
+              <button 
+                onClick={() => redirect(`/${id}/place-order`)} 
+                className="w-full bg-[#C4A556] text-white py-4 px-6 rounded-lg hover:bg-[#B49546] transition-colors font-medium"
+              >
                 Buy Now
               </button>
             </div>
@@ -290,8 +353,8 @@ const ProductDetail = () => {
                   key={tab}
                   onClick={() => setActiveTab(tab)}
                   className={`px-6 py-4 text-sm font-medium capitalize border-b-2 transition-colors ${
-                    activeTab === tab 
-                      ? 'border-[#8B9A7A] text-[#2A3A1A]' 
+                    activeTab === tab
+                      ? 'border-[#8B9A7A] text-[#2A3A1A]'
                       : 'border-transparent text-[#6B7A5A] hover:text-[#2A3A1A]'
                   }`}
                 >
@@ -340,24 +403,24 @@ const ProductDetail = () => {
                     Write a Review
                   </button>
                 </div>
-                
+
                 <div className="flex items-center gap-6">
                   <div className="text-center">
-                    <div className="text-3xl font-light text-[#2A3A1A]">{product.rating>0 ? product.rating : productTemp.rating}</div>
+                    <div className="text-3xl font-light text-[#2A3A1A]">{product.rating > 0 ? product.rating : productTemp.rating}</div>
                     <div className="flex items-center justify-center gap-1 mb-1">
-                      {renderStars(product.rating>0 ? product.rating : productTemp.rating)}
+                      {renderStars(product.rating > 0 ? product.rating : productTemp.rating)}
                     </div>
-                    <div className="text-sm text-[#8B9A7A]">{product.reviews===0? productTemp.reviews :product.reviews} reviews</div>
+                    <div className="text-sm text-[#8B9A7A]">{product.reviews === 0 ? productTemp.reviews : product.reviews} reviews</div>
                   </div>
-                  
+
                   <div className="flex-1 space-y-2">
                     {[5, 4, 3, 2, 1].map((stars) => (
                       <div key={stars} className="flex items-center gap-3">
                         <span className="text-sm text-[#6B7A5A] w-2">{stars}</span>
                         <Star size={12} className="text-[#8B9A7A]" />
                         <div className="flex-1 bg-[#E5E7E1] rounded-full h-2">
-                          <div 
-                            className="bg-[#8B9A7A] h-2 rounded-full" 
+                          <div
+                            className="bg-[#8B9A7A] h-2 rounded-full"
                             style={{ width: `${Math.random() * 100}%` }}
                           />
                         </div>

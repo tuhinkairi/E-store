@@ -22,7 +22,7 @@ function RoutingPage() {
       <Route path='/collections'>
         <Route index element={<ProductListing />} />
         <Route path=':id' element={<ProductDetail />} />
-        <Route path='place-order' element={<PlaceOrderSection />} />
+        <Route path=':id/place-order' element={<PlaceOrderSection />} />
       </Route>
       <Route path='/login' element={<LoginPage />} />
       <Route path='/dashboard' >
