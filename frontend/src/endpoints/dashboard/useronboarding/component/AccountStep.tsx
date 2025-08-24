@@ -2,9 +2,9 @@ import { Mail } from "lucide-react";
 import CheckboxInput from "./CheckboxInput";
 import FormInput from "./FormInput";
 import PasswordInput from "./PasswordInput";
-import type { User } from "../../../../types/user";
+import type { UserProps, ValidationErrors } from "../../../../types/user";
 
-const AccountStep = ({ formData, onChange, errors }:{formData:User, onChange:(key:string, value:boolean|string)=>void, errors:User}) => (
+const AccountStep = ({ formData, onChange, errors }:{formData:UserProps, onChange:(key:string, value:boolean|string)=>void, errors:ValidationErrors}) => (
   <div className="space-y-6">
     <div className="text-center space-y-2">
       <h2 className="text-2xl font-light text-sage-900">Create Your Account</h2>
@@ -70,7 +70,7 @@ const AccountStep = ({ formData, onChange, errors }:{formData:User, onChange:(ke
         <FormInput
           label="Phone (Optional)"
           type="tel"
-          value={formData.phone}
+          value={formData.phone.toString()}
           onChange={(value) => onChange('phone', value)}
           placeholder="(555) 123-4567"
         />

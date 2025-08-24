@@ -1,8 +1,8 @@
-import type { User } from "../../../../types/user";
+import type { UserProps, ValidationErrors } from "../../../../types/user";
 import FormInput from "./FormInput";
 import { SelectionCard } from "./SelectionCard";
 
-const AddressStep = ({ formData, onChange, errors }:{formData:User, onChange:(key:string, value:string|boolean)=>void, errors:User}) => (
+const AddressStep = ({ formData, onChange, errors }:{formData:UserProps, onChange:(key:string, value:string|boolean)=>void, errors:ValidationErrors}) => (
   <div className="space-y-6">
     <div className="text-center space-y-2">
       <h2 className="text-2xl font-light text-sage-900">Shipping Address</h2>
