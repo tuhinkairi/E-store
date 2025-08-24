@@ -1,5 +1,5 @@
 import VerifyToken from "../../middleware/VerifyToken.js";
-import { Wishlist, Product } from "../../model/ExportModel.js";
+import { Wishlist} from "../../model/ExportModel.js";
 import mongoose from "mongoose";
 
 // GET WISHLIST
