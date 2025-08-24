@@ -1,4 +1,4 @@
-import { useCallback, useEffect, useState } from 'react';
+import { useCallback, useState } from 'react';
 import { Eye, EyeOff, ArrowRight, Mail } from 'lucide-react';
 import LogoHeader from './LogoHeader';
 import LoginEndpoint from '../../../axios/auth/login';
@@ -60,7 +60,7 @@ const LoginForm = ({ switchToSignup }: { switchToSignup: () => void }) => {
       dispatch(setLoading(false));
     }
   }, [formData, dispatch, navigate]);
-  useEffect(()=>console.log(isLoading),[isLoading])
+  
   if (isLoading) {
     return <LoadingScreen fullScreen size='large' />
   }

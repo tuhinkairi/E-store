@@ -192,7 +192,9 @@ const UserOnboarding = () => {
         NewUser.isLoggedIn = true;
         dispatch(setUserAuth(NewUser))
       }
-    }).catch((err)=>console.log(err)).finally(() => dispatch(setLoading(false))
+    }).catch((err)=>
+      console.log(err)
+    ).finally(() => dispatch(setLoading(false))
   )
   }, [formData, dispatch])
 

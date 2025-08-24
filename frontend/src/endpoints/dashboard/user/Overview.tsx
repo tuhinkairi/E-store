@@ -10,7 +10,7 @@ const Overview: React.FC<OverviewProps> = ({
   wishlistItems,
   setActiveTab
 }) => {
-  console.log(orders, wishlistItems);
+  //console.log(orders, wishlistItems);
   const getStatusColor = (status: OrderResponse['status']): string => {
     switch (status) {
       // "Pending" | "Processing" | "Shipped" | "Delivered" | "Cancelled" | "Returned";

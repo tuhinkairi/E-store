@@ -9,7 +9,7 @@ const LoginPage = () => {
   const navigate = useNavigate();
   const [currentView, setCurrentView] = useState('login'); // or 'signup-choice'
   useEffect(() => {
-    console.log("login ->>>>",isValid, loading)
+    //console.log("login ->>>>",isValid, loading)
     if (isValid) {
       navigate("/dashboard/user");
       return

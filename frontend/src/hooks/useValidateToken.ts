@@ -73,7 +73,7 @@ export const useValidateToken = () => {
             setIsValid(false);
             setError(err?.message || "Request failed");
             dispatch(logout());
-            console.log(err);
+            //console.log(err);
         } finally {
             dispatch(setLoading(false));
             isExecutingRef.current = false;

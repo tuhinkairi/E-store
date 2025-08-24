@@ -37,7 +37,7 @@ const UserDashboard = () => {
   const [wishlistItems, setWishlistItems] = useState<WishlistResult[]>([]);
   useEffect(() => {
     if (!isValid) {
-      console.log(userData)
+      //console.log(userData)
       navigate("/login")
     }
     setOrders(userData?.orders ?? []);
